@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Col, Container, Row, Form } from "react-bootstrap";
+import FormInterface from "../types/Form";
+
+
+
 
 const MyReservation = () => {
-  const [foarm, setFoarm] = useState({
+  const [form, setForm] = useState<FormInterface>({
     pickUp: "",
     dropOff: "",
     passengers: 1,
@@ -13,8 +17,10 @@ const MyReservation = () => {
     flightNumber: "",
     nameOnBoard: "",
     childSeats: "no",
-    requests: "",
-  });
+    requests:""
+  })
+ 
+  
   return (
     <div className="bg-image">
       <Container>
@@ -48,6 +54,7 @@ const MyReservation = () => {
                   type="text"
                   placeholder="Airport, Hotel, Address"
                   required
+                  value={form.pickUp} onChange={(e) => {setForm({...form, pickUp: e.target.value})}}
                 />
               </Form.Group>
               <Form.Group
@@ -61,6 +68,7 @@ const MyReservation = () => {
                   type="text"
                   required
                   placeholder="Airport, Hotel, Address"
+                  value={form.dropOff} onChange={(e)=>{setForm({...form, dropOff: e.target.value})}}
                 />
               </Form.Group>
               <div className="position-relative">
@@ -68,6 +76,8 @@ const MyReservation = () => {
                 <Form.Select
                   aria-label="Default select example"
                   className="border border-dark-subtle rounded  position-relative"
+                  required
+                  value={form.passengers} onChange={(e)=>{setForm({...form, passengers: parseInt(e.target.value)})}}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -84,7 +94,9 @@ const MyReservation = () => {
               <Row>
                 <Col className=" position-relative col-6">
                   <i className="bi bi-suitcase-lg-fill labelSuitcase fs-5 text-black"></i>
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select aria-label="Default select example"
+                  required
+                  value={form.suitcases} onChange={(e)=>{ setForm({...form, suitcases: parseInt(e.target.value)})}}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -98,7 +110,9 @@ const MyReservation = () => {
                 </Col>
                 <Col className=" position-relative col-6">
                   <i className="bi bi-backpack-fill fs-5 labelSuitcase text-black"></i>
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select aria-label="Default select example"
+                  required
+                     value={form.backpack} onChange={(e)=>{ setForm({...form, backpack: parseInt(e.target.value)})}}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -126,7 +140,9 @@ const MyReservation = () => {
                       .getDate()
                       .toString()
                       .padStart(2, "0")}`}
-                  />{" "}
+                      required
+                      value={form.pickUpDate} onChange={(e)=>{setForm({...form, pickUpDate: e.target.value})}}
+                  />
                   <br />
                   <label htmlFor="data" className="small">
                     Pick Up date:
@@ -134,7 +150,9 @@ const MyReservation = () => {
                 </Col>
                 <Col className=" position-relative  col-6 ps-0 col-lg-3">
                   <i className="bi bi-clock-fill labelClock text-black"></i>
-                  <input type="time" id="ora" name="data" /> <br />
+                  <input type="time" id="ora" name="data" 
+                  required
+                  value={form.pickUpTime} onChange={(e)=>{setForm({...form, pickUpTime: e.target.value})}}/> <br />
                   <label htmlFor="data" className="small">
                     Pick Up Time
                   </label>
@@ -147,7 +165,7 @@ const MyReservation = () => {
                     <Form.Label className="m-0 labelAirplane text-black z-2 ">
                       <i className="bi bi-airplane-fill fs-5 "></i>
                     </Form.Label>
-                    <Form.Control type="text" placeholder="AA 567" />
+                    <Form.Control type="text" placeholder="AA 567" value={form.flightNumber} onChange={(e)=>{setForm({...form, flightNumber: e.target.value})}}/>
                   </Form.Group>
                   <p className="small m-0">Flight number</p>
                 </Col>
@@ -161,7 +179,8 @@ const MyReservation = () => {
                     <Form.Label className="m-0 labelPaper text-black z-2">
                       <i className="bi bi-sticky-fill fs-5"></i>
                     </Form.Label>
-                    <Form.Control type="text" placeholder="Insert your name" />
+                    <Form.Control type="text" placeholder="Insert your name"
+                    value={form.nameOnBoard} onChange={(e)=>{setForm({...form, nameOnBoard:e.target.value})}} />
                   </Form.Group>
                   <p className="small">Name on a board the driver holds</p>
                 </Col>
@@ -170,12 +189,12 @@ const MyReservation = () => {
                 <Col className=" position-relative col-6">
                   <i className="bi bi-person-arms-up labelChild fs-5 text-black"></i>
 
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select aria-label="Default select example" value={form.childSeats} onChange={(e)=>{setForm({...form, childSeats: e.target.value})}}>
                     <option value="no">No child seats</option>
-                    <option value="1Child">1</option>
-                    <option value="2Child">2</option>
-                    <option value="3Child">3</option>
-                    <option value="4Child">4</option>
+                    <option value="1ChildSeat">1</option>
+                    <option value="2ChildSeat">2</option>
+                    <option value="3ChildSeat">3</option>
+                    <option value="4ChildSeat">4</option>
                   </Form.Select>
                   <p className="small">Number of child seats</p>
                 </Col>
@@ -191,6 +210,7 @@ const MyReservation = () => {
                   placeholder="Special needs or any other request"
                   as="textarea"
                   rows={3}
+                  value={form.requests} onChange={(e)=>{setForm({...form, requests: e.target.value})}}
                 />
               </Form.Group>
             </Form>
@@ -202,4 +222,4 @@ const MyReservation = () => {
 };
 export default MyReservation;
 
-// special needs or any other request
+
