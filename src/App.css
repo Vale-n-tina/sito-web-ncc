@@ -13,8 +13,8 @@
   background-size: cover;
   background-attachment: fixed;
   filter: opacity(0.7);
-  
-  
+
+  height: 100vh;
 }
 
 .hover {
@@ -44,7 +44,8 @@
 }
 
 /* css per icona valigie */
-.labelSuitcase, .labelChild {
+.labelSuitcase,
+.labelChild {
   position: absolute;
   top: -15px;
   left: 25px;
@@ -56,7 +57,7 @@
   top: -10px;
   left: 25px;
 }
-.labelAirplane{
+.labelAirplane {
   position: absolute;
   top: -16px;
   left: 13px;
@@ -66,14 +67,13 @@
   position: absolute;
   top: -15px;
   left: 13px;
-  
 }
 
-.labelRequest{
+.labelRequest {
   position: absolute;
   top: -13px;
   left: 13px;
-  font-weight: 500
+  font-weight: 500;
 }
 /* css per icona calendario e orologio */
 

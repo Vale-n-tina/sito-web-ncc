@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import MyNavbar from "./components/MyNavbar";
 import MyReservation from "./components/MyReservation";
+import CheckoutDetails from "./components/CheckoutDetails";
 
 function App() {
   return(
@@ -12,6 +13,8 @@ function App() {
     <Routes>
       <Route path="/reservation"
       element={<MyReservation/>} />
+      <Route path="/CheckoutDetails"
+      element={<CheckoutDetails/>} />
 
     </Routes>
 
