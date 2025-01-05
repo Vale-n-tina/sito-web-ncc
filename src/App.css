@@ -6,6 +6,9 @@
   font-family: "Montserrat", serif !important;
 }
 
+.code{
+  font-family: "Roboto Flex", serif;
+}
 .bg-image {
   background-image: url(../public/images/sfondo.png);
   background-position: center;
@@ -14,7 +17,7 @@
   background-attachment: fixed;
   filter: opacity(0.7);
 
-  height: 100vh;
+ 
 }
 
 .hover {
