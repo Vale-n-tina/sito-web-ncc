@@ -1,7 +1,8 @@
-import { Col, Container, Row, Form } from "react-bootstrap";
+import { Col, Container, Row, Form, Alert } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import FormInterface from "../types/Form";
+import { useState } from "react";
 
 interface myReservationProps {
   form: FormInterface;
@@ -9,6 +10,32 @@ interface myReservationProps {
 }
 
 const CheckoutDetails = (props: myReservationProps) => {
+  const [confirmEmail, setConfirmEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState<string>("");
+
+  const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setConfirmEmail(value);
+    if (value !== props.form.email) {
+      setEmailError("Le email non coincidono");
+    } else {
+      setEmailError("");
+    }
+  };
+  //const isEmailMatch = props.form.email === confirmEmail; <----- lo usero quando ci sara il bottone per il redirect
+  /*<Button
+              variant="primary"
+              size="lg"
+              disabled={!isEmailMatch}
+              onClick={() => {
+                if (isEmailMatch) {
+                  alert("Prenotazione confermata!");
+                }
+              }}
+            >
+              Prenota
+            </Button>*/
+
   return (
     <div className="bg-image">
       <Container className=" sans text-black">
@@ -49,8 +76,14 @@ const CheckoutDetails = (props: myReservationProps) => {
                     controlId="exampleForm.ControlInput1"
                   >
                     <Form.Label className="m-0 fw-bold code">Email </Form.Label>
-                    <Form.Control type="email" required value={props.form.email}
-                    onChange={(e)=>{props.setForm({...props.form, email:e.target.value})}} />
+                    <Form.Control
+                      type="email"
+                      required
+                      value={props.form.email}
+                      onChange={(e) => {
+                        props.setForm({ ...props.form, email: e.target.value });
+                      }}
+                    />
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -59,7 +92,16 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <Form.Label className="m-0 fw-bold code">
                       Confirm Email
                     </Form.Label>
-                    <Form.Control type="email" />
+                    <Form.Control
+                      type="email"
+                      value={confirmEmail}
+                      onChange={handleConfirmEmailChange}
+                    />
+                    {emailError && (
+                      <Alert variant="danger" className="mt-2">
+                        {emailError}
+                      </Alert>
+                    )}
                   </Form.Group>
 
                   <Form.Group
