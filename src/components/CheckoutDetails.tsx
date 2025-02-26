@@ -133,7 +133,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">From</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1"> hotel astoriaaa</p>
+                    <p className=" fw-bold mb-1"> {props.form.pickUp}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -141,7 +141,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">To</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1"> fiumicinooo areoportoooo</p>
+                    <p className=" fw-bold mb-1"> {props.form.dropOff}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -149,7 +149,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">Date</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1"> mai</p>
+                    <p className=" fw-bold mb-1"> {props.form.pickUpDate}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -157,7 +157,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">Pick-Up Time</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1">12:00</p>
+                    <p className=" fw-bold mb-1">{props.form.pickUpTime}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -165,7 +165,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">Passengers</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1">4</p>
+                    <p className=" fw-bold mb-1">{props.form.passengers}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -175,7 +175,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     </h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1">4 big/2 small</p>
+                    <p className=" fw-bold mb-1">{props.form.suitcases} big/ {props.form.backpack} small</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -183,7 +183,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <h6 className="m-0 text-thetriary code">Child Seats</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1">No child seat</p>
+                    <p className=" fw-bold mb-1">{props.form.childSeats}</p>
                   </Col>
                 </Row>
                 <Row className="mb-2 mt-4">
