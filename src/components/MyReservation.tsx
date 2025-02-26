@@ -1,6 +1,8 @@
 import { Col, Container, Row, Form , Button} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormInterface from "../types/Form";
+import { useEffect, useRef, useState } from "react";
+import { Autocomplete, DirectionsRenderer, DirectionsService, GoogleMap, LoadScript } from "@react-google-maps/api";
 
 
 interface myReservationProps {
@@ -8,6 +10,75 @@ interface myReservationProps {
   setForm:(newForm:FormInterface)=>void
 }
 const MyReservation = (props:myReservationProps ) => {
+  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [requested, setRequested] = useState(false);
+  const [temporaryOrigin, setTemporaryOrigin] = useState("");
+  const [temporaryDestination, setTemporaryDestination] = useState("");
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  const [duration, setDuration] = useState<string | null>(null);
+  const [distance, setDistance] = useState<string | null>(null);
+  
+
+  const originRef = useRef<google.maps.places.Autocomplete|null  >(null);
+  const destinationRef = useRef<google.maps.places.Autocomplete|null  >(null);
+
+  const center = {
+    lat: 41.9027835, // Roma, latitudine
+    lng: 12.4963655 // Longitudine
+  };
+  const handleDirectionsCallback = (result: google.maps.DirectionsResult | null, status:string) => {
+    if (status === 'OK' && result) {
+      if (
+        result.routes &&
+        result.routes[0] &&
+        result.routes[0].legs &&
+        result.routes[0].legs[0] &&
+        result.routes[0].legs[0].duration &&
+        result.routes[0].legs[0].distance
+      ) {
+        const duration = result.routes[0].legs[0].duration.text;
+        const distance = result.routes[0].legs[0].distance.text;
+  
+        setDirections(result);
+        setDuration(duration);
+        setDistance(distance);
+        setRequested(true);
+        console.log('result:', result);
+      } else {
+        console.error('La struttura della risposta non è valida:', result);
+      }
+    } else {
+      console.log('Errore nelle direzioni:', status);
+    }
+      
+     
+  };
+  const handleSearchClick = () => {
+    setOrigin(temporaryOrigin); // Imposta il valore di origin
+    setDestination(temporaryDestination); // Imposta il valore di destination
+    setRequested(true); // Imposta requested a true per eseguire la richiesta
+  };
+
+  useEffect(() => {
+    setRequested(false);
+  }, [origin, destination]);
+
+  // Funzione di callback per quando la libreria è caricata
+  const onLoad = (autocomplete :google.maps.places.Autocomplete, type : "origin"| "destination") => {
+    if (type === "origin") {
+      originRef.current = autocomplete;
+    } else {
+      destinationRef.current = autocomplete;
+    }
+  };
+
+// Funzione di caricamento script
+const onScriptLoad = () => {
+  setIsScriptLoaded(true);
+};
+
   
   return (
     <div className="bg-image">
@@ -37,15 +108,29 @@ const MyReservation = (props:myReservationProps ) => {
                 <Form.Label className="m-0 label text-black z-2">
                   Pick-Up
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Airport, Hotel, Address"
-                  required
-                  value={props.form.pickUp}
-                  onChange={(e) => {
-                    props.setForm({ ...props.form, pickUp: e.target.value });
+                {isScriptLoaded && (
+                  <Autocomplete
+                    onLoad={(autocomplete) => onLoad(autocomplete, "origin")}
+                    onPlaceChanged={() =>{ if (originRef.current) {
+                      const place = originRef.current.getPlace();
+                      if (place && place.formatted_address) {
+                        setTemporaryOrigin(place.formatted_address);
+                      } else {
+                        console.error("Indirizzo non valido o mancante.");
+                      }
+                    }
                   }}
-                />
+                    options={{ componentRestrictions: { country: 'it' } }}
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Airport, Hotel, Address"
+                      required
+                      value={temporaryOrigin}
+                      onChange={(e) => setTemporaryOrigin(e.target.value)}
+                    />
+                  </Autocomplete>
+                )}
               </Form.Group>
               <Form.Group
                 className="mb-3 position-relative mt-3 z-1 border border-dark-subtle rounded "
@@ -54,15 +139,30 @@ const MyReservation = (props:myReservationProps ) => {
                 <Form.Label className="m-0 label text-black z-2">
                   Drop-Off
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  required
-                  placeholder="Airport, Hotel, Address"
-                  value={props.form.dropOff}
-                  onChange={(e) => {
-                    props.setForm({ ...props.form, dropOff: e.target.value });
+               { isScriptLoaded && (
+                  <Autocomplete
+                  onLoad={(autocomplete) => onLoad(autocomplete, "destination")}
+                  onPlaceChanged={() => {
+                    if (destinationRef.current) {
+                      const place = destinationRef.current.getPlace();
+                      if (place && place.formatted_address) {
+                        setTemporaryDestination(place.formatted_address);
+                      } else {
+                        console.error("Indirizzo non valido o mancante.");
+                      }
+                    }
                   }}
-                />
+                    options={{ componentRestrictions: { country: 'it' } }}
+                  >
+                    <Form.Control
+                      type="text"
+                      placeholder="Airport, Hotel, Address"
+                      required
+                      value={temporaryDestination}
+                      onChange={(e) => setTemporaryDestination(e.target.value)}
+                    />
+                  </Autocomplete>
+                )}
               </Form.Group>
               <div className="position-relative">
                 <i className="bi bi-person labelPerson fs-4 text-black "></i>
@@ -257,13 +357,56 @@ const MyReservation = (props:myReservationProps ) => {
               </Form.Group>
             </Form>
           </Col>
-          <Col className="col col-11 col-lg-6 ">
+          <Col className="col col-11 col-lg-6 m-sm-auto m-lg-0 ">
             <Row>
-              <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded">
-                qui va la mappa
+              <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0">
+              <LoadScript
+                  googleMapsApiKey="AIzaSyAi6pBrCKuZnCseLJgcFMpNgrnSTSPDJVY"
+                  libraries={["places"]}
+                  onLoad={onScriptLoad}
+                >
+                  <GoogleMap
+                    mapContainerStyle={{ width: '100%', height: '400px' }}
+                    center={center}
+                    zoom={12}
+                    options={{
+                      zoomControl: false,
+                      streetViewControl: false,
+                      mapTypeControl: false,
+                      fullscreenControl: false
+                    }}
+                  >
+                    {origin && destination && !requested && (
+                      <DirectionsService
+                        options={{
+                          origin: origin,
+                          destination: destination,
+                          travelMode: google.maps.TravelMode.DRIVING,
+                        }}
+                        callback={handleDirectionsCallback}
+                      />
+                    )}
+
+                    {directions && (
+                      <DirectionsRenderer
+                        options={{
+                          directions: directions,
+                        }}
+                      />
+                    )}
+                  </GoogleMap>
+                </LoadScript>
+                
               </Col>
+              <Col className="col col-3 m-auto rounded p-0 mt-1"> <Button variant="danger" onClick={handleSearchClick}>
+            Search price
+          </Button>
+              </Col>
+              
               <Col className="col col-11 m-auto mt-3 bg-light bg-opacity-75 rounded">
                 qui va il listino del prezzo
+                durata:{duration}
+                distanza:{distance}
                 <Link to="/CheckoutDetails">
                 <Button variant="primary">Continua</Button>
                 </Link>
