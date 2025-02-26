@@ -83,9 +83,9 @@ const onScriptLoad = () => {
   return (
     <div className="bg-image">
       <Container>
-        <Row>
+        <Row className="justify-content-center">
           <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-light bg-opacity-75 rounded ">
-            <Row>
+            <Row >
               <Col className="col-11 m-auto">
                 <h1 className="montserrat mt-3">Book your trip</h1>
               </Col>
@@ -115,6 +115,7 @@ const onScriptLoad = () => {
                       const place = originRef.current.getPlace();
                       if (place && place.formatted_address) {
                         setTemporaryOrigin(place.formatted_address);
+                        props.setForm({ ...props.form,pickUp: place.formatted_address });
                       } else {
                         console.error("Indirizzo non valido o mancante.");
                       }
@@ -127,7 +128,7 @@ const onScriptLoad = () => {
                       placeholder="Airport, Hotel, Address"
                       required
                       value={temporaryOrigin}
-                      onChange={(e) => setTemporaryOrigin(e.target.value)}
+                      onChange={(e) =>{const value = e.target.value; setTemporaryOrigin(e.target.value);  props.setForm({ ...props.form,pickUp: value });}}
                     />
                   </Autocomplete>
                 )}
@@ -147,6 +148,7 @@ const onScriptLoad = () => {
                       const place = destinationRef.current.getPlace();
                       if (place && place.formatted_address) {
                         setTemporaryDestination(place.formatted_address);
+                        props.setForm({ ...props.form,dropOff: place.formatted_address });
                       } else {
                         console.error("Indirizzo non valido o mancante.");
                       }
@@ -159,7 +161,7 @@ const onScriptLoad = () => {
                       placeholder="Airport, Hotel, Address"
                       required
                       value={temporaryDestination}
-                      onChange={(e) => setTemporaryDestination(e.target.value)}
+                      onChange={(e) => {const value = e.target.value; setTemporaryDestination(value); props.setForm({ ...props.form,dropOff: value });}}
                     />
                   </Autocomplete>
                 )}
@@ -357,7 +359,7 @@ const onScriptLoad = () => {
               </Form.Group>
             </Form>
           </Col>
-          <Col className="col col-11 col-lg-6 m-sm-auto m-lg-0 ">
+          <Col className="col col-11 col-lg-6 m-sm-auto p-0 m-lg-0 ">
             <Row>
               <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0">
               <LoadScript
@@ -398,18 +400,58 @@ const onScriptLoad = () => {
                 </LoadScript>
                 
               </Col>
-              <Col className="col col-3 m-auto rounded p-0 mt-1"> <Button variant="danger" onClick={handleSearchClick}>
+              <Col className="col col-4 m-auto rounded p-0 mt-1"> <Button variant="danger" onClick={handleSearchClick}>
             Search price
           </Button>
               </Col>
               
-              <Col className="col col-11 m-auto mt-3 bg-light bg-opacity-75 rounded">
-                qui va il listino del prezzo
-                durata:{duration}
-                distanza:{distance}
-                <Link to="/CheckoutDetails">
+              <Col className="col col-11 m-auto mt-3 bg-white rounded">
+                <Row className="mt-3">
+                  <Col className="text-center">
+                    <h4 className="montserrat">Summary</h4>
+                  </Col>
+                </Row>
+                <Row className="mt-3 mb-3">
+                  <Col>
+                  <h6 className="code" >Estimated Distance:</h6>
+                  </Col>
+                  <Col> 
+                  <p className=" fw-bold"> {distance}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                  <h6 className="code">Estimated Trip Time: </h6>
+                  </Col>
+                  <Col>
+                  <p className=" fw-bold">{duration}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                  <h6 className="code">List price: </h6>
+                  </Col>
+                  <Col>
+                  <p className=" fw-bold">{duration}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                  <h6 className="code">Discount price: </h6>
+                  </Col>
+                  <Col>
+                  <p className=" fw-bold">{duration}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="text-center mb-4 mt-2">
+                  <Link to="/CheckoutDetails">
                 <Button variant="primary">Continua</Button>
                 </Link>
+                </Col>
+                </Row>
+                
+                
                 
               </Col>
             </Row>
