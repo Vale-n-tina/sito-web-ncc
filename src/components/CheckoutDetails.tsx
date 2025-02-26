@@ -73,7 +73,7 @@ const CheckoutDetails = () => {
                     <h6 className="m-0 text-thetriary code">From</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1"> fiumicinooo porco dio</p>
+                    <p className=" fw-bold mb-1"> hotel astoriaaa</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -81,7 +81,7 @@ const CheckoutDetails = () => {
                     <h6 className="m-0 text-thetriary code">To</h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1"> fiumicinooo porca madonnaaa</p>
+                    <p className=" fw-bold mb-1"> fiumicinooo areoportoooo</p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
