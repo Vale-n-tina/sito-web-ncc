@@ -1,24 +1,14 @@
-import { useState } from "react";
 import { Col, Container, Row, Form , Button} from "react-bootstrap";
-import FormInterface from "../types/Form";
 import { Link } from "react-router-dom";
+import FormInterface from "../types/Form";
 
-const MyReservation = () => {
-  const [form, setForm] = useState<FormInterface>({
-    pickUp: "",
-    dropOff: "",
-    passengers: 1,
-    suitcases: 1,
-    backpack: 1,
-    pickUpDate: "",
-    pickUpTime: "",
-    flightNumber: "",
-    nameOnBoard: "",
-    childSeats: "noChildSeats",
-    requests: "",
-  });
 
-  console.log(form);
+interface myReservationProps {
+  form:FormInterface
+  setForm:(newForm:FormInterface)=>void
+}
+const MyReservation = (props:myReservationProps ) => {
+  
   return (
     <div className="bg-image">
       <Container>
@@ -51,9 +41,9 @@ const MyReservation = () => {
                   type="text"
                   placeholder="Airport, Hotel, Address"
                   required
-                  value={form.pickUp}
+                  value={props.form.pickUp}
                   onChange={(e) => {
-                    setForm({ ...form, pickUp: e.target.value });
+                    props.setForm({ ...props.form, pickUp: e.target.value });
                   }}
                 />
               </Form.Group>
@@ -68,9 +58,9 @@ const MyReservation = () => {
                   type="text"
                   required
                   placeholder="Airport, Hotel, Address"
-                  value={form.dropOff}
+                  value={props.form.dropOff}
                   onChange={(e) => {
-                    setForm({ ...form, dropOff: e.target.value });
+                    props.setForm({ ...props.form, dropOff: e.target.value });
                   }}
                 />
               </Form.Group>
@@ -80,9 +70,9 @@ const MyReservation = () => {
                   aria-label="Default select example"
                   className="border border-dark-subtle rounded  position-relative"
                   required
-                  value={form.passengers}
+                  value={props.form.passengers}
                   onChange={(e) => {
-                    setForm({ ...form, passengers: parseInt(e.target.value) });
+                    props.setForm({ ...props.form, passengers: parseInt(e.target.value) });
                   }}
                 >
                   <option value="1">1</option>
@@ -103,9 +93,9 @@ const MyReservation = () => {
                   <Form.Select
                     aria-label="Default select example"
                     required
-                    value={form.suitcases}
+                    value={props.form.suitcases}
                     onChange={(e) => {
-                      setForm({ ...form, suitcases: parseInt(e.target.value) });
+                     props.setForm({ ...props.form, suitcases: parseInt(e.target.value) });
                     }}
                   >
                     <option value="0">0</option>
@@ -125,9 +115,9 @@ const MyReservation = () => {
                   <Form.Select
                     aria-label="Default select example"
                     required
-                    value={form.backpack}
+                    value={props.form.backpack}
                     onChange={(e) => {
-                      setForm({ ...form, backpack: parseInt(e.target.value) });
+                      props.setForm({ ...props.form, backpack: parseInt(e.target.value) });
                     }}
                   >
                     <option value="0">0</option>
@@ -159,9 +149,9 @@ const MyReservation = () => {
                       .toString()
                       .padStart(2, "0")}`}
                     required
-                    value={form.pickUpDate}
+                    value={props.form.pickUpDate}
                     onChange={(e) => {
-                      setForm({ ...form, pickUpDate: e.target.value });
+                      props.setForm({ ...props.form, pickUpDate: e.target.value });
                     }}
                   />
                   <br />
@@ -176,9 +166,9 @@ const MyReservation = () => {
                     id="ora"
                     name="data"
                     required
-                    value={form.pickUpTime}
+                    value={props.form.pickUpTime}
                     onChange={(e) => {
-                      setForm({ ...form, pickUpTime: e.target.value });
+                      props.setForm({ ...props.form, pickUpTime: e.target.value });
                     }}
                   />{" "}
                   <br />
@@ -198,9 +188,9 @@ const MyReservation = () => {
                       type="text"
                       placeholder="AA 567"
                       required
-                      value={form.flightNumber}
+                      value={props.form.flightNumber}
                       onChange={(e) => {
-                        setForm({ ...form, flightNumber: e.target.value });
+                        props.setForm({ ...props.form, flightNumber: e.target.value });
                       }}
                     />
                   </Form.Group>
@@ -219,9 +209,9 @@ const MyReservation = () => {
                     <Form.Control
                       type="text"
                       placeholder="Insert your name"
-                      value={form.nameOnBoard}
+                      value={props.form.nameOnBoard}
                       onChange={(e) => {
-                        setForm({ ...form, nameOnBoard: e.target.value });
+                        props.setForm({ ...props.form, nameOnBoard: e.target.value });
                       }}
                     />
                   </Form.Group>
@@ -234,9 +224,9 @@ const MyReservation = () => {
 
                   <Form.Select
                     aria-label="Default select example"
-                    value={form.childSeats}
+                    value={props.form.childSeats}
                     onChange={(e) => {
-                      setForm({ ...form, childSeats: e.target.value });
+                      props.setForm({ ...props.form, childSeats: e.target.value });
                     }}
                   >
                     <option value="noChildSeats">No child seats</option>
@@ -259,9 +249,9 @@ const MyReservation = () => {
                   placeholder="Special needs or any other request"
                   as="textarea"
                   rows={3}
-                  value={form.requests}
+                  value={props.form.requests}
                   onChange={(e) => {
-                    setForm({ ...form, requests: e.target.value });
+                    props.setForm({ ...props.form, requests: e.target.value });
                   }}
                 />
               </Form.Group>

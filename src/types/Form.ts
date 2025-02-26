@@ -10,5 +10,8 @@ interface FormInterface {
     nameOnBoard: string;
     childSeats: string;
     requests: string;
+    nameAndSurname: string;
+    email: string;
+    phone: string;
   }
   export default FormInterface;
