@@ -1,10 +1,14 @@
-import { useState } from "react";
 import { Col, Container, Row, Form } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import FormInterface from "../types/Form";
 
-const CheckoutDetails = () => {
-  const [phone, setPhone] = useState("");
+interface myReservationProps {
+  form: FormInterface;
+  setForm: (newForm: FormInterface) => void;
+}
+
+const CheckoutDetails = (props: myReservationProps) => {
   return (
     <div className="bg-image">
       <Container className=" sans text-black">
@@ -27,14 +31,26 @@ const CheckoutDetails = () => {
                     <Form.Label className="m-0 fw-bold code">
                       Passenger Name
                     </Form.Label>
-                    <Form.Control type="text" placeholder="Name and Surname" />
+                    <Form.Control
+                      type="text"
+                      placeholder="Name and Surname"
+                      required
+                      value={props.form.nameAndSurname}
+                      onChange={(e) => {
+                        props.setForm({
+                          ...props.form,
+                          nameAndSurname: e.target.value,
+                        });
+                      }}
+                    />
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
                     <Form.Label className="m-0 fw-bold code">Email </Form.Label>
-                    <Form.Control type="email" />
+                    <Form.Control type="email" required value={props.form.email}
+                    onChange={(e)=>{props.setForm({...props.form, email:e.target.value})}} />
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -56,8 +72,10 @@ const CheckoutDetails = () => {
                     <PhoneInput
                       country={"us"}
                       placeholder="Number"
-                      value={phone}
-                      onChange={setPhone}
+                      value={props.form.phone}
+                      onChange={(value) => {
+                        props.setForm({ ...props.form, phone: value });
+                      }}
                     />
                   </Form.Group>
                 </Form>
@@ -110,7 +128,9 @@ const CheckoutDetails = () => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">Luggages & Carry-on</h6>
+                    <h6 className="m-0 text-thetriary code">
+                      Luggages & Carry-on
+                    </h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1">4 big/2 small</p>
@@ -126,7 +146,9 @@ const CheckoutDetails = () => {
                 </Row>
                 <Row className="mb-2 mt-4">
                   <Col className="col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">Estimated Distance</h6>
+                    <h6 className="m-0 text-thetriary code">
+                      Estimated Distance
+                    </h6>
                   </Col>
                   <Col className="col col-6">
                     <p className=" fw-bold mb-1">34.2 km</p>
@@ -134,7 +156,9 @@ const CheckoutDetails = () => {
                 </Row>
                 <Row className="mb-2 ">
                   <Col className="col col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">Estimated Trip Time</h6>
+                    <h6 className="m-0 text-thetriary code">
+                      Estimated Trip Time
+                    </h6>
                   </Col>
                   <Col className="col col-6">
                     <p className=" fw-bold mb-1">40 mins</p>
@@ -145,7 +169,10 @@ const CheckoutDetails = () => {
                     <h6 className="m-0 text-thetriary code">List Price</h6>
                   </Col>
                   <Col className="col col-6">
-                    <p className=" fw-bold mb-1 "> <s>70$</s></p>
+                    <p className=" fw-bold mb-1 ">
+                      {" "}
+                      <s>70$</s>
+                    </p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
