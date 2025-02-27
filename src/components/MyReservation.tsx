@@ -24,7 +24,8 @@ const MyReservation = (props: myReservationProps) => {
   const [temporaryDestination, setTemporaryDestination] = useState("");
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
-  const [distance, setDistance] = useState<string | null>(null);
+  const [distanceKm, setDistanceKm] = useState<string | null>(null);
+  const [distanceM, setDistanceM]=useState<number | null>(null);
   const [pickUpType, setPickUpType] = useState<
     "airport" | "port" | "train_station" | "other"
   >("other");
@@ -50,11 +51,13 @@ const MyReservation = (props: myReservationProps) => {
         result.routes[0].legs[0].distance
       ) {
         const duration = result.routes[0].legs[0].duration.text;
-        const distance = result.routes[0].legs[0].distance.text;
+        const distanceKm = result.routes[0].legs[0].distance.text;
+        const distanceM=result.routes[0].legs[0].distance.value;
 
+       setDistanceM(distanceM);
         setDirections(result);
         setDuration(duration);
-        setDistance(distance);
+        setDistanceKm(distanceKm);
         setRequested(true);
         console.log("result:", result);
       } else {
@@ -72,7 +75,7 @@ const MyReservation = (props: myReservationProps) => {
 
   //da inviare al back and per calcolare il prezzo
   const priceData = {
-    distance: distance,
+    distanceM: distanceM,
     passengers: props.form.passengers,
     suitcases: props.form.suitcases,
     backpack: props.form.backpack,
@@ -556,7 +559,7 @@ const MyReservation = (props: myReservationProps) => {
                     <h6 className="code">Estimated Distance: </h6>
                   </Col>
                   <Col>
-                    <p className=" fw-bold"> {distance}</p>
+                    <p className=" fw-bold"> {distanceKm}</p>
                   </Col>
                 </Row>
                 <Row className="mb-3">
