@@ -25,7 +25,7 @@ const MyReservation = (props: myReservationProps) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
   const [distanceKm, setDistanceKm] = useState<string | null>(null);
-  const [distanceM, setDistanceM]=useState<number | null>(null);
+  const [distanceM, setDistanceM] = useState<number | null>(null);
   const [pickUpType, setPickUpType] = useState<
     "airport" | "port" | "train_station" | "other"
   >("other");
@@ -52,9 +52,9 @@ const MyReservation = (props: myReservationProps) => {
       ) {
         const duration = result.routes[0].legs[0].duration.text;
         const distanceKm = result.routes[0].legs[0].distance.text;
-        const distanceM=result.routes[0].legs[0].distance.value;
+        const distanceM = result.routes[0].legs[0].distance.value;
 
-       setDistanceM(distanceM);
+        setDistanceM(distanceM);
         setDirections(result);
         setDuration(duration);
         setDistanceKm(distanceKm);
@@ -146,7 +146,12 @@ const MyReservation = (props: myReservationProps) => {
                           });
 
                           if (place.types?.includes("airport")) {
-                            setPickUpType("airport"); // Imposta lo stato per gestire la visualizzazione del campo areoporto
+                            setPickUpType("airport");
+                            props.setForm({
+                              ...props.form,
+                              transportType: "airport",
+                              transportDetails: "",
+                            }); // Imposta lo stato per gestire la visualizzazione del campo areoporto
                           } else if (
                             place.types?.includes("port") ||
                             place.name?.toLowerCase().includes("porto") ||
@@ -154,7 +159,12 @@ const MyReservation = (props: myReservationProps) => {
                               .toLowerCase()
                               .includes("port")
                           ) {
-                            setPickUpType("port"); // Imposta lo stato per gestire la visualizzazione del campo porto
+                            setPickUpType("port");
+                            props.setForm({
+                              ...props.form,
+                              transportType: "port",
+                              transportDetails: "",
+                            }); // Imposta lo stato per gestire la visualizzazione del campo porto
                           } else if (
                             place.types?.includes("train_station") ||
                             place.name?.toLowerCase().includes("stazione") ||
@@ -163,9 +173,18 @@ const MyReservation = (props: myReservationProps) => {
                               .includes("stazione")
                           ) {
                             setPickUpType("train_station"); // Imposta lo stato per gestire la visualizzazione del campo stazione
-                            console.log("train_station");
+                            props.setForm({
+                              ...props.form,
+                              transportType: "train_station",
+                              transportDetails: "", 
+                            });
                           } else {
-                            setPickUpType("other"); // Imposta lo stato per altri luoghi
+                            setPickUpType("other");
+                            props.setForm({
+                              ...props.form,
+                              transportType: "other", 
+                              transportDetails: "", 
+                            }); // Imposta lo stato per altri luoghi
                           }
                         } else {
                           console.error("Indirizzo non valido o mancante.");
@@ -370,11 +389,11 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder="AA 567"
                         required
-                        value={props.form.flightNumber}
+                        value={props.form.transportDetails||""}
                         onChange={(e) => {
                           props.setForm({
                             ...props.form,
-                            flightNumber: e.target.value,
+                            transportDetails: e.target.value,
                           });
                         }}
                       />
@@ -392,11 +411,11 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder="name of the cruise ship"
                         required
-                        value={props.form.cruiseName || ""}
+                        value={props.form.transportDetails|| ""}
                         onChange={(e) => {
                           props.setForm({
                             ...props.form,
-                            cruiseName: e.target.value,
+                            transportDetails: e.target.value,
                           });
                         }}
                       />
@@ -414,11 +433,11 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder="Train number"
                         required
-                        value={props.form.trainStation || ""}
+                        value={props.form.transportDetails || ""}
                         onChange={(e) => {
                           props.setForm({
                             ...props.form,
-                            trainStation: e.target.value,
+                            transportDetails: e.target.value,
                           });
                         }}
                       />
