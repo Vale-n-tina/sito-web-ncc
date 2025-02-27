@@ -6,12 +6,15 @@ interface FormInterface {
     backpack: number;
     pickUpDate: string;
     pickUpTime: string;
-    flightNumber: string;
+    flightNumber?: string;
+    cruiseName?: string;
+    trainStation?: string;
     nameOnBoard: string;
     childSeats: string;
     requests: string;
     nameAndSurname: string;
     email: string;
     phone: string;
+    price?: number;
   }
   export default FormInterface;

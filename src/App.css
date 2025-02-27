@@ -66,6 +66,12 @@
   left: 13px;
   transform: rotate(50deg);
 }
+.labelShip{
+
+  position: absolute;
+  top: -14px;
+  left: 13px;
+}
 .labelPaper {
   position: absolute;
   top: -15px;
