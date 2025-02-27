@@ -6,9 +6,8 @@ interface FormInterface {
     backpack: number;
     pickUpDate: string;
     pickUpTime: string;
-    flightNumber?: string;
-    cruiseName?: string;
-    trainStation?: string;
+    transportType: string; 
+    transportDetails: string; 
     nameOnBoard: string;
     childSeats: string;
     requests: string;
