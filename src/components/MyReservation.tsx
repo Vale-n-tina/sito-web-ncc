@@ -1,16 +1,22 @@
-import { Col, Container, Row, Form , Button} from "react-bootstrap";
+import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormInterface from "../types/Form";
 import { useEffect, useRef, useState } from "react";
-import { Autocomplete, DirectionsRenderer, DirectionsService, GoogleMap, LoadScript } from "@react-google-maps/api";
-
+import {
+  Autocomplete,
+  DirectionsRenderer,
+  DirectionsService,
+  GoogleMap,
+  LoadScript,
+} from "@react-google-maps/api";
 
 interface myReservationProps {
-  form:FormInterface
-  setForm:(newForm:FormInterface)=>void
+  form: FormInterface;
+  setForm: (newForm: FormInterface) => void;
 }
-const MyReservation = (props:myReservationProps ) => {
-  const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+const MyReservation = (props: myReservationProps) => {
+  const [directions, setDirections] =
+    useState<google.maps.DirectionsResult | null>(null);
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [requested, setRequested] = useState(false);
@@ -19,17 +25,22 @@ const MyReservation = (props:myReservationProps ) => {
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
   const [distance, setDistance] = useState<string | null>(null);
-  
+  const [pickUpType, setPickUpType] = useState<
+    "airport" | "port" | "train_station" | "other"
+  >("other");
 
-  const originRef = useRef<google.maps.places.Autocomplete|null  >(null);
-  const destinationRef = useRef<google.maps.places.Autocomplete|null  >(null);
+  const originRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const center = {
     lat: 41.9027835, // Roma, latitudine
-    lng: 12.4963655 // Longitudine
+    lng: 12.4963655, // Longitudine
   };
-  const handleDirectionsCallback = (result: google.maps.DirectionsResult | null, status:string) => {
-    if (status === 'OK' && result) {
+  const handleDirectionsCallback = (
+    result: google.maps.DirectionsResult | null,
+    status: string
+  ) => {
+    if (status === "OK" && result) {
       if (
         result.routes &&
         result.routes[0] &&
@@ -40,20 +51,18 @@ const MyReservation = (props:myReservationProps ) => {
       ) {
         const duration = result.routes[0].legs[0].duration.text;
         const distance = result.routes[0].legs[0].distance.text;
-  
+
         setDirections(result);
         setDuration(duration);
         setDistance(distance);
         setRequested(true);
-        console.log('result:', result);
+        console.log("result:", result);
       } else {
-        console.error('La struttura della risposta non è valida:', result);
+        console.error("La struttura della risposta non è valida:", result);
       }
     } else {
-      console.log('Errore nelle direzioni:', status);
+      console.log("Errore nelle direzioni:", status);
     }
-      
-     
   };
   const handleSearchClick = () => {
     setOrigin(temporaryOrigin); // Imposta il valore di origin
@@ -61,12 +70,25 @@ const MyReservation = (props:myReservationProps ) => {
     setRequested(true); // Imposta requested a true per eseguire la richiesta
   };
 
+  //da inviare al back and per calcolare il prezzo
+  const priceData = {
+    distance: distance,
+    passengers: props.form.passengers,
+    suitcases: props.form.suitcases,
+    backpack: props.form.backpack,
+    pickUpTime: props.form.pickUpTime,
+    childSeats: props.form.childSeats,
+  };
+
   useEffect(() => {
     setRequested(false);
   }, [origin, destination]);
 
   // Funzione di callback per quando la libreria è caricata
-  const onLoad = (autocomplete :google.maps.places.Autocomplete, type : "origin"| "destination") => {
+  const onLoad = (
+    autocomplete: google.maps.places.Autocomplete,
+    type: "origin" | "destination"
+  ) => {
     if (type === "origin") {
       originRef.current = autocomplete;
     } else {
@@ -74,18 +96,17 @@ const MyReservation = (props:myReservationProps ) => {
     }
   };
 
-// Funzione di caricamento script
-const onScriptLoad = () => {
-  setIsScriptLoaded(true);
-};
+  // Funzione di caricamento script
+  const onScriptLoad = () => {
+    setIsScriptLoaded(true);
+  };
 
-  
   return (
     <div className="bg-image">
       <Container>
         <Row className="justify-content-center">
           <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-light bg-opacity-75 rounded ">
-            <Row >
+            <Row>
               <Col className="col-11 m-auto">
                 <h1 className="montserrat mt-3">Book your trip</h1>
               </Col>
@@ -111,24 +132,55 @@ const onScriptLoad = () => {
                 {isScriptLoaded && (
                   <Autocomplete
                     onLoad={(autocomplete) => onLoad(autocomplete, "origin")}
-                    onPlaceChanged={() =>{ if (originRef.current) {
-                      const place = originRef.current.getPlace();
-                      if (place && place.formatted_address) {
-                        setTemporaryOrigin(place.formatted_address);
-                        props.setForm({ ...props.form,pickUp: place.formatted_address });
-                      } else {
-                        console.error("Indirizzo non valido o mancante.");
+                    onPlaceChanged={() => {
+                      if (originRef.current) {
+                        const place = originRef.current.getPlace();
+                        if (place && place.formatted_address) {
+                          setTemporaryOrigin(place.formatted_address);
+                          props.setForm({
+                            ...props.form,
+                            pickUp: place.formatted_address,
+                          });
+
+                          if (place.types?.includes("airport")) {
+                            setPickUpType("airport"); // Imposta lo stato per gestire la visualizzazione del campo areoporto
+                          } else if (
+                            place.types?.includes("port") ||
+                            place.name?.toLowerCase().includes("porto") ||
+                            place.formatted_address
+                              .toLowerCase()
+                              .includes("port")
+                          ) {
+                            setPickUpType("port"); // Imposta lo stato per gestire la visualizzazione del campo porto
+                          } else if (
+                            place.types?.includes("train_station") ||
+                            place.name?.toLowerCase().includes("stazione") ||
+                            place.formatted_address
+                              .toLowerCase()
+                              .includes("stazione")
+                          ) {
+                            setPickUpType("train_station"); // Imposta lo stato per gestire la visualizzazione del campo stazione
+                            console.log("train_station");
+                          } else {
+                            setPickUpType("other"); // Imposta lo stato per altri luoghi
+                          }
+                        } else {
+                          console.error("Indirizzo non valido o mancante.");
+                        }
                       }
-                    }
-                  }}
-                    options={{ componentRestrictions: { country: 'it' } }}
+                    }}
+                    options={{ componentRestrictions: { country: "it" } }}
                   >
                     <Form.Control
                       type="text"
                       placeholder="Airport, Hotel, Address"
                       required
                       value={temporaryOrigin}
-                      onChange={(e) =>{const value = e.target.value; setTemporaryOrigin(e.target.value);  props.setForm({ ...props.form,pickUp: value });}}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setTemporaryOrigin(e.target.value);
+                        props.setForm({ ...props.form, pickUp: value });
+                      }}
                     />
                   </Autocomplete>
                 )}
@@ -140,28 +192,37 @@ const onScriptLoad = () => {
                 <Form.Label className="m-0 label text-black z-2">
                   Drop-Off
                 </Form.Label>
-               { isScriptLoaded && (
+                {isScriptLoaded && (
                   <Autocomplete
-                  onLoad={(autocomplete) => onLoad(autocomplete, "destination")}
-                  onPlaceChanged={() => {
-                    if (destinationRef.current) {
-                      const place = destinationRef.current.getPlace();
-                      if (place && place.formatted_address) {
-                        setTemporaryDestination(place.formatted_address);
-                        props.setForm({ ...props.form,dropOff: place.formatted_address });
-                      } else {
-                        console.error("Indirizzo non valido o mancante.");
-                      }
+                    onLoad={(autocomplete) =>
+                      onLoad(autocomplete, "destination")
                     }
-                  }}
-                    options={{ componentRestrictions: { country: 'it' } }}
+                    onPlaceChanged={() => {
+                      if (destinationRef.current) {
+                        const place = destinationRef.current.getPlace();
+                        if (place && place.formatted_address) {
+                          setTemporaryDestination(place.formatted_address);
+                          props.setForm({
+                            ...props.form,
+                            dropOff: place.formatted_address,
+                          });
+                        } else {
+                          console.error("Indirizzo non valido o mancante.");
+                        }
+                      }
+                    }}
+                    options={{ componentRestrictions: { country: "it" } }}
                   >
                     <Form.Control
                       type="text"
                       placeholder="Airport, Hotel, Address"
                       required
                       value={temporaryDestination}
-                      onChange={(e) => {const value = e.target.value; setTemporaryDestination(value); props.setForm({ ...props.form,dropOff: value });}}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setTemporaryDestination(value);
+                        props.setForm({ ...props.form, dropOff: value });
+                      }}
                     />
                   </Autocomplete>
                 )}
@@ -174,7 +235,10 @@ const onScriptLoad = () => {
                   required
                   value={props.form.passengers}
                   onChange={(e) => {
-                    props.setForm({ ...props.form, passengers: parseInt(e.target.value) });
+                    props.setForm({
+                      ...props.form,
+                      passengers: parseInt(e.target.value),
+                    });
                   }}
                 >
                   <option value="1">1</option>
@@ -197,7 +261,10 @@ const onScriptLoad = () => {
                     required
                     value={props.form.suitcases}
                     onChange={(e) => {
-                     props.setForm({ ...props.form, suitcases: parseInt(e.target.value) });
+                      props.setForm({
+                        ...props.form,
+                        suitcases: parseInt(e.target.value),
+                      });
                     }}
                   >
                     <option value="0">0</option>
@@ -219,7 +286,10 @@ const onScriptLoad = () => {
                     required
                     value={props.form.backpack}
                     onChange={(e) => {
-                      props.setForm({ ...props.form, backpack: parseInt(e.target.value) });
+                      props.setForm({
+                        ...props.form,
+                        backpack: parseInt(e.target.value),
+                      });
                     }}
                   >
                     <option value="0">0</option>
@@ -253,7 +323,10 @@ const onScriptLoad = () => {
                     required
                     value={props.form.pickUpDate}
                     onChange={(e) => {
-                      props.setForm({ ...props.form, pickUpDate: e.target.value });
+                      props.setForm({
+                        ...props.form,
+                        pickUpDate: e.target.value,
+                      });
                     }}
                   />
                   <br />
@@ -270,7 +343,10 @@ const onScriptLoad = () => {
                     required
                     value={props.form.pickUpTime}
                     onChange={(e) => {
-                      props.setForm({ ...props.form, pickUpTime: e.target.value });
+                      props.setForm({
+                        ...props.form,
+                        pickUpTime: e.target.value,
+                      });
                     }}
                   />{" "}
                   <br />
@@ -279,24 +355,81 @@ const onScriptLoad = () => {
                   </label>
                 </Col>
                 <Col className="col-12 col-lg-6">
-                  <Form.Group
-                    className=" position-relative mt-3 z-1 border border-dark-subtle rounded "
-                    controlId="exampleForm.ControlInput1"
-                  >
-                    <Form.Label className="m-0 labelAirplane text-black z-2 ">
-                      <i className="bi bi-airplane-fill fs-5 "></i>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="AA 567"
-                      required
-                      value={props.form.flightNumber}
-                      onChange={(e) => {
-                        props.setForm({ ...props.form, flightNumber: e.target.value });
-                      }}
-                    />
-                  </Form.Group>
-                  <p className="small m-0">Flight number</p>
+                  {pickUpType === "airport" && (
+                    <Form.Group
+                      className=" position-relative mt-3 z-1 border border-dark-subtle rounded "
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label className="m-0 labelAirplane text-black z-2 ">
+                        <i className="bi bi-airplane-fill fs-5 "></i>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="AA 567"
+                        required
+                        value={props.form.flightNumber}
+                        onChange={(e) => {
+                          props.setForm({
+                            ...props.form,
+                            flightNumber: e.target.value,
+                          });
+                        }}
+                      />
+                    </Form.Group>
+                  )}
+                  {pickUpType === "port" && (
+                    <Form.Group
+                      className=" position-relative mt-3 z-1 border border-dark-subtle rounded "
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label className="m-0 labelShip text-black z-2 ">
+                        <i className="bi bi-arrow-down-right-circle-fill fs-6"></i>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="name of the cruise ship"
+                        required
+                        value={props.form.cruiseName || ""}
+                        onChange={(e) => {
+                          props.setForm({
+                            ...props.form,
+                            cruiseName: e.target.value,
+                          });
+                        }}
+                      />
+                    </Form.Group>
+                  )}
+                  {pickUpType === "train_station" && (
+                    <Form.Group
+                      className=" position-relative mt-3 z-1 border border-dark-subtle rounded "
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Label className="m-0 labelShip text-black z-2 ">
+                        <i className="bi bi-train-front-fill fs"></i>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Train number"
+                        required
+                        value={props.form.trainStation || ""}
+                        onChange={(e) => {
+                          props.setForm({
+                            ...props.form,
+                            trainStation: e.target.value,
+                          });
+                        }}
+                      />
+                    </Form.Group>
+                  )}
+                  <p className="small m-0">
+                    {pickUpType === "airport"
+                      ? "Flight number"
+                      : pickUpType === "port"
+                      ? "Name of the cruise ship"
+                      : pickUpType === "train_station"
+                      ? "Train Number"
+                      : ""}
+                  </p>
                 </Col>
               </Row>
               <Row>
@@ -313,7 +446,10 @@ const onScriptLoad = () => {
                       placeholder="Insert your name"
                       value={props.form.nameOnBoard}
                       onChange={(e) => {
-                        props.setForm({ ...props.form, nameOnBoard: e.target.value });
+                        props.setForm({
+                          ...props.form,
+                          nameOnBoard: e.target.value,
+                        });
                       }}
                     />
                   </Form.Group>
@@ -328,7 +464,10 @@ const onScriptLoad = () => {
                     aria-label="Default select example"
                     value={props.form.childSeats}
                     onChange={(e) => {
-                      props.setForm({ ...props.form, childSeats: e.target.value });
+                      props.setForm({
+                        ...props.form,
+                        childSeats: e.target.value,
+                      });
                     }}
                   >
                     <option value="noChildSeats">No child seats</option>
@@ -362,20 +501,20 @@ const onScriptLoad = () => {
           <Col className="col col-11 col-lg-6 m-sm-auto p-0 m-lg-0 ">
             <Row>
               <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0">
-              <LoadScript
+                <LoadScript
                   googleMapsApiKey="AIzaSyAi6pBrCKuZnCseLJgcFMpNgrnSTSPDJVY"
                   libraries={["places"]}
                   onLoad={onScriptLoad}
                 >
                   <GoogleMap
-                    mapContainerStyle={{ width: '100%', height: '400px' }}
+                    mapContainerStyle={{ width: "100%", height: "400px" }}
                     center={center}
                     zoom={12}
                     options={{
                       zoomControl: false,
                       streetViewControl: false,
                       mapTypeControl: false,
-                      fullscreenControl: false
+                      fullscreenControl: false,
                     }}
                   >
                     {origin && destination && !requested && (
@@ -398,13 +537,14 @@ const onScriptLoad = () => {
                     )}
                   </GoogleMap>
                 </LoadScript>
-                
               </Col>
-              <Col className="col col-4 m-auto rounded p-0 mt-1"> <Button variant="danger" onClick={handleSearchClick}>
-            Search price
-          </Button>
+              <Col className="col col-4 m-auto rounded p-0 mt-1">
+                {" "}
+                <Button variant="danger" onClick={handleSearchClick}>
+                  Search price
+                </Button>
               </Col>
-              
+
               <Col className="col col-11 m-auto mt-3 bg-white rounded">
                 <Row className="mt-3">
                   <Col className="text-center">
@@ -413,52 +553,48 @@ const onScriptLoad = () => {
                 </Row>
                 <Row className="mt-3 mb-3">
                   <Col>
-                  <h6 className="code" >Estimated Distance:</h6>
+                    <h6 className="code">Estimated Distance: </h6>
                   </Col>
-                  <Col> 
-                  <p className=" fw-bold"> {distance}</p>
+                  <Col>
+                    <p className=" fw-bold"> {distance}</p>
                   </Col>
                 </Row>
                 <Row className="mb-3">
                   <Col>
-                  <h6 className="code">Estimated Trip Time: </h6>
+                    <h6 className="code">Estimated Trip Time: </h6>
                   </Col>
                   <Col>
-                  <p className=" fw-bold">{duration}</p>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                  <h6 className="code">List price: </h6>
-                  </Col>
-                  <Col>
-                  <p className=" fw-bold">{duration}</p>
+                    <p className=" fw-bold">{duration}</p>
                   </Col>
                 </Row>
                 <Row className="mb-3">
                   <Col>
-                  <h6 className="code">Discount price: </h6>
+                    <h6 className="code">List price: </h6>
                   </Col>
                   <Col>
-                  <p className=" fw-bold">{duration}</p>
+                    <p className=" fw-bold">{duration}</p>
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col>
+                    <h6 className="code">Discount price: </h6>
+                  </Col>
+                  <Col>
+                    <p className=" fw-bold">{duration}</p>
                   </Col>
                 </Row>
                 <Row>
                   <Col className="text-center mb-4 mt-2">
-                  <Link to="/CheckoutDetails">
-                <Button variant="primary">Continua</Button>
-                </Link>
-                </Col>
+                    <Link to="/CheckoutDetails">
+                      <Button variant="primary">Continua</Button>
+                    </Link>
+                  </Col>
                 </Row>
-                
-                
-                
               </Col>
             </Row>
           </Col>
         </Row>
       </Container>
-
     </div>
   );
 };
