@@ -9,6 +9,7 @@ import {
   GoogleMap,
   LoadScript,
 } from "@react-google-maps/api";
+import PriceData from "../types/PriceData";
 
 interface myReservationProps {
   form: FormInterface;
@@ -29,9 +30,10 @@ const MyReservation = (props: myReservationProps) => {
   const [pickUpType, setPickUpType] = useState<
     "airport" | "port" | "train_station" | "other"
   >("other");
-
+  const [price, setPrice] = useState<number | null>(null);
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const center = {
     lat: 41.9027835, // Roma, latitudine
@@ -67,21 +69,58 @@ const MyReservation = (props: myReservationProps) => {
       console.log("Errore nelle direzioni:", status);
     }
   };
-  const handleSearchClick = () => {
+  /* const handleSearchClick = () => {
     setOrigin(temporaryOrigin); // Imposta il valore di origin
     setDestination(temporaryDestination); // Imposta il valore di destination
     setRequested(true); // Imposta requested a true per eseguire la richiesta
-  };
+  };*/
 
   //da inviare al back and per calcolare il prezzo
-  const priceData = {
-    distanceM: distanceM,
-    passengers: props.form.passengers,
-    suitcases: props.form.suitcases,
-    backpack: props.form.backpack,
-    pickUpTime: props.form.pickUpTime,
-    childSeats: props.form.childSeats,
+
+  const sendPriceDataToBackend = function (priceData: PriceData) {
+    setError(null);
+    fetch("http://localhost:8080/prenotazioni/price-calculation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(priceData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Errore nella richiesta");
+        }
+      })
+      .then((result) => {
+        console.log("Risultato:", result);
+        setPrice(result);
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+        setError("An error occurred while calculating the price.");
+      });
   };
+
+  useEffect(() => {
+    if (distanceM !== null) {
+      const priceData: PriceData = {
+        distanceM: distanceM,
+        passengers: props.form.passengers,
+        suitcases: props.form.suitcases,
+        backpack: props.form.backpack,
+        pickUpTime: props.form.pickUpTime,
+        childSeats: props.form.childSeats,
+      };
+      sendPriceDataToBackend(priceData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [distanceM,  props.form.passengers,
+    props.form.suitcases,
+    props.form.backpack,
+    props.form.pickUpTime,
+    props.form.childSeats]);
 
   useEffect(() => {
     setRequested(false);
@@ -139,7 +178,7 @@ const MyReservation = (props: myReservationProps) => {
                       if (originRef.current) {
                         const place = originRef.current.getPlace();
                         if (place && place.formatted_address) {
-                          setTemporaryOrigin(place.formatted_address);
+                          setOrigin(place.formatted_address);
                           props.setForm({
                             ...props.form,
                             pickUp: place.formatted_address,
@@ -176,14 +215,14 @@ const MyReservation = (props: myReservationProps) => {
                             props.setForm({
                               ...props.form,
                               transportType: "train_station",
-                              transportDetails: "", 
+                              transportDetails: "",
                             });
                           } else {
                             setPickUpType("other");
                             props.setForm({
                               ...props.form,
-                              transportType: "other", 
-                              transportDetails: "", 
+                              transportType: "other",
+                              transportDetails: "",
                             }); // Imposta lo stato per altri luoghi
                           }
                         } else {
@@ -197,10 +236,10 @@ const MyReservation = (props: myReservationProps) => {
                       type="text"
                       placeholder="Airport, Hotel, Address"
                       required
-                      value={temporaryOrigin}
+                      value={origin}
                       onChange={(e) => {
                         const value = e.target.value;
-                        setTemporaryOrigin(e.target.value);
+                        setOrigin(e.target.value);
                         props.setForm({ ...props.form, pickUp: value });
                       }}
                     />
@@ -223,7 +262,7 @@ const MyReservation = (props: myReservationProps) => {
                       if (destinationRef.current) {
                         const place = destinationRef.current.getPlace();
                         if (place && place.formatted_address) {
-                          setTemporaryDestination(place.formatted_address);
+                          setDestination(place.formatted_address);
                           props.setForm({
                             ...props.form,
                             dropOff: place.formatted_address,
@@ -239,10 +278,10 @@ const MyReservation = (props: myReservationProps) => {
                       type="text"
                       placeholder="Airport, Hotel, Address"
                       required
-                      value={temporaryDestination}
+                      value={destination}
                       onChange={(e) => {
                         const value = e.target.value;
-                        setTemporaryDestination(value);
+                        setDestination(value);
                         props.setForm({ ...props.form, dropOff: value });
                       }}
                     />
@@ -389,7 +428,7 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder="AA 567"
                         required
-                        value={props.form.transportDetails||""}
+                        value={props.form.transportDetails || ""}
                         onChange={(e) => {
                           props.setForm({
                             ...props.form,
@@ -411,7 +450,7 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder="name of the cruise ship"
                         required
-                        value={props.form.transportDetails|| ""}
+                        value={props.form.transportDetails || ""}
                         onChange={(e) => {
                           props.setForm({
                             ...props.form,
@@ -562,9 +601,7 @@ const MyReservation = (props: myReservationProps) => {
               </Col>
               <Col className="col col-4 m-auto rounded p-0 mt-1">
                 {" "}
-                <Button variant="danger" onClick={handleSearchClick}>
-                  Search price
-                </Button>
+                <Button variant="danger">Search price</Button>
               </Col>
 
               <Col className="col col-11 m-auto mt-3 bg-white rounded">
@@ -594,7 +631,16 @@ const MyReservation = (props: myReservationProps) => {
                     <h6 className="code">List price: </h6>
                   </Col>
                   <Col>
-                    <p className=" fw-bold">{duration}</p>
+                    <p className=" fw-bold">
+                      {price !== null && (
+                        <del>
+                          {price < 20
+                            ? Math.round(price * 1.2)
+                            : Math.round(price * 1.1)}
+                          €
+                        </del>
+                      )}
+                    </p>
                   </Col>
                 </Row>
                 <Row className="mb-3">
@@ -602,7 +648,7 @@ const MyReservation = (props: myReservationProps) => {
                     <h6 className="code">Discount price: </h6>
                   </Col>
                   <Col>
-                    <p className=" fw-bold">{duration}</p>
+                    <p className=" fw-bold">{price}€</p>
                   </Col>
                 </Row>
                 <Row>
