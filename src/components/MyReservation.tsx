@@ -21,8 +21,6 @@ const MyReservation = (props: myReservationProps) => {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [requested, setRequested] = useState(false);
-  const [temporaryOrigin, setTemporaryOrigin] = useState("");
-  const [temporaryDestination, setTemporaryDestination] = useState("");
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [duration, setDuration] = useState<string | null>(null);
   const [distanceKm, setDistanceKm] = useState<string | null>(null);
@@ -40,9 +38,7 @@ const MyReservation = (props: myReservationProps) => {
     pickUpDate: false,
     pickUpTime: false,
   });
-  
 
-  
   const validateForm = () => {
     const errors = {
       pickUp: !props.form.pickUp,
@@ -53,7 +49,6 @@ const MyReservation = (props: myReservationProps) => {
     setValidationErrors(errors);
     return !Object.values(errors).some((error) => error);
   };
- 
 
   const center = {
     lat: 41.9027835, // Roma, latitudine
@@ -116,6 +111,7 @@ const MyReservation = (props: myReservationProps) => {
       .then((result) => {
         console.log("Risultato:", result);
         setPrice(result);
+        props.setForm({ ...props.form, price: result });
       })
       .catch((error) => {
         console.error("Errore:", error);
@@ -202,20 +198,15 @@ const MyReservation = (props: myReservationProps) => {
                         const place = originRef.current.getPlace();
                         if (place && place.formatted_address) {
                           const formattedAddress = place.formatted_address;
-                          setOrigin(formattedAddress);
 
-                          props.setForm({
-                            ...props.form,
-                            pickUp: formattedAddress,
-                          });
-
+                          // Determina il tipo di pick-up (airport, port, train_station, other)
+                          let pickUpType:
+                            | "airport"
+                            | "port"
+                            | "train_station"
+                            | "other" = "other";
                           if (place.types?.includes("airport")) {
-                            setPickUpType("airport");
-                            props.setForm({
-                              ...props.form,
-                              transportType: "airport",
-                              transportDetails: "",
-                            }); // Imposta lo stato per gestire la visualizzazione del campo areoporto
+                            pickUpType = "airport";
                           } else if (
                             place.types?.includes("port") ||
                             place.name?.toLowerCase().includes("porto") ||
@@ -223,12 +214,7 @@ const MyReservation = (props: myReservationProps) => {
                               .toLowerCase()
                               .includes("port")
                           ) {
-                            setPickUpType("port");
-                            props.setForm({
-                              ...props.form,
-                              transportType: "port",
-                              transportDetails: "",
-                            }); // Imposta lo stato per gestire la visualizzazione del campo porto
+                            pickUpType = "port";
                           } else if (
                             place.types?.includes("train_station") ||
                             place.name?.toLowerCase().includes("stazione") ||
@@ -236,20 +222,18 @@ const MyReservation = (props: myReservationProps) => {
                               .toLowerCase()
                               .includes("stazione")
                           ) {
-                            setPickUpType("train_station"); // Imposta lo stato per gestire la visualizzazione del campo stazione
-                            props.setForm({
-                              ...props.form,
-                              transportType: "train_station",
-                              transportDetails: "",
-                            });
-                          } else {
-                            setPickUpType("other");
-                            props.setForm({
-                              ...props.form,
-                              transportType: "other",
-                              transportDetails: "",
-                            }); // Imposta lo stato per altri luoghi
+                            pickUpType = "train_station";
                           }
+
+                          // Aggiorna tutti gli stati in un'unica operazione
+                          setOrigin(formattedAddress);
+                          setPickUpType(pickUpType);
+                          props.setForm({
+                            ...props.form,
+                            pickUp: formattedAddress,
+                            transportType: pickUpType,
+                            transportDetails: "",
+                          });
                         } else {
                           console.error("Indirizzo non valido o mancante.");
                         }
@@ -261,10 +245,10 @@ const MyReservation = (props: myReservationProps) => {
                       type="text"
                       placeholder="Airport, Hotel, Address"
                       required
-                      value={origin}
+                      value={origin} // Sincronizza il valore del campo con lo stato `origin`
                       onChange={(e) => {
                         const value = e.target.value;
-                        setOrigin(value);
+                        setOrigin(value); // Aggiorna lo stato `origin` quando l'utente digita
                         props.setForm({ ...props.form, pickUp: value });
                         setValidationErrors((prev) => ({
                           ...prev,
@@ -300,6 +284,7 @@ const MyReservation = (props: myReservationProps) => {
                         const place = destinationRef.current.getPlace();
                         if (place && place.formatted_address) {
                           setDestination(place.formatted_address);
+
                           props.setForm({
                             ...props.form,
                             dropOff: place.formatted_address,
@@ -322,11 +307,11 @@ const MyReservation = (props: myReservationProps) => {
                         props.setForm({ ...props.form, dropOff: value });
                         setValidationErrors((prev) => ({
                           ...prev,
-                          pickUp: false,
+                          dropOff: false,
                         }));
                       }}
                       className={
-                        validationErrors.pickUp ? "border border-danger" : ""
+                        validationErrors.dropOff ? "border border-danger" : ""
                       }
                     />
                   </Autocomplete>
@@ -727,11 +712,11 @@ const MyReservation = (props: myReservationProps) => {
                         variant="primary"
                         onClick={(e) => {
                           if (!validateForm()) {
-                            e.preventDefault(); // Blocca il reindirizzamento se la validazione fallisce
+                            e.preventDefault(); 
                           }
                         }}
                       >
-                        Continua
+                        Continue
                       </Button>
                     </Link>
                   </Col>

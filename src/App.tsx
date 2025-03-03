@@ -26,6 +26,7 @@ function App() {
     nameAndSurname: "",
     email: "",
     phone: "",
+    price: 0,
   });
   const updateForm = (newForm: FormInterface) => {
     setForm(newForm);
