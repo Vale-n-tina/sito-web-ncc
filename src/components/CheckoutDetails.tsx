@@ -1,4 +1,4 @@
-import { Col, Container, Row, Form, Alert } from "react-bootstrap";
+import { Col, Container, Row, Form, Alert, Button } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import FormInterface from "../types/Form";
@@ -22,19 +22,10 @@ const CheckoutDetails = (props: myReservationProps) => {
       setEmailError("");
     }
   };
-  //const isEmailMatch = props.form.email === confirmEmail; <----- lo usero quando ci sara il bottone per il redirect
-  /*<Button
-              variant="primary"
-              size="lg"
-              disabled={!isEmailMatch}
-              onClick={() => {
-                if (isEmailMatch) {
-                  alert("Prenotazione confermata!");
-                }
-              }}
-            >
-              Prenota
-            </Button>*/
+  const isEmailMatch = props.form.email === confirmEmail; 
+
+
+
 
   return (
     <div className="bg-image">
@@ -49,7 +40,7 @@ const CheckoutDetails = (props: myReservationProps) => {
           <Col className="col col-11 m-auto pt-3 bg-light bg-opacity-75 rounded ">
             <h4 className="text-black">Passenger Information</h4>
             <Row>
-              <Col className="col col-12 m-auto ">
+              <Col className="col col-12 col-md-6 col-lg-5 m-auto ">
                 <Form>
                   <Form.Group
                     className="mb-3 mt-3 "
@@ -118,15 +109,19 @@ const CheckoutDetails = (props: myReservationProps) => {
                       onChange={(value) => {
                         props.setForm({ ...props.form, phone: value });
                       }}
+                      inputStyle={{
+                        width: "100%", 
+                        
+                      }}
                     />
                   </Form.Group>
                 </Form>
               </Col>
             </Row>
           </Col>
-          <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 ">
-            <h4 className="text-black code">Transfer Details</h4>
-            <Row>
+          <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 px-5 mb-4">
+            <h4 className="text-black code mt-4 mb-5">Transfer Details</h4>
+            <Row >
               <Col>
                 <Row className="mb-2">
                   <Col className="col col-11">
@@ -186,43 +181,15 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <p className=" fw-bold mb-1">{props.form.childSeats}</p>
                   </Col>
                 </Row>
-                <Row className="mb-2 mt-4">
-                  <Col className="col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">
-                      Estimated Distance
-                    </h6>
+                <Row className="mb-2 align-items-center">
+                <Col className="col col-12 col-md-4 col-lg-4">
+                    <h6 className="m-0 text-thetriary code fw-bold fs-4">Discount Price</h6>
                   </Col>
-                  <Col className="col col-6">
-                    <p className=" fw-bold mb-1">34.2 km</p>
+                  <Col className="col col-12 col-md-4 col-lg-4">
+                    <p className=" fw-bold mb-1 fs-4">{props.form.price}€</p>
                   </Col>
-                </Row>
-                <Row className="mb-2 ">
-                  <Col className="col col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">
-                      Estimated Trip Time
-                    </h6>
-                  </Col>
-                  <Col className="col col-6">
-                    <p className=" fw-bold mb-1">40 mins</p>
-                  </Col>
-                </Row>
-                <Row className="mb-2">
-                  <Col className="col col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">List Price</h6>
-                  </Col>
-                  <Col className="col col-6">
-                    <p className=" fw-bold mb-1 ">
-                      {" "}
-                      <s>70$</s>
-                    </p>
-                  </Col>
-                </Row>
-                <Row className="mb-2">
-                  <Col className="col col col-4 align-self-center">
-                    <h6 className="m-0 text-thetriary code">Discount Price</h6>
-                  </Col>
-                  <Col className="col col-6">
-                    <p className=" fw-bold mb-1 fs-4 "> 50$</p>
+                  <Col className="col col-12 col-md-12 col-lg-12 my-3">
+                  <Button variant="success" disabled={!isEmailMatch} >BOOK NOW</Button>
                   </Col>
                 </Row>
               </Col>

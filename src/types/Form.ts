@@ -14,6 +14,6 @@ interface FormInterface {
     nameAndSurname: string;
     email: string;
     phone: string;
-    price?: number;
+    price: number;
   }
   export default FormInterface;
