@@ -34,6 +34,26 @@ const MyReservation = (props: myReservationProps) => {
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState({
+    pickUp: false,
+    dropOff: false,
+    pickUpDate: false,
+    pickUpTime: false,
+  });
+  
+
+  
+  const validateForm = () => {
+    const errors = {
+      pickUp: !props.form.pickUp,
+      dropOff: !props.form.dropOff,
+      pickUpDate: !props.form.pickUpDate,
+      pickUpTime: !props.form.pickUpTime,
+    };
+    setValidationErrors(errors);
+    return !Object.values(errors).some((error) => error);
+  };
+ 
 
   const center = {
     lat: 41.9027835, // Roma, latitudine
@@ -116,11 +136,14 @@ const MyReservation = (props: myReservationProps) => {
       sendPriceDataToBackend(priceData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [distanceM,  props.form.passengers,
+  }, [
+    distanceM,
+    props.form.passengers,
     props.form.suitcases,
     props.form.backpack,
     props.form.pickUpTime,
-    props.form.childSeats]);
+    props.form.childSeats,
+  ]);
 
   useEffect(() => {
     setRequested(false);
@@ -178,10 +201,12 @@ const MyReservation = (props: myReservationProps) => {
                       if (originRef.current) {
                         const place = originRef.current.getPlace();
                         if (place && place.formatted_address) {
-                          setOrigin(place.formatted_address);
+                          const formattedAddress = place.formatted_address;
+                          setOrigin(formattedAddress);
+
                           props.setForm({
                             ...props.form,
-                            pickUp: place.formatted_address,
+                            pickUp: formattedAddress,
                           });
 
                           if (place.types?.includes("airport")) {
@@ -239,11 +264,23 @@ const MyReservation = (props: myReservationProps) => {
                       value={origin}
                       onChange={(e) => {
                         const value = e.target.value;
-                        setOrigin(e.target.value);
+                        setOrigin(value);
                         props.setForm({ ...props.form, pickUp: value });
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          pickUp: false,
+                        }));
                       }}
+                      className={
+                        validationErrors.pickUp ? "border border-danger" : ""
+                      }
                     />
                   </Autocomplete>
+                )}
+                {validationErrors.pickUp && (
+                  <p className="text-danger small  fw-bold">
+                    The departure point is required.
+                  </p>
                 )}
               </Form.Group>
               <Form.Group
@@ -283,9 +320,21 @@ const MyReservation = (props: myReservationProps) => {
                         const value = e.target.value;
                         setDestination(value);
                         props.setForm({ ...props.form, dropOff: value });
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          pickUp: false,
+                        }));
                       }}
+                      className={
+                        validationErrors.pickUp ? "border border-danger" : ""
+                      }
                     />
                   </Autocomplete>
+                )}
+                {validationErrors.dropOff && (
+                  <p className="text-danger small fw-bold">
+                    The destination is required.
+                  </p>
                 )}
               </Form.Group>
               <div className="position-relative">
@@ -388,8 +437,20 @@ const MyReservation = (props: myReservationProps) => {
                         ...props.form,
                         pickUpDate: e.target.value,
                       });
+                      setValidationErrors((prev) => ({
+                        ...prev,
+                        pickUpDate: false,
+                      }));
                     }}
+                    className={
+                      validationErrors.pickUpDate ? "border border-danger" : ""
+                    }
                   />
+                  {validationErrors.pickUpDate && (
+                    <p className="text-danger small  fw-bold">
+                      The "Date" field is required.
+                    </p>
+                  )}
                   <br />
                   <label htmlFor="data" className="small">
                     Pick Up date:
@@ -408,8 +469,20 @@ const MyReservation = (props: myReservationProps) => {
                         ...props.form,
                         pickUpTime: e.target.value,
                       });
+                      setValidationErrors((prev) => ({
+                        ...prev,
+                        pickUp: false,
+                      }));
                     }}
-                  />{" "}
+                    className={
+                      validationErrors.pickUpTime ? "border border-danger" : ""
+                    }
+                  />
+                  {validationErrors.pickUpTime && (
+                    <p className="text-danger small  fw-bold">
+                      The "Time" field is required.
+                    </p>
+                  )}{" "}
                   <br />
                   <label htmlFor="data" className="small">
                     Pick Up Time
@@ -523,6 +596,7 @@ const MyReservation = (props: myReservationProps) => {
 
                   <Form.Select
                     aria-label="Default select example"
+                    required
                     value={props.form.childSeats}
                     onChange={(e) => {
                       props.setForm({
@@ -568,7 +642,7 @@ const MyReservation = (props: myReservationProps) => {
                   onLoad={onScriptLoad}
                 >
                   <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "400px" }}
+                    mapContainerStyle={{ width: "100%", height: "450px" }}
                     center={center}
                     zoom={12}
                     options={{
@@ -599,15 +673,10 @@ const MyReservation = (props: myReservationProps) => {
                   </GoogleMap>
                 </LoadScript>
               </Col>
-              <Col className="col col-4 m-auto rounded p-0 mt-1">
-                {" "}
-                <Button variant="danger">Search price</Button>
-              </Col>
-
-              <Col className="col col-11 m-auto mt-3 bg-white rounded">
+              <Col className="col col-11 m-auto mt-3 bg-white rounded px-5">
                 <Row className="mt-3">
                   <Col className="text-center">
-                    <h4 className="montserrat">Summary</h4>
+                    <h4 className="montserrat fw-bold">Summary</h4>
                   </Col>
                 </Row>
                 <Row className="mt-3 mb-3">
@@ -654,7 +723,16 @@ const MyReservation = (props: myReservationProps) => {
                 <Row>
                   <Col className="text-center mb-4 mt-2">
                     <Link to="/CheckoutDetails">
-                      <Button variant="primary">Continua</Button>
+                      <Button
+                        variant="primary"
+                        onClick={(e) => {
+                          if (!validateForm()) {
+                            e.preventDefault(); // Blocca il reindirizzamento se la validazione fallisce
+                          }
+                        }}
+                      >
+                        Continua
+                      </Button>
                     </Link>
                   </Col>
                 </Row>
