@@ -1,4 +1,12 @@
-import { Col, Container, Row, Form, Alert, Button } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row,
+  Form,
+  Alert,
+  Button,
+  Modal,
+} from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
@@ -14,6 +22,8 @@ const CheckoutDetails = (props: myReservationProps) => {
   const [confirmEmail, setConfirmEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -36,17 +46,21 @@ const CheckoutDetails = (props: myReservationProps) => {
     })
       .then((response) => {
         if (response.ok) {
-          return response.json();
+          setSuccessMessage("Prenotazione effettuata con successo!");
+          setIsSubmitted(true);
+          setShowModal(true);
+          return;
         } else {
           throw new Error("Server response wasn't OK");
         }
       })
-      .then((data) => {
-        setSuccessMessage("Prenotazione effettuata con successo!");
-      })
       .catch((error) => {
         console.error("Errore:", error);
       });
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -214,10 +228,13 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <p className=" fw-bold mb-1 fs-4">{props.form.price}€</p>
                   </Col>
                   <Col className="col col-12 col-md-12 col-lg-12 my-3">
-                    <Button variant="success" disabled={!isEmailMatch} onClick={() => bookNow(props.form)}>
+                    <Button
+                      variant="success"
+                      disabled={!isEmailMatch || isSubmitted}
+                      onClick={() => bookNow(props.form)}
+                    >
                       BOOK NOW
                     </Button>
-                    {successMessage && <Alert variant="success">{successMessage}</Alert>}
                   </Col>
                 </Row>
               </Col>
@@ -225,6 +242,19 @@ const CheckoutDetails = (props: myReservationProps) => {
           </Col>
         </Row>
       </Container>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Booking completed</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Your booking has been successfully completed, we will send you a confirmation email to the address {props.form.email}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleCloseModal}>
+            Chiudi
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
