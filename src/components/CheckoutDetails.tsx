@@ -1,17 +1,19 @@
 import { Col, Container, Row, Form, Alert, Button } from "react-bootstrap";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import FormInterface from "../types/Form";
+
 import { useState } from "react";
+import ReserveData from "../types/ReserveData";
 
 interface myReservationProps {
-  form: FormInterface;
-  setForm: (newForm: FormInterface) => void;
+  form: ReserveData;
+  setForm: (newForm: ReserveData) => void;
 }
 
 const CheckoutDetails = (props: myReservationProps) => {
   const [confirmEmail, setConfirmEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -22,10 +24,30 @@ const CheckoutDetails = (props: myReservationProps) => {
       setEmailError("");
     }
   };
-  const isEmailMatch = props.form.email === confirmEmail; 
+  const isEmailMatch = props.form.email === confirmEmail;
 
-
-
+  const bookNow = function (form: ReserveData) {
+    fetch("http://localhost:8080/prenotazioni/bookNow", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(form),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Server response wasn't OK");
+        }
+      })
+      .then((data) => {
+        setSuccessMessage("Prenotazione effettuata con successo!");
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+      });
+  };
 
   return (
     <div className="bg-image">
@@ -110,8 +132,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                         props.setForm({ ...props.form, phone: value });
                       }}
                       inputStyle={{
-                        width: "100%", 
-                        
+                        width: "100%",
                       }}
                     />
                   </Form.Group>
@@ -121,7 +142,7 @@ const CheckoutDetails = (props: myReservationProps) => {
           </Col>
           <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 px-5 mb-4">
             <h4 className="text-black code mt-4 mb-5">Transfer Details</h4>
-            <Row >
+            <Row>
               <Col>
                 <Row className="mb-2">
                   <Col className="col col-11">
@@ -170,7 +191,9 @@ const CheckoutDetails = (props: myReservationProps) => {
                     </h6>
                   </Col>
                   <Col className="col col-11">
-                    <p className=" fw-bold mb-1">{props.form.suitcases} big/ {props.form.backpack} small</p>
+                    <p className=" fw-bold mb-1">
+                      {props.form.suitcases} big/ {props.form.backpack} small
+                    </p>
                   </Col>
                 </Row>
                 <Row className="mb-2">
@@ -182,14 +205,19 @@ const CheckoutDetails = (props: myReservationProps) => {
                   </Col>
                 </Row>
                 <Row className="mb-2 align-items-center">
-                <Col className="col col-12 col-md-4 col-lg-4">
-                    <h6 className="m-0 text-thetriary code fw-bold fs-4">Discount Price</h6>
+                  <Col className="col col-12 col-md-4 col-lg-4">
+                    <h6 className="m-0 text-thetriary code fw-bold fs-4">
+                      Discount Price
+                    </h6>
                   </Col>
                   <Col className="col col-12 col-md-4 col-lg-4">
                     <p className=" fw-bold mb-1 fs-4">{props.form.price}€</p>
                   </Col>
                   <Col className="col col-12 col-md-12 col-lg-12 my-3">
-                  <Button variant="success" disabled={!isEmailMatch} >BOOK NOW</Button>
+                    <Button variant="success" disabled={!isEmailMatch} onClick={() => bookNow(props.form)}>
+                      BOOK NOW
+                    </Button>
+                    {successMessage && <Alert variant="success">{successMessage}</Alert>}
                   </Col>
                 </Row>
               </Col>
