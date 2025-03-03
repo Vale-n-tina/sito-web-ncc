@@ -1,6 +1,6 @@
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormInterface from "../types/Form";
+import FormInterface from "../types/ReserveData";
 import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,

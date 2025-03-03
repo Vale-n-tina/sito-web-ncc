@@ -1,4 +1,4 @@
-interface FormInterface {
+interface ReserveData {
     pickUp: string;
     dropOff: string;
     passengers: number;
@@ -16,4 +16,4 @@ interface FormInterface {
     phone: string;
     price: number;
   }
-  export default FormInterface;
+  export default ReserveData;

@@ -5,12 +5,13 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import MyNavbar from "./components/MyNavbar";
 import MyReservation from "./components/MyReservation";
 import CheckoutDetails from "./components/CheckoutDetails";
-import FormInterface from "./types/Form";
+
 import { useState } from "react";
+import ReserveData from "./types/ReserveData";
 
 
 function App() {
-  const [form, setForm] = useState<FormInterface>({
+  const [form, setForm] = useState<ReserveData>({
     pickUp: "",
     dropOff: "",
     passengers: 1,
@@ -28,7 +29,7 @@ function App() {
     phone: "",
     price: 0,
   });
-  const updateForm = (newForm: FormInterface) => {
+  const updateForm = (newForm:ReserveData) => {
     setForm(newForm);
   };
   return(
