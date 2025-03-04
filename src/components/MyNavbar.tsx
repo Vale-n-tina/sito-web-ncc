@@ -13,7 +13,7 @@ const MyNavbar = () => {
   }
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary sans">
+    <Navbar expand="lg" className="bg-black merriweather">
       <Container fluid>
         <Navbar.Brand href="#home">
           <img
