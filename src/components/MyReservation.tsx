@@ -1,6 +1,6 @@
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormInterface from "../types/FormData";
+
 import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
@@ -10,10 +10,11 @@ import {
   LoadScript,
 } from "@react-google-maps/api";
 import PriceData from "../types/PriceData";
+import ReserveData from "../types/ReserveData";
 
 interface myReservationProps {
-  form: FormInterface;
-  setForm: (newForm: FormInterface) => void;
+  form: ReserveData;
+  setForm: (newForm: ReserveData) => void;
 }
 const MyReservation = (props: myReservationProps) => {
   const [directions, setDirections] =
@@ -51,8 +52,8 @@ const MyReservation = (props: myReservationProps) => {
   };
 
   const center = {
-    lat: 41.9027835, // Roma, latitudine
-    lng: 12.4963655, // Longitudine
+    lat: 41.9027835, 
+    lng: 12.4963655, 
   };
   const handleDirectionsCallback = (
     result: google.maps.DirectionsResult | null,

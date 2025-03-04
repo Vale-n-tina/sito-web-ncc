@@ -1,14 +1,15 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import MyNavbar from "./components/MyNavbar";
 import MyReservation from "./components/MyReservation";
 import CheckoutDetails from "./components/CheckoutDetails";
 
+
 import { useState } from "react";
 import ReserveData from "./types/ReserveData";
-
+import Home from "./components/Home";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -19,7 +20,7 @@ function App() {
     backpack: 1,
     pickUpDate: "",
     pickUpTime: "",
-    transportType: "", 
+    transportType: "",
     transportDetails: "",
     nameOnBoard: "",
     childSeats: "noChildSeats",
@@ -29,23 +30,25 @@ function App() {
     phone: "",
     price: 0,
   });
-  const updateForm = (newForm:ReserveData) => {
+  const updateForm = (newForm: ReserveData) => {
     setForm(newForm);
   };
-  return(
-<BrowserRouter>
-    <MyNavbar/>
-    <Routes>
-      <Route path="/reservation"
-      element={<MyReservation form={form} setForm={updateForm} />} />
-      <Route path="/CheckoutDetails"
-      element={<CheckoutDetails form={form} setForm={updateForm} />} />
-
-    </Routes>
-
-</BrowserRouter>
-
-  )
+  return (
+    <BrowserRouter>
+      <MyNavbar />
+      <Routes>
+        <Route
+          path="/reservation"
+          element={<MyReservation form={form} setForm={updateForm} />}
+        />
+        <Route
+          path="/CheckoutDetails"
+          element={<CheckoutDetails form={form} setForm={updateForm} />}
+        />
+        <Route path="/home" element={ <Home/>} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

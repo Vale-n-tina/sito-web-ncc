@@ -24,11 +24,24 @@
  
 }
 
+.bg-imageSfondo {
+  background-image: url(../public/images/vanSfondo.jpg);
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: 20% -220px;
+  height: 300px;
+  
+}
+
 .hover {
-  color: black !important;
+  color: gold!important;
 }
 .notHover {
-  opacity: 0.3;
+  color:white !important;
+  
 }
 
 /* CSS RESERVATION */
