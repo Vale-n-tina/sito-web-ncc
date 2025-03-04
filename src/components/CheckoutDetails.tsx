@@ -65,24 +65,24 @@ const CheckoutDetails = (props: myReservationProps) => {
 
   return (
     <div className="bg-image">
-      <Container className=" sans text-black">
+      <Container className=" sans text-black merriweather">
         <Row>
-          <Col className="col col-11 m-auto mt-3 mb-3">
-            <h1 className="code text-black ">Booking details</h1>
+          <Col className="col col-11 m-auto mt-3 ">
+            <h1 className="code text-black merriweather shadow p-3 mb-5 rounded bg-light bg-opacity-75 text-center">Booking details</h1>
           </Col>
         </Row>
 
         <Row>
-          <Col className="col col-11 m-auto pt-3 bg-light bg-opacity-75 rounded ">
-            <h4 className="text-black">Passenger Information</h4>
+          <Col className="col col-11 m-auto pt-3 bg-light bg-opacity-75 rounded shadow p-3 mb-3 rounded ">
+            <h4 className="text-black merriweather">Passenger Information</h4>
             <Row>
-              <Col className="col col-12 col-md-6 col-lg-5 m-auto ">
+              <Col className="col col-12 col-md-6 col-lg-5 m-auto merriweather ">
                 <Form>
                   <Form.Group
                     className="mb-3 mt-3 "
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label className="m-0 fw-bold code">
+                    <Form.Label className="m-0 fw-bold code merriweather">
                       Passenger Name
                     </Form.Label>
                     <Form.Control
@@ -102,7 +102,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label className="m-0 fw-bold code">Email </Form.Label>
+                    <Form.Label className="m-0 fw-bold code merriweather">Email </Form.Label>
                     <Form.Control
                       type="email"
                       required
@@ -116,7 +116,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     className="mb-3"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label className="m-0 fw-bold code">
+                    <Form.Label className="m-0 fw-bold code merriweather">
                       Confirm Email
                     </Form.Label>
                     <Form.Control
@@ -135,7 +135,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     className="mb-4"
                     controlId="exampleForm.ControlInput1"
                   >
-                    <Form.Label className="m-0 fw-bold code">
+                    <Form.Label className="m-0 fw-bold code merriweather">
                       Mobile phone
                     </Form.Label>
                     <PhoneInput
@@ -154,13 +154,13 @@ const CheckoutDetails = (props: myReservationProps) => {
               </Col>
             </Row>
           </Col>
-          <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 px-5 mb-4">
-            <h4 className="text-black code mt-4 mb-5">Transfer Details</h4>
+          <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 px-5 mb-4 shadow p-3 mb-5 rounded">
+            <h4 className="text-black code mt-4 mb-5 merriweather">Transfer Details</h4>
             <Row>
-              <Col>
+              <Col >
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">From</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">From</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1"> {props.form.pickUp}</p>
@@ -168,7 +168,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">To</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">To</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1"> {props.form.dropOff}</p>
@@ -176,7 +176,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">Date</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">Date</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1"> {props.form.pickUpDate}</p>
@@ -184,7 +184,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">Pick-Up Time</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">Pick-Up Time</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1">{props.form.pickUpTime}</p>
@@ -192,7 +192,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">Passengers</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">Passengers</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1">{props.form.passengers}</p>
@@ -200,7 +200,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">
+                    <h6 className="m-0 text-thetriary code merriweather">
                       Luggages & Carry-on
                     </h6>
                   </Col>
@@ -212,7 +212,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2">
                   <Col className="col col-11">
-                    <h6 className="m-0 text-thetriary code">Child Seats</h6>
+                    <h6 className="m-0 text-thetriary code merriweather">Child Seats</h6>
                   </Col>
                   <Col className="col col-11">
                     <p className=" fw-bold mb-1">{props.form.childSeats}</p>
@@ -220,14 +220,14 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Row>
                 <Row className="mb-2 align-items-center">
                   <Col className="col col-12 col-md-4 col-lg-4">
-                    <h6 className="m-0 text-thetriary code fw-bold fs-4">
+                    <h6 className="m-0 text-thetriary code fw-bold fs-4 merriweather">
                       Discount Price
                     </h6>
                   </Col>
                   <Col className="col col-12 col-md-4 col-lg-4">
-                    <p className=" fw-bold mb-1 fs-4">{props.form.price}€</p>
+                    <p className=" fw-bold mb-1 fs-4 ">{props.form.price}€</p>
                   </Col>
-                  <Col className="col col-12 col-md-12 col-lg-12 my-3">
+                  <Col className="col col-12 col-md-12 col-lg-12 my-3 merriweather">
                     <Button
                       variant="success"
                       disabled={!isEmailMatch || isSubmitted}

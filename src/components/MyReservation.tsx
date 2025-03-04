@@ -1,6 +1,6 @@
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import FormInterface from "../types/ReserveData";
+import FormInterface from "../types/FormData";
 import { useEffect, useRef, useState } from "react";
 import {
   Autocomplete,
@@ -166,7 +166,7 @@ const MyReservation = (props: myReservationProps) => {
     <div className="bg-image">
       <Container>
         <Row className="justify-content-center">
-          <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-light bg-opacity-75 rounded ">
+          <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-light bg-opacity-75 rounded shadow p-3  ">
             <Row>
               <Col className="col-11 m-auto">
                 <h1 className="montserrat mt-3">Book your trip</h1>
@@ -620,7 +620,7 @@ const MyReservation = (props: myReservationProps) => {
           </Col>
           <Col className="col col-11 col-lg-6 m-sm-auto p-0 m-lg-0 ">
             <Row>
-              <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0">
+              <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0 shadow">
                 <LoadScript
                   googleMapsApiKey="REDACTED"
                   libraries={["places"]}
@@ -658,7 +658,7 @@ const MyReservation = (props: myReservationProps) => {
                   </GoogleMap>
                 </LoadScript>
               </Col>
-              <Col className="col col-11 m-auto mt-3 bg-white rounded px-5">
+              <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5">
                 <Row className="mt-3">
                   <Col className="text-center">
                     <h4 className="montserrat fw-bold">Summary</h4>
