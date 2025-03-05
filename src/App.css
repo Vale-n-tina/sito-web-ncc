@@ -13,6 +13,10 @@
 .code {
   font-family: "Roboto Flex", serif;
 }
+
+.quicksand {
+  font-family: "Quicksand", sans-serif;
+}
 .bg-image {
   background-image: url(../public/images/sfondo.png);
   background-position: center;
@@ -30,38 +34,40 @@
   background-position: center;
   position: relative;
   width: 100%;
-  
- 
-  
+
+  overflow: hidden;
 }
 
 .bg-imageSfondo::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); 
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  
 }
 
 .bg-imageSfondo::after {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: -50px; 
+  bottom: -50px;
   left: 0;
   width: 100%;
-  height: 120px; 
+  height: 120px;
   background: white;
-  border-radius: 50%; 
-  transform: scaleX(1.1); 
-  z-index: 2; 
+  border-radius: 50%;
+  transform: scaleX(1.1);
+  z-index: 2;
+}
+.no-margin-padding {
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .hover {
-  color: gold !important;
+  color: #c9bd70 !important;
 }
 .notHover {
   color: white !important;
@@ -165,7 +171,7 @@
 
 /* Bottone Oro home */
 .custom-gold-btn {
-  background-color: #ffd700 !important; 
+  background-color: #c9bd70 !important;
   border: none;
   color: #000; /* Testo nero */
   font-weight: bold;
@@ -175,18 +181,18 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
-  
+
   width: 100%;
 }
 
 .custom-gold-btn:hover {
-  background-color: #e6b800 !important; 
+  background-color: #e6b800 !important;
   transform: translateY(-3px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
 .custom-gold-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -204,10 +210,9 @@
   height: 100%;
 }
 
-
 /* Bottone Nero home */
 .custom-black-btn {
-  background-color: #000; 
+  background-color: #000;
   border: none;
   color: #fff;
   font-weight: bold;
@@ -217,18 +222,18 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
-  
+
   width: 100%;
 }
 
 .custom-black-btn:hover {
-  background-color: #333; 
+  background-color: #333;
   transform: translateY(-3px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 }
 
 .custom-black-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -245,3 +250,14 @@
   width: 100%;
   height: 100%;
 }
+.h1-presentation {
+  font-size: 2.5rem;
+  font-family: "Merriweather", serif !important;
+}
+
+.bi-clock, .bi-gem, .bi-award-fill {
+  color: #c9bd70;
+  font-size: 2.3rem;
+}
+
+/*font-family:'Courier New', Courier, monospace !important*/
