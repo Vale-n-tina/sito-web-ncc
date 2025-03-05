@@ -282,4 +282,31 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
+
+
+
+.custom-accordion .accordion-button {
+  background-color: white; /* Colore di sfondo */
+  color: black; /* Colore del testo */
+  border: 1px solid#C7B961; /* Bordo */
+}
+
+/* Stile per l'header dell'accordion quando è aperto */
+.custom-accordion .accordion-button:not(.collapsed) {
+  background-color:#F0F5FB !important; /* Colore di sfondo quando aperto */
+  color: black; /* Colore del testo quando aperto */
+}
+
+/* Stile per il corpo dell'accordion */
+.custom-accordion .accordion-body {
+  background-color: #F0F5FB; /* Colore di sfondo */
+  color: white; /* Colore del testo */
+  border: 1px solid#C7B961; /* Bordo */
+}
+
+.custom-accordion .accordion-button:focus {
+  box-shadow: none; /* Rimuove l'ombra blu */
+ 
+}
+
 /*font-family:'Courier New', Courier, monospace !important*/
