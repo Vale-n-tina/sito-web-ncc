@@ -84,7 +84,7 @@ const Home = () => {
         </Col>
       </Row>
       <Row className="no-margin-padding justify-content-md-around mt-md-5 ">
-        <Col className="col-12 no-margin-padding col-md-5 order-md-1 ">
+        <Col className="col-12 no-margin-padding col-md-5 order-md-2 ">
           <div className="bg-imageSfondo2 pb-5">
             <Row
               style={{ position: "relative", zIndex: 2 }}
@@ -113,13 +113,34 @@ const Home = () => {
               </Col>
             </Row>
           </div>
+
+          <div className="bg-imageSfondo3 pb-5 mt-5">
+            <Row
+              style={{ position: "relative", zIndex: 2 }}
+              className=" justify-content-center"
+            >
+              <Col className="text-center mt-3 col-9">
+                <h1 className="text-white merriweather mb-4 ">
+                  Your Journey, Our Priority
+                </h1>
+                <p className="text-white mb-4">
+                  Whether you're heading to a business meeting or enjoying a
+                  leisurely trip, we are here to make your ride comfortable and
+                  stress-free. Our professional drivers ensure that your journey
+                  is safe, punctual, and enjoyable. We’re committed to providing
+                  you with the best transportation experience every time you
+                  travel with us.
+                </p>
+              </Col>
+            </Row>
+          </div>
         </Col>
-        <Col className="col-12 col-md-10">
+        <Col className="col-12 col-md-10 order-md-1">
           <h2 className="d-flex justify-content-center text-center mt-5 mb-4 mt-md-0 justify-content-md-end ">
             Frequently Asked Questions
           </h2>
         </Col>
-        <Col className="col-12 col-md-6 order-md-2" >
+        <Col className="col-12 col-md-6 order-md-3">
           <AccordionFAQ />
         </Col>
       </Row>
