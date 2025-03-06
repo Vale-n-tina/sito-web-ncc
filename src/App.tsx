@@ -10,6 +10,7 @@ import CheckoutDetails from "./components/CheckoutDetails";
 import { useState } from "react";
 import ReserveData from "./types/ReserveData";
 import Home from "./components/Home";
+import MyLogin from "./components/MyLogin";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -45,7 +46,8 @@ function App() {
           path="/CheckoutDetails"
           element={<CheckoutDetails form={form} setForm={updateForm} />}
         />
-        <Route path="/home" element={ <Home/>} />
+        <Route index element={ <Home/>} />
+        <Route path="/login" element={<MyLogin/>}/>
       </Routes>
     </BrowserRouter>
   );

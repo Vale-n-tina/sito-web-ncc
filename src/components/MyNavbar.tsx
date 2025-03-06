@@ -27,32 +27,28 @@ const MyNavbar = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className=" justify-content-end">
           <Nav>
-          <Link to ="home" className={getLink("/home")}>
-            <div className=" ms-2">
+          <Link to ="/" className={getLink("/")}>
+            <div className=" ms-3">
              Home
             </div>
             </Link>
             <Link to="/reservation"   className={getLink("/reservation")} >
-            <div className=" ms-2">
+            <div className=" ms-3">
               Reservation
             </div>
             </Link>
-            <Link to ="airport" className={getLink("/airport")}>
-            <div className=" ms-2">
-              Airports
-            </div>
-            </Link>
-            <Link to ="port" className={getLink("/port")}>
-            <div className=" ms-2">
-              Port Civitavecchia
-            </div>
-            </Link>
+          
             <Link to ="tour" className={getLink("/tour")}>
-            <div className=" ms-2">
+            <div className=" ms-3">
              Tour
             </div>
             </Link>
-            <Button variant="primary" size="sm" className=" ms-2">
+            <Link to ="login" className={getLink("/login")}>
+            <div className=" ms-3 me-3">
+              Login
+            </div>
+            </Link>
+            <Button size="sm" className=" ms-2 bg-color text-black">
               Contacts
             </Button>
           </Nav>
