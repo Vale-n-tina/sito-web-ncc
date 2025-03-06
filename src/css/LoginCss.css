@@ -1,0 +1,27 @@
+.bg-imageLogin {
+  background-image: url(../public/images/sfondissimo.jpg);
+  background-size: cover; /* Copre tutto lo spazio disponibile */
+  background-position: center; /* Centra l'immagine */
+  background-repeat: no-repeat; /* Impedisce che l'immagine si ripeta */
+  height: 300px; /* Imposta l'altezza */
+}
+
+.card-custom {
+  margin-top: -120px;
+  backdrop-filter: blur(30px);
+
+}
+
+@media screen and (max-width: 576px) {
+  .bg-imageLogin {
+    height: 100px;
+  }
+  .card-custom{
+    margin-top: -50px ;
+  }
+}
+
+.custom-form-control:focus {
+    border-color:  #c9bd70; /* Colore oro */
+    box-shadow: 0 0 0 0.2rem rgba(199, 185, 97, 0.25); /* Ombra con colore oro */
+  }

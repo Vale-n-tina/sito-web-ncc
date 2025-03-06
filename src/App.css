@@ -29,6 +29,11 @@
 .color{
   color: #c9bd70 !important;
 }
+.bg-color{
+  background-color: #c9bd70 !important;
+  border: none !important;
+  outline: none !important; 
+}
 
 
 /*font-family:'Courier New', Courier, monospace !important*/
