@@ -2,7 +2,7 @@ import Accordion from "react-bootstrap/Accordion";
 
 function AccordionFAQ() {
   return (
-    <Accordion defaultActiveKey="0" className="custom-accordion mb-5 mt-3">
+    <Accordion defaultActiveKey="0" className="custom-accordion mb-5 mt-3 mt-md-0">
       <Accordion.Item eventKey="0" className="mb-3">
         <Accordion.Header className="quicksand">What does NCC stand for?</Accordion.Header>
         <Accordion.Body className="text-black quicksand">
