@@ -1,5 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import AccordionFAQ from "./AccordionFAQ";
+import MyFooter from "./MyFooter";
+
 
 const Home = () => {
   return (
@@ -144,7 +146,9 @@ const Home = () => {
           <AccordionFAQ />
         </Col>
       </Row>
+      <MyFooter/>
     </Container>
+    
   );
 };
 export default Home;

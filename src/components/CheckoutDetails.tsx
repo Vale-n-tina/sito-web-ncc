@@ -12,6 +12,7 @@ import "react-phone-input-2/lib/style.css";
 
 import { useState } from "react";
 import ReserveData from "../types/ReserveData";
+import MyFooter from "./MyFooter";
 
 interface myReservationProps {
   form: ReserveData;
@@ -64,6 +65,7 @@ const CheckoutDetails = (props: myReservationProps) => {
   };
 
   return (
+    <>
     <div className="bg-image">
       <Container className=" sans text-black merriweather">
         <Row>
@@ -256,6 +258,8 @@ const CheckoutDetails = (props: myReservationProps) => {
         </Modal.Footer>
       </Modal>
     </div>
+    <MyFooter/>
+    </>
   );
 };
 export default CheckoutDetails;
