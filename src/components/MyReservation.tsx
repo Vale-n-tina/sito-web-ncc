@@ -11,6 +11,7 @@ import {
 } from "@react-google-maps/api";
 import PriceData from "../types/PriceData";
 import ReserveData from "../types/ReserveData";
+import MyFooter from "./MyFooter";
 
 interface myReservationProps {
   form: ReserveData;
@@ -164,6 +165,7 @@ const MyReservation = (props: myReservationProps) => {
   };
 
   return (
+    <>
     <div className="bg-image">
       <Container>
         <Row className="justify-content-center">
@@ -174,8 +176,8 @@ const MyReservation = (props: myReservationProps) => {
               </Col>
             </Row>
             <Row>
-              <Col className=" bg-warning bg-opacity-50 col-11 m-auto mb-3 pt-3 ">
-                <p>
+              <Col className=" bg-warning bg-opacity-50 col-11 m-auto mb-3 pt-3 color">
+                <p className="text-black" >
                   Please enter your arrival time and airline name. Your driver
                   will be waiting for you at the arrival terminal, holding a
                   sign with your name.
@@ -728,6 +730,8 @@ const MyReservation = (props: myReservationProps) => {
         </Row>
       </Container>
     </div>
+    <MyFooter/>
+    </>
   );
 };
 export default MyReservation;

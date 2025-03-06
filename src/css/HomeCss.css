@@ -1,0 +1,212 @@
+.bg-image {
+    background-image: url(../public/images/sfondo.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    filter: opacity(0.7);
+  }
+  
+  .bg-imageSfondo {
+    background-image: url(../public/images/vanSfondo.jpg);
+  
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    width: 100%;
+  
+    overflow: hidden;
+  }
+  
+  .bg-imageSfondo::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  
+  .bg-imageSfondo::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: white;
+    border-radius: 50%;
+    transform: scaleX(1.1);
+    z-index: 2;
+  }
+  .no-margin-padding {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .title-shadow {
+    text-shadow: 2px 2px 2px #000;
+    font-size: 3rem;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .title-shadow,
+  .p-fade-in {
+    animation: fadeIn 1.5s ease-out;
+  }
+  .p-fade-in {
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    line-height: 1.6;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+  }
+  
+  /* Bottone Oro home */
+  .custom-gold-btn {
+    background-color: #c9bd70 !important;
+    border: none;
+    color: #000; /* Testo nero */
+    font-weight: bold;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    border-radius: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  
+    width: 100%;
+  }
+  
+  .custom-gold-btn:hover {
+    background-color: #e6b800 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .custom-gold-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%) rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
+  
+  .custom-gold-btn:hover::after {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Bottone Nero home */
+  .custom-black-btn {
+    background-color: #000;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 24px;
+    transition: all 0.3s ease;
+    border-radius: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  
+    width: 100%;
+  }
+  
+  .custom-black-btn:hover {
+    background-color: #333;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .custom-black-btn::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%) rotate(45deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
+  
+  .custom-black-btn:hover::after {
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+  }
+  .h1-presentation {
+    font-size: 2.5rem;
+    font-family: "Merriweather", serif !important;
+  }
+  
+  .bi-clock,
+  .bi-gem,
+  .bi-award-fill {
+    color: #c9bd70;
+    font-size: 2.3rem;
+  }
+  
+  .bg-imageSfondo2 {
+    background-image: url(../public/images/macchinaHotel.jpg);
+  
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    width: 100%;
+  
+    overflow: hidden;
+  }
+  .bg-imageSfondo2::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  .bg-imageSfondo3 {
+    background-image: url(../public/images/macchinaStrada.jpg);
+  
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    width: 100%;
+    height: 40%;
+  
+    overflow: hidden;
+  }
+  .bg-imageSfondo3::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
