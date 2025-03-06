@@ -83,46 +83,44 @@ const Home = () => {
           </p>
         </Col>
       </Row>
-      <div className="bg-imageSfondo2 pb-5">
-        <Row
-          style={{ position: "relative", zIndex: 2 }}
-          className=" justify-content-center"
-        >
-          <Col className="text-center mt-5 col-9">
-            <h1 className="text-white merriweather mb-4 ">
-              Contact Us Anytime
-            </h1>
-            <p className="text-white mb-4">
-              We’re always here to answer your questions and provide the best
-              assistance. Whether you need information about our services or
-              help with your next transfer, don’t hesitate to reach out. Your
-              satisfaction is our priority.
-            </p>
-            <Row className=" justify-content-center">
-              <Col className="col-5">
-                <Button
-                  variant="gold"
-                  className="custom-gold-btn fw-bold sans p-md-2 mt-3"
-                >
-                  Contact us
-                </Button>
+      <Row className="no-margin-padding justify-content-md-around mt-md-5 ">
+        <Col className="col-12 no-margin-padding col-md-5 order-md-1 ">
+          <div className="bg-imageSfondo2 pb-5">
+            <Row
+              style={{ position: "relative", zIndex: 2 }}
+              className=" justify-content-center"
+            >
+              <Col className="text-center mt-5 col-9">
+                <h1 className="text-white merriweather mb-4 ">
+                  Contact Us Anytime
+                </h1>
+                <p className="text-white mb-4">
+                  We’re always here to answer your questions and provide the
+                  best assistance. Whether you need information about our
+                  services or help with your next transfer, don’t hesitate to
+                  reach out. Your satisfaction is our priority.
+                </p>
+                <Row className=" justify-content-center">
+                  <Col className="col-5">
+                    <Button
+                      variant="gold"
+                      className="custom-gold-btn fw-bold sans p-md-2 mt-3"
+                    >
+                      Contact us
+                    </Button>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-          </Col>
-        </Row>
-      </div>
-      <Row className="no-margin-padding justify-content-center mt-4 ">
-        <Col className="no-margin-padding col-8">
-          <h2 className="d-flex justify-content-center text-center ">
+          </div>
+        </Col>
+        <Col className="col-12 col-md-10">
+          <h2 className="d-flex justify-content-center text-center mt-5 mb-4 mt-md-0 justify-content-md-end ">
             Frequently Asked Questions
           </h2>
         </Col>
-        <Col className="col-12">
-          <Row>
-            <Col >
-           <AccordionFAQ/>
-            </Col>
-          </Row>
+        <Col className="col-12 col-md-6 order-md-2" >
+          <AccordionFAQ />
         </Col>
       </Row>
     </Container>

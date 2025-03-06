@@ -11,11 +11,11 @@
 }
 
 .code {
-  font-family: "Roboto Flex", serif;
+  font-family: "Roboto Flex", serif !important
 }
 
 .quicksand {
-  font-family: "Quicksand", sans-serif;
+  font-family: "Quicksand", sans-serif !important
 }
 .bg-image {
   background-image: url(../public/images/sfondo.png);
@@ -255,11 +255,12 @@
   font-family: "Merriweather", serif !important;
 }
 
-.bi-clock, .bi-gem, .bi-award-fill {
+.bi-clock,
+.bi-gem,
+.bi-award-fill {
   color: #c9bd70;
   font-size: 2.3rem;
 }
-
 
 .bg-imageSfondo2 {
   background-image: url(../public/images/macchinaHotel.jpg);
@@ -283,8 +284,6 @@
   z-index: 1;
 }
 
-
-
 .custom-accordion .accordion-button {
   background-color: white; /* Colore di sfondo */
   color: black; /* Colore del testo */
@@ -302,20 +301,18 @@
   background-color: white; /* Colore di sfondo */
   color: white; /* Colore del testo */
   border: 1px solid#C7B961; /* Bordo */
-
 }
 
 .custom-accordion .accordion-button:focus {
   box-shadow: none; /* Rimuove l'ombra blu */
- 
 }
 .custom-accordion .accordion-button:hover {
-  background-color: #F0F5FB ; /* Colore oro */
-  color: #C7B961; /* Colore del testo */
+  background-color: #f0f5fb; /* Colore oro */
+  color: #c7b961; /* Colore del testo */
 }
 
 .custom-accordion .accordion-body:hover {
-  background-color: #F0F5FB; /* Colore di sfondo */
+  background-color: #f0f5fb; /* Colore di sfondo */
   color: black; /* Colore del testo */
 }
 
@@ -323,5 +320,12 @@
   background-color: white; /* Mantieni il colore di sfondo quando aperto */
   color: black; /* Mantieni il colore del testo quando aperto */
 }
+.custom-accordion .accordion-button:hover::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23C7B961'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); /* Colore oro per la freccia */
+}
 
+/* Cambia il colore della freccia quando l'accordion è aperto */
+.custom-accordion .accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23C7B961'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e"); /* Colore oro per la freccia */
+}
 /*font-family:'Courier New', Courier, monospace !important*/
