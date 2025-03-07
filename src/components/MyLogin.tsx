@@ -5,10 +5,9 @@ import LoginData from "../types/LoginData";
 import { useNavigate } from "react-router-dom";
 
 const MyLogin = () => {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,9 +32,9 @@ const MyLogin = () => {
         }
       })
       .then((token) => {
-        localStorage.setItem('authToken', token);
-
-        navigate('/MyAdministration');
+        localStorage.setItem("authToken",JSON.stringify (token.token));
+        console.log(token);
+        navigate("/MyAdministration")
       })
       .catch((error) => {
         console.error("Error in fetch", error);
