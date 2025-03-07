@@ -78,7 +78,7 @@ const MyReservation = (props: myReservationProps) => {
         setDuration(duration);
         setDistanceKm(distanceKm);
         setRequested(true);
-        console.log("result:", result);
+       
       } else {
         console.error("La struttura della risposta non è valida:", result);
       }
