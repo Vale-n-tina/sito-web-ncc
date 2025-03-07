@@ -6,11 +6,12 @@ import MyNavbar from "./components/MyNavbar";
 import MyReservation from "./components/MyReservation";
 import CheckoutDetails from "./components/CheckoutDetails";
 
-
 import { useState } from "react";
 import ReserveData from "./types/ReserveData";
 import Home from "./components/Home";
 import MyLogin from "./components/MyLogin";
+import ProtectedRoute from "./components/PretectedRoute";
+import MyAdministration from "./components/MyAdministration";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -46,8 +47,11 @@ function App() {
           path="/CheckoutDetails"
           element={<CheckoutDetails form={form} setForm={updateForm} />}
         />
-        <Route index element={ <Home/>} />
-        <Route path="/login" element={<MyLogin/>}/>
+        <Route index element={<Home />} />
+        <Route path="/login" element={<MyLogin />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/MyAdministration" element={<MyAdministration />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
