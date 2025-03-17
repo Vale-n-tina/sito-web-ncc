@@ -1,6 +1,9 @@
+
 const MyAdministration=()=>{
     return(
-        <h1>ciao</h1>
+        <div style={{ height: '500px' }}>
+       <h2>ciao</h2>
+      </div>
     )
 }
 export default MyAdministration
