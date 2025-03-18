@@ -1,0 +1,17 @@
+.btn-gold-outline {
+    border: 1px solid  #c9bd70 !important;
+    color: black!important;
+    background-color: transparent!important;
+}
+
+/* Stile quando il bottone è cliccato (attivo): sfondo nero, testo oro */
+.btn-gold-outline.active {
+    background-color: #c9bd70!important;
+    color: black !important;
+    border-color: #c9bd70 !important;
+}
+.bg-white .btn-gold-outline:hover {
+    background-color: #c9bd70 !important;
+    color: black !important;
+    border-color: #c9bd70 !important;
+}
