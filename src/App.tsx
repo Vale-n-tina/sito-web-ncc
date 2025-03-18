@@ -12,7 +12,7 @@ import Home from "./components/Home";
 import MyLogin from "./components/MyLogin";
 import ProtectedRoute from "./components/PretectedRoute";
 import MyAdministration from "./components/MyAdministration";
-import TransferListPage from "./components/TransfertListPage";
+
 import MyTour from "./components/MyTour";
 
 function App() {
@@ -54,7 +54,7 @@ function App() {
         <Route path="/login" element={<MyLogin />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/MyAdministration" element={<MyAdministration />} />
-          <Route path="/transfers/:date" element={<TransferListPage />} />
+          
         </Route>
       </Routes>
     </BrowserRouter>

@@ -6,5 +6,6 @@ import"./css/HomeCss.css"
 import "./css/AccordionCss.css"
 import"./css/ReservationCss.css"
 import"./css/LoginCss.css"
+import"./css/Tour.css"
 
 createRoot(document.getElementById("root")!).render(<App />);
