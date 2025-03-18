@@ -13,6 +13,7 @@ import MyLogin from "./components/MyLogin";
 import ProtectedRoute from "./components/PretectedRoute";
 import MyAdministration from "./components/MyAdministration";
 import TransferListPage from "./components/TransfertListPage";
+import MyTour from "./components/MyTour";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -44,6 +45,7 @@ function App() {
           path="/reservation"
           element={<MyReservation form={form} setForm={updateForm} />}
         />
+        <Route path="/tour" element={<MyTour/>}/>
         <Route
           path="/CheckoutDetails"
           element={<CheckoutDetails form={form} setForm={updateForm} />}
