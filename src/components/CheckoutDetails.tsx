@@ -25,12 +25,29 @@ const CheckoutDetails = (props: myReservationProps) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [validationErrors, setValidationErrors] = useState({
+    nameAndSurname: false, 
+    email: false, 
+    phone: false, 
+  });
 
+  const validateForm = () => {
+    const errors = {
+      nameAndSurname: !props.form.nameAndSurname.trim(), // true se il campo è vuoto
+      email: !props.form.email.trim() || !/\S+@\S+\.\S+/.test(props.form.email), // true se il campo è vuoto o l'email non è valida
+      phone: !props.form.phone.trim(), // true se il campo è vuoto
+    };
+  
+    setValidationErrors(errors); // Imposta gli errori di validazione
+  
+    // Restituisce true se il form è valido, false altrimenti
+    return !Object.values(errors).some((error) => error);
+  };
   const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setConfirmEmail(value);
     if (value !== props.form.email) {
-      setEmailError("Le email non coincidono");
+      setEmailError("The emails do not match");
     } else {
       setEmailError("");
     }
@@ -96,9 +113,14 @@ const CheckoutDetails = (props: myReservationProps) => {
                         props.setForm({
                           ...props.form,
                           nameAndSurname: e.target.value,
-                        });
+                          
+                        })
+                        setValidationErrors((prev) => ({ ...prev, nameAndSurname: false }));;
                       }}
                     />
+                     {validationErrors.nameAndSurname && (
+    <p className="text-danger small">The passenger name is required.</p>
+  )}
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -111,8 +133,17 @@ const CheckoutDetails = (props: myReservationProps) => {
                       value={props.form.email}
                       onChange={(e) => {
                         props.setForm({ ...props.form, email: e.target.value });
+                        setValidationErrors((prev) => ({ ...prev, email: false }))
                       }}
+                      className={validationErrors.email ? "border border-danger" : ""}
                     />
+                     {validationErrors.email && (
+    <p className="text-danger small">
+      {!props.form.email.trim()
+        ? "The email is required."
+        : "Please enter a valid email address."}
+    </p>
+  )}
                   </Form.Group>
                   <Form.Group
                     className="mb-3"
@@ -146,11 +177,16 @@ const CheckoutDetails = (props: myReservationProps) => {
                       value={props.form.phone}
                       onChange={(value) => {
                         props.setForm({ ...props.form, phone: value });
+                        setValidationErrors((prev) => ({ ...prev, phone: false }));
                       }}
                       inputStyle={{
                         width: "100%",
+                        border: validationErrors.phone ? "1px solid #dc3545" : "",
                       }}
                     />
+                    {validationErrors.phone && (
+    <p className="text-danger small">The phone number is required.</p>
+  )}
                   </Form.Group>
                 </Form>
               </Col>
@@ -233,7 +269,13 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <Button
                       variant="success"
                       disabled={!isEmailMatch || isSubmitted}
-                      onClick={() => bookNow(props.form)}
+                      onClick={() => {
+                        if (validateForm()) {
+                          bookNow(props.form); 
+                        } else {
+                          console.log("Form non valido, correggi gli errori.");
+                        }
+                      }}
                     >
                       BOOK NOW
                     </Button>
