@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/PretectedRoute";
 import MyAdministration from "./components/MyAdministration";
 
 import MyTour from "./components/MyTour";
+import MyTour2 from "./components/MyTour2";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -45,7 +46,7 @@ function App() {
           path="/reservation"
           element={<MyReservation form={form} setForm={updateForm} />}
         />
-        <Route path="/tour" element={<MyTour/>}/>
+        <Route path="/tour" element={<MyTour2/>}/>
         <Route
           path="/CheckoutDetails"
           element={<CheckoutDetails form={form} setForm={updateForm} />}
