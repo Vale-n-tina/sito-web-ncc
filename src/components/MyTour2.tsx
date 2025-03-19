@@ -1,15 +1,43 @@
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import TourData from "../types/TourData";
 
-const MyTour2 = () => {
+interface myReservationPropsTour {
+  tour: TourData;
+  setTour: (newForm: TourData) => void;
+  checkBox: string[];
+}
+const MyTour2 = (props: myReservationPropsTour) => {
   const [activeButtonStart, setActiveButtonStart] = useState<number>(0);
   const [activeButtonEnd, setActiveButtonEnd] = useState<number>(0);
+  const [selectedButton, setSelectedButton] = useState<number>(0);
 
   const handleButtonStart = (index: number) => {
     setActiveButtonStart(index);
+    setSelectedButton(index)
   };
   const handleButtonEnd = (index: number) => {
     setActiveButtonEnd(index);
+    setSelectedButton(index)
+  };
+
+
+  //funzione per vedere se è selezionata una checkBox
+  const handleCheckboxChange = (label: string, isChecked: boolean) => {
+    const cleanedLabel = label.replace(/ \(\+ \d+ min\)/, "");
+    if (isChecked) {
+      props.setTour({
+        ...props.tour,
+        optionalStops: [...props.tour.optionalStops, cleanedLabel],
+      });
+    } else {
+      props.setTour({
+        ...props.tour,
+        optionalStops: props.tour.optionalStops.filter(
+          (monument) => monument !== cleanedLabel
+        ),
+      });
+    }
   };
 
   const buttonLabels: string[] = [
@@ -17,12 +45,6 @@ const MyTour2 = () => {
     "Fiumicino Airport",
     "Ciampino Airport",
     "Civitavecchia Dock",
-  ];
-  const checkBox: string[] = [
-    "Colosseum",
-    "Trevi fountain",
-    "Pantheon",
-    "Saint Peter",
   ];
 
   const places: string[] = [
@@ -41,6 +63,66 @@ const MyTour2 = () => {
     "Circus Maximus (+ 30 min)",
     "Roman Forum (+ 30 min)",
   ];
+
+  const renderFormGroup = (field: keyof TourData) => {
+    switch (selectedButton) {
+      case 0: // Rome
+        return (
+          <Form.Group controlId="exampleForm.ControlInput1">
+            <Form.Label className="mt-2 quicksand">
+              Insert address
+            </Form.Label>
+            <Form.Control
+              type="text"
+              required
+              className="custom-input"
+              value={props.tour [field]}
+              onChange={(e) => {
+                props.setTour({ ...props.tour, [field]: e.target.value });
+              }}
+            />
+          </Form.Group>
+        );
+      case 1: // Fiumicino Airport
+      case 2: // Ciampino Airport
+        return (
+          <Form.Group controlId="exampleForm.ControlInput1">
+            <Form.Label className="mt-2 quicksand">
+              Insert number fly
+            </Form.Label>
+            <Form.Control
+              type="text"
+              required
+              className="custom-input"
+              value={props.tour[field]}
+              onChange={(e) => {
+                props.setTour({ ...props.tour, [field]: e.target.value });
+              }}
+            />
+          </Form.Group>
+        );
+      case 3: // Civitavecchia Dock
+        return (
+          <Form.Group controlId="exampleForm.ControlInput1">
+            <Form.Label className="mt-2 quicksand">
+              Insert cruise ship name
+            </Form.Label>
+            <Form.Control
+              type="text"
+              required
+              className="custom-input"
+              value={props.tour [field]}
+              onChange={(e) => {
+                props.setTour({ ...props.tour, [field]: e.target.value });
+              }}
+            />
+          </Form.Group>
+        );
+      default:
+        return null; 
+    }
+  };
+
   return (
     <div className="bgTour">
       <h1 className="montserrat pt-5 ms-4">Classic Tour</h1>
@@ -68,12 +150,7 @@ const MyTour2 = () => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-11">
-                <Form.Group controlId="exampleForm.ControlInput1">
-                  <Form.Label className="mt-2 quicksand">
-                    Insert address
-                  </Form.Label>
-                  <Form.Control type="text" required className="custom-input" />
-                </Form.Group>
+              {renderFormGroup("pickUp")} {}
               </Col>
             </Row>
 
@@ -85,6 +162,17 @@ const MyTour2 = () => {
                   name="datetime"
                   required
                   className="custom-datetime-input"
+                  value={`${props.tour.date}T${props.tour.time}`}
+                  onChange={(e) => {
+                    const datetimeValue = e.target.value;
+                    const [date, time] = datetimeValue.split("T");
+
+                    props.setTour({
+                      ...props.tour,
+                      date: date || "",
+                      time: time || "",
+                    });
+                  }}
                 />
               </Col>
 
@@ -95,6 +183,13 @@ const MyTour2 = () => {
                 <Form.Select
                   aria-label="Default select example"
                   className="custom-select"
+                  value={props.tour.passengers}
+                  onChange={(e) => {
+                    props.setTour({
+                      ...props.tour,
+                      passengers: parseInt(e.target.value),
+                    });
+                  }}
                 >
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -113,13 +208,16 @@ const MyTour2 = () => {
                 <Form.Label className="mt-3 quicksand">
                   Included in 4 hours:
                 </Form.Label>
-                {checkBox.map((label, index) => (
+                {props.checkBox.map((label, index) => (
                   <Form.Check
                     key={index}
                     type="checkbox"
                     label={label}
-                    defaultChecked
                     className="custom-checkbox"
+                    checked={props.tour.optionalStops.includes(label)}
+                    onChange={(e) =>
+                      handleCheckboxChange(label, e.target.checked)
+                    }
                   />
                 ))}
               </Col>
@@ -140,6 +238,12 @@ const MyTour2 = () => {
                       type="checkbox"
                       label={place}
                       className="custom-checkbox"
+                      checked={props.tour.optionalStops.includes(
+                        place.replace(/ \(\+ \d+ min\)/, "")
+                      )}
+                      onChange={(e) =>
+                        handleCheckboxChange(place, e.target.checked)
+                      }
                     />
                   ))}
                 </div>
@@ -164,12 +268,8 @@ const MyTour2 = () => {
 
             <Row className=" justify-content-center mb-5">
               <Col className="col-11">
-                <Form.Group controlId="exampleForm.ControlInput1">
-                  <Form.Label className="mt-2 quicksand">
-                    Insert address
-                  </Form.Label>
-                  <Form.Control type="text" required className="custom-input" />
-                </Form.Group>
+                
+              {renderFormGroup("dropOff")} {}
               </Col>
             </Row>
           </Col>
