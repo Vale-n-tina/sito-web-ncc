@@ -12,9 +12,8 @@ import Home from "./components/Home";
 import MyLogin from "./components/MyLogin";
 import ProtectedRoute from "./components/PretectedRoute";
 import MyAdministration from "./components/MyAdministration";
-
-import MyTour from "./components/MyTour";
 import MyTour2 from "./components/MyTour2";
+import TourData from "./types/TourData";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -35,9 +34,37 @@ function App() {
     phone: "",
     price: 0,
   });
+
+  const checkBox: string[] = [
+    "Colosseum",
+    "Trevi fountain",
+    "Pantheon",
+    "Saint Peter",
+  ];
+  const[tour, setTour]= useState<TourData>({
+
+    pickUp: "",
+    dropOff: "",
+    passengers: 1,
+    date: "",
+    time: "",
+    passengerName: "",
+    email: "",
+    phoneNumber: "",
+    price:0,
+    optionalStops: checkBox,
+  })
+  
+
+
   const updateForm = (newForm: ReserveData) => {
     setForm(newForm);
   };
+  const updateTour = (newTour: TourData) => {
+    setTour(newTour);
+  };
+
+
   return (
     <BrowserRouter>
       <MyNavbar />
@@ -46,7 +73,7 @@ function App() {
           path="/reservation"
           element={<MyReservation form={form} setForm={updateForm} />}
         />
-        <Route path="/tour" element={<MyTour2/>}/>
+        <Route path="/tour" element={<MyTour2 tour={tour} setTour={updateTour} checkBox={checkBox}/>}/>
         <Route
           path="/CheckoutDetails"
           element={<CheckoutDetails form={form} setForm={updateForm} />}
