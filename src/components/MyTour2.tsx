@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TourData from "../types/TourData";
+import { Link } from "react-router-dom";
 
 interface myReservationPropsTour {
   tour: TourData;
@@ -329,19 +330,18 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-5 mt-5 mb-4">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    if (validateForm()) {
-                      console.log("Form valido, procedi...");
-                      // Qui puoi aggiungo la logica per passare alla prossima schermata
-                    } else {
-                      console.log("Form non valido, correggi gli errori.");
-                    }
-                  }}
-                >
-                  Continue
-                </Button>
+              <Link to="/CheckoutDetails/tour">
+                      <Button
+                        variant="primary"
+                        onClick={(e) => {
+                          if (!validateForm()) {
+                            e.preventDefault(); 
+                          }
+                        }}
+                      >
+                        Continue
+                      </Button>
+                    </Link>
               </Col>
             </Row>
           </Col>
