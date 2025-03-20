@@ -75,8 +75,8 @@ function App() {
         />
         <Route path="/tour" element={<MyTour2 tour={tour} setTour={updateTour} checkBox={checkBox}/>}/>
         <Route
-          path="/CheckoutDetails"
-          element={<CheckoutDetails form={form} setForm={updateForm} />}
+          path="/CheckoutDetails/:type"
+          element={<CheckoutDetails form={form} setForm={updateForm} tour={tour}  setTour={setTour} />}
         />
         <Route index element={<Home />} />
         <Route path="/login" element={<MyLogin />} />

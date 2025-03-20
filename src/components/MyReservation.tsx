@@ -710,7 +710,7 @@ const MyReservation = (props: myReservationProps) => {
                 </Row>
                 <Row>
                   <Col className="text-center mb-4 mt-2">
-                    <Link to="/CheckoutDetails">
+                    <Link to="/CheckoutDetails/transfer">
                       <Button
                         variant="primary"
                         onClick={(e) => {
