@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TourData from "../types/TourData";
 import { Link } from "react-router-dom";
+import PriceDataTour from "../types/PriceDataTour";
 
 interface myReservationPropsTour {
   tour: TourData;
@@ -13,6 +14,9 @@ const MyTour2 = (props: myReservationPropsTour) => {
   const [activeButtonEnd, setActiveButtonEnd] = useState<number>(0);
   const [selectedButtonStart, setSelectedButtonstart] = useState<number>(0);
   const [selectedButtonEnd, setSelectedButtonEnd] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
+  const [duration, setDuration] = useState<string>("");
+  const [price, setPrice] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState({
     pickUp: false,
     dropOff: false,
@@ -36,7 +40,6 @@ const MyTour2 = (props: myReservationPropsTour) => {
     const selectedLocation = buttonLabels[index];
     props.setTour({ ...props.tour, startLocation: selectedLocation });
   };
-
 
   const handleButtonEnd = (index: number) => {
     setActiveButtonEnd(index);
@@ -146,6 +149,57 @@ const MyTour2 = (props: myReservationPropsTour) => {
         return null;
     }
   };
+
+  const sendPriceDataToBackend = function (priceDataTour: PriceDataTour) {
+    setError(null);
+    fetch("http://localhost:8080/tour/price-calculation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(priceDataTour),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Errore nella richiesta");
+        }
+      })
+      .then((result) => {
+        console.log("Risultato:", result);
+        setPrice(result.price);
+        setDuration(result.duration);
+        props.setTour({
+            ...props.tour, 
+            price: result.price, 
+            duration: result.duration, 
+          });
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+        setError("An error occurred while calculating the price.");
+        setPrice(null);
+        setDuration("");
+      });
+  };
+
+  useEffect(() => {
+    const priceDataTour: PriceDataTour = {
+      optionalStops: props.tour.optionalStops,
+      passengers: props.tour.passengers,
+      startLocation: props.tour.startLocation,
+      endLocation: props.tour.endLocation,
+    };
+    sendPriceDataToBackend(priceDataTour);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    props.tour.optionalStops,
+    props.tour.passengers,
+    props.tour.startLocation,
+    props.tour.endLocation,
+  ]);
 
   return (
     <div className="bgTour">
@@ -318,28 +372,33 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
           <Col className="col-11 bg-white mt-4 mb-5">
             <Row className=" justify-content-center">
-              <Col className="col-10 mt-5">
+              <Col className="col-10 mt-5 p-0">
                 <h2 className="montserrat">Summary</h2>
               </Col>
             </Row>
             <Row className=" justify-content-center">
-              <Col className="col-10 mt-5">
-                <h6 className="code">Tour ... hours</h6>
+              <Col className="col-10 mt-5 p-0">
+                <h6 className="code">Tour {duration} hours</h6>
               </Col>
-              <Col className="col-10">
+              <Col className="col-10 p-0">
                 <Row className=" justify-content-between">
-                  <Col className="col-8">
-                    <h6 className="code"> Total for ... passengers </h6>
+                  <Col className="col-7">
+                    <h6 className="code">
+                      {" "}
+                      Total for {props.tour.passengers} passengers{" "}
+                    </h6>
                   </Col>
-                  <Col className="col-4 "> 319 $</Col>
+
+                  <Col className="col-3 "> {price}€</Col>
                 </Row>
+                {!error && <p className="text-danger small">{error}</p>}
               </Col>
             </Row>
             <Row className=" justify-content-center">
-              <Col className="col-5 mt-5 mb-4">
+              <Col className="col-5 mt-4 mb-4">
                 <Link to="/CheckoutDetails/tour">
                   <Button
-                    variant="primary"
+                    className="custom-button"
                     onClick={(e) => {
                       if (!validateForm()) {
                         e.preventDefault();

@@ -52,8 +52,9 @@ function App() {
     phoneNumber: "",
     price: 0,
     optionalStops: checkBox,
-    startLocation: "",
-    endLocation: "",
+    startLocation: "Rome",
+    endLocation: "Rome",
+    duration:""
   });
 
   const updateForm = (newForm: ReserveData) => {
