@@ -166,7 +166,7 @@ const MyReservation = (props: myReservationProps) => {
 
   return (
     <>
-    <div className="bg-image">
+    <div className="bgTour">
       <Container>
         <Row className="justify-content-center">
           <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-light bg-opacity-75 rounded shadow p-3  ">
