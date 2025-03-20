@@ -11,7 +11,8 @@ interface myReservationPropsTour {
 const MyTour2 = (props: myReservationPropsTour) => {
   const [activeButtonStart, setActiveButtonStart] = useState<number>(0);
   const [activeButtonEnd, setActiveButtonEnd] = useState<number>(0);
-  const [selectedButton, setSelectedButton] = useState<number>(0);
+  const [selectedButtonStart, setSelectedButtonstart] = useState<number>(0);
+  const [selectedButtonEnd, setSelectedButtonEnd] = useState<number>(0);
   const [validationErrors, setValidationErrors] = useState({
     pickUp: false,
     dropOff: false,
@@ -31,11 +32,17 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
   const handleButtonStart = (index: number) => {
     setActiveButtonStart(index);
-    setSelectedButton(index);
+    setSelectedButtonstart(index);
+    const selectedLocation = buttonLabels[index];
+    props.setTour({ ...props.tour, startLocation: selectedLocation });
   };
+
+
   const handleButtonEnd = (index: number) => {
     setActiveButtonEnd(index);
-    setSelectedButton(index);
+    setSelectedButtonEnd(index);
+    const selectedLocation = buttonLabels[index];
+    props.setTour({ ...props.tour, endLocation: selectedLocation });
   };
 
   //funzione per vedere se è selezionata una checkBox
@@ -80,8 +87,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
     "Roman Forum (+ 30 min)",
   ];
 
-  const renderFormGroup = (field: keyof TourData) => {
-    switch (selectedButton) {
+  const renderFormGroup = (field: keyof TourData, button: number) => {
+    switch (button) {
       case 0: // Rome
         return (
           <Form.Group controlId="exampleForm.ControlInput1">
@@ -167,7 +174,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-11">
-                {renderFormGroup("pickUp")} {}
+                {renderFormGroup("pickUp", selectedButtonStart)} {}
                 {validationErrors.pickUp && (
                   <p className="text-danger small">
                     The PickUp Address is required.
@@ -299,7 +306,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
             <Row className=" justify-content-center mb-5">
               <Col className="col-11">
-                {renderFormGroup("dropOff")} {}
+                {renderFormGroup("dropOff", selectedButtonEnd)} {}
                 {validationErrors.dropOff && (
                   <p className="text-danger small">
                     The DropOff Address is required.
@@ -330,18 +337,18 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-5 mt-5 mb-4">
-              <Link to="/CheckoutDetails/tour">
-                      <Button
-                        variant="primary"
-                        onClick={(e) => {
-                          if (!validateForm()) {
-                            e.preventDefault(); 
-                          }
-                        }}
-                      >
-                        Continue
-                      </Button>
-                    </Link>
+                <Link to="/CheckoutDetails/tour">
+                  <Button
+                    variant="primary"
+                    onClick={(e) => {
+                      if (!validateForm()) {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    Continue
+                  </Button>
+                </Link>
               </Col>
             </Row>
           </Col>
