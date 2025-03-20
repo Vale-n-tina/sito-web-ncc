@@ -41,8 +41,7 @@ function App() {
     "Pantheon",
     "Saint Peter",
   ];
-  const[tour, setTour]= useState<TourData>({
-
+  const [tour, setTour] = useState<TourData>({
     pickUp: "",
     dropOff: "",
     passengers: 1,
@@ -51,11 +50,11 @@ function App() {
     passengerName: "",
     email: "",
     phoneNumber: "",
-    price:0,
+    price: 0,
     optionalStops: checkBox,
-  })
-  
-
+    startLocation: "",
+    endLocation: "",
+  });
 
   const updateForm = (newForm: ReserveData) => {
     setForm(newForm);
@@ -63,7 +62,6 @@ function App() {
   const updateTour = (newTour: TourData) => {
     setTour(newTour);
   };
-
 
   return (
     <BrowserRouter>
@@ -73,16 +71,27 @@ function App() {
           path="/reservation"
           element={<MyReservation form={form} setForm={updateForm} />}
         />
-        <Route path="/tour" element={<MyTour2 tour={tour} setTour={updateTour} checkBox={checkBox}/>}/>
+        <Route
+          path="/tour"
+          element={
+            <MyTour2 tour={tour} setTour={updateTour} checkBox={checkBox} />
+          }
+        />
         <Route
           path="/CheckoutDetails/:type"
-          element={<CheckoutDetails form={form} setForm={updateForm} tour={tour}  setTour={setTour} />}
+          element={
+            <CheckoutDetails
+              form={form}
+              setForm={updateForm}
+              tour={tour}
+              setTour={setTour}
+            />
+          }
         />
         <Route index element={<Home />} />
         <Route path="/login" element={<MyLogin />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/MyAdministration" element={<MyAdministration />} />
-          
         </Route>
       </Routes>
     </BrowserRouter>
