@@ -21,11 +21,12 @@ const MyAdministration = () => {
     | undefined
   >(true);
   const [show, setShow] = useState(false);
-  const [selectedBooking, setSelectedBooking] =
-    useState<TransferResponse | TourResponse| null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<
+    TransferResponse | TourResponse | null
+  >(null);
 
   const handleRowClick = (
-    booking: TransferResponse| TourResponse,
+    booking: TransferResponse | TourResponse,
     breakpoint:
       | true
       | "sm-down"
@@ -41,7 +42,6 @@ const MyAdministration = () => {
 
   const handleTabChange = (tab: "Transfer" | "Tour") => {
     setActiveTab(tab);
-   
   };
 
   //fetch
@@ -53,7 +53,6 @@ const MyAdministration = () => {
       const formattedDate = value.toLocaleDateString("en-CA");
       const authToken = localStorage.getItem("authToken");
 
-      
       // Effettua una richiesta API per ottenere i trasferimenti/tour
       fetch(
         `http://localhost:8080/prenotazioni/by-date?date=${formattedDate}`,
@@ -76,29 +75,57 @@ const MyAdministration = () => {
           console.error("Errore durante il fetch dei trasferimenti:", error);
         });
 
-        fetch(
-          `http://localhost:8080/tour/by-date?date=${formattedDate}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
+      fetch(`http://localhost:8080/tour/by-date?date=${formattedDate}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Errore durante il fetch dei tour");
           }
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Errore durante il fetch dei tour");
-            }
-            return response.json();
-          })
-          .then((data: TourResponse[]) => {
-            setTours(data); // Imposta i tour nello stato
-          })
-          .catch((error) => {
-            console.error("Errore durante il fetch dei tour:", error);
-          });
-
+          return response.json();
+        })
+        .then((data: TourResponse[]) => {
+          setTours(data); // Imposta i tour nello stato
+        })
+        .catch((error) => {
+          console.error("Errore durante il fetch dei tour:", error);
+        });
     }
   };
+  
+  const handleDelete = () => {
+    const authToken = localStorage.getItem("authToken");
+    if (selectedBooking) {
+      fetch(`http://localhost:8080/tour/delete/${selectedBooking.id}`, {
+        method: "DELETE", headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`, // Usa la key dinamica
+        },
+      })
+      
+        .then(() => {
+          
+          setShow(false);
+          setTours((prevTours) =>
+            prevTours.filter((tour) => tour.id !== selectedBooking.id)
+          );
+        })
+        .catch((error) => {
+          console.error("Errore:", error);
+        });
+    }
+  };
+
+  // Funzione per gestire la modifica
+  const handleEdit = () => {
+    if (selectedBooking) {
+      // Logica per modificare la prenotazione
+      console.log("Modificato:", selectedBooking);
+    }
+  };
+
   return (
     <div className=" overflow-hidden">
       <h1 className="text-center merriweather m-3">Seleziona una data</h1>
@@ -110,7 +137,8 @@ const MyAdministration = () => {
       </div>
 
       <h3 className="mt-4 mb-5 text-center merriweather ">
-      {activeTab === "Transfer" ? "Trasferimenti" : "Tour"} per il giorno {date.toLocaleDateString()}
+        {activeTab === "Transfer" ? "Trasferimenti" : "Tour"} per il giorno{" "}
+        {date.toLocaleDateString()}
       </h3>
       <Tabs
         activeKey={activeTab}
@@ -118,7 +146,7 @@ const MyAdministration = () => {
         className="mb-3"
         onSelect={(key) => handleTabChange(key as "Transfer" | "Tour")}
       >
-        <Tab eventKey="Transfer" title="Transfer" >
+        <Tab eventKey="Transfer" title="Transfer">
           <div className="table-responsive">
             <Table striped bordered hover size="sm ">
               <thead>
@@ -153,7 +181,7 @@ const MyAdministration = () => {
           </div>
         </Tab>
         <Tab eventKey="Tour" title="Tour" className="mb-5">
-        <div className="table-responsive">
+          <div className="table-responsive">
             <Table striped bordered hover size="sm ">
               <thead>
                 <tr>
@@ -192,20 +220,28 @@ const MyAdministration = () => {
 
       <Modal show={show} fullscreen={fullscreen} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal</Modal.Title>
+          <Modal.Title>
+            Dettagli Prenotazione
+            <div>
+              <i className="bi bi-trash3-fill me-3" onClick={handleDelete}></i>
+              <i className="bi bi-pen-fill" /*onClick={handleEdit}*/></i>
+            </div>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedBooking && (
             <Table borderless>
               <tbody>
-              {activeTab === "Transfer" ? (
+                {activeTab === "Transfer" ? (
                   // Dettagli per i trasferimenti
                   <>
                     <tr className="table-light">
                       <td>
                         <strong>Nome:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).nameAndSurname}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).nameAndSurname}
+                      </td>
                     </tr>
                     <tr>
                       <td>
@@ -223,7 +259,9 @@ const MyAdministration = () => {
                       <td>
                         <strong>Passeggeri:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).passengers}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).passengers}
+                      </td>
                     </tr>
                     <tr className="table-light">
                       <td>
@@ -241,25 +279,34 @@ const MyAdministration = () => {
                       <td>
                         <strong>Orario pickup:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).pickUpTime}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).pickUpTime}
+                      </td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Trasporto:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).transportDetails}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).transportDetails}
+                      </td>
                     </tr>
                     <tr className="table-light">
                       <td>
                         <strong>Seggiolini bambini:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).childSeats}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).childSeats}
+                      </td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Richieste:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).requests|| "Nessuna richiesta"}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).requests ||
+                          "Nessuna richiesta"}
+                      </td>
                     </tr>
                     <tr className="table-light">
                       <td>
@@ -277,7 +324,9 @@ const MyAdministration = () => {
                       <td>
                         <strong>Nome cartello:</strong>
                       </td>
-                      <td>{(selectedBooking as TransferResponse).nameOnBoard}</td>
+                      <td>
+                        {(selectedBooking as TransferResponse).nameOnBoard}
+                      </td>
                     </tr>
                     <tr>
                       <td>
@@ -297,7 +346,7 @@ const MyAdministration = () => {
                       </td>
                       <td>{(selectedBooking as TourResponse).passengerName}</td>
                     </tr>
-                    <tr >
+                    <tr>
                       <td>
                         <strong>Start:</strong>
                       </td>
@@ -309,7 +358,7 @@ const MyAdministration = () => {
                       </td>
                       <td>{(selectedBooking as TourResponse).pickUp}</td>
                     </tr>
-                    <tr >
+                    <tr>
                       <td>
                         <strong>End:</strong>
                       </td>
