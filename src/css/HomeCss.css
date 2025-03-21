@@ -210,3 +210,30 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
   }
+
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%); /* Parte da destra */
+      opacity: 0; /* Inizia invisibile */
+    }
+    100% {
+      transform: translateX(0); /* Arriva nella posizione originale */
+      opacity: 1; /* Diventa visibile */
+    }
+  }
+  .animate-slide-in-right {
+    animation: slideInFromRight 1s ease-out forwards; /* Animazione di 1 secondo */
+    opacity: 0; /* Inizia invisibile */
+  }
+  
+  .delay-1 {
+    animation-delay: 0.5s; /* Ritardo per la prima colonna */
+  }
+  
+  .delay-2 {
+    animation-delay: 1s; /* Ritardo per la seconda colonna */
+  }
+  
+  .delay-3 {
+    animation-delay: 1.5s; /* Ritardo per la terza colonna */
+  }

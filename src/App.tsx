@@ -14,6 +14,7 @@ import ProtectedRoute from "./components/PretectedRoute";
 import MyAdministration from "./components/MyAdministration";
 import MyTour2 from "./components/MyTour2";
 import TourData from "./types/TourData";
+import MyFooter from "./components/MyFooter";
 
 function App() {
   const [form, setForm] = useState<ReserveData>({
@@ -95,6 +96,7 @@ function App() {
           <Route path="/MyAdministration" element={<MyAdministration />} />
         </Route>
       </Routes>
+      <MyFooter />
     </BrowserRouter>
   );
 }

@@ -1,13 +1,16 @@
 import { useState } from "react";
 import Calendar from "react-calendar";
 import { Value } from "react-calendar/src/shared/types.js";
-import "react-calendar/dist/Calendar.css";
+
 import TransferResponse from "../types/TransferResponse";
-import { Button, Modal, Tab, Table, Tabs } from "react-bootstrap";
+import { Modal, Tab, Table, Tabs } from "react-bootstrap";
+import TourResponse from "../types/TourResponse";
 const MyAdministration = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
+  const [tours, setTours] = useState<TourResponse[]>([]);
   const values = [true, "sm-down", "md-down", "lg-down", "xl-down", "xxl-down"];
+  const [activeTab, setActiveTab] = useState<"Transfer" | "Tour">("Transfer");
   const [fullscreen, setFullscreen] = useState<
     | true
     | "sm-down"
@@ -18,29 +21,11 @@ const MyAdministration = () => {
     | undefined
   >(true);
   const [show, setShow] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-
-  interface Booking {
-    id: number;
-    firstName: string;
-    lastName: string;
-    username: string;
-    pickUp: string;
-    dropOff: string;
-    passengers: number;
-    suitcases: number;
-    backpack: number;
-    pickUpTime: string;
-    transportDetails: string;
-    childSeats: number;
-    requests: string;
-    email: string;
-    phone: string;
-    price: string;
-  }
+  const [selectedBooking, setSelectedBooking] =
+    useState<TransferResponse | TourResponse| null>(null);
 
   const handleRowClick = (
-    booking: Booking,
+    booking: TransferResponse| TourResponse,
     breakpoint:
       | true
       | "sm-down"
@@ -54,21 +39,27 @@ const MyAdministration = () => {
     setShow(true);
   };
 
+  const handleTabChange = (tab: "Transfer" | "Tour") => {
+    setActiveTab(tab);
+   
+  };
+
+  //fetch
   const handleDateChange = (value: Value) => {
     if (value instanceof Date) {
       setDate(value);
 
       // Formatta la data come "YYYY-MM-DD"
-      const formattedDate = value.toISOString().split("T")[0];
-
+      const formattedDate = value.toLocaleDateString("en-CA");
       const authToken = localStorage.getItem("authToken");
 
-      // Effettua una richiesta API per ottenere i trasferimenti
+      
+      // Effettua una richiesta API per ottenere i trasferimenti/tour
       fetch(
         `http://localhost:8080/prenotazioni/by-date?date=${formattedDate}`,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`, // Includi il token JWT nell'header
+            Authorization: `Bearer ${authToken}`,
           },
         }
       )
@@ -78,56 +69,38 @@ const MyAdministration = () => {
           }
           return response.json();
         })
-        .then((data) => {
+        .then((data: TransferResponse[]) => {
           setTransfers(data); // Imposta i trasferimenti nello stato
         })
         .catch((error) => {
-          console.error("Errore:", error);
+          console.error("Errore durante il fetch dei trasferimenti:", error);
         });
+
+        fetch(
+          `http://localhost:8080/tour/by-date?date=${formattedDate}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Errore durante il fetch dei tour");
+            }
+            return response.json();
+          })
+          .then((data: TourResponse[]) => {
+            setTours(data); // Imposta i tour nello stato
+          })
+          .catch((error) => {
+            console.error("Errore durante il fetch dei tour:", error);
+          });
+
     }
   };
-
-  const bookings: Booking[] = [
-    {
-      id: 1,
-      firstName: "Mark",
-      lastName: "Otto",
-      username: "@mdo",
-      pickUp: "Airport",
-      dropOff: "Hotel XYZ",
-      passengers: 2,
-      suitcases: 2,
-      backpack: 1,
-      pickUpTime: "14:00",
-      transportDetails: "Luxury Sedan",
-      childSeats: 1,
-      requests: "No smoking",
-      email: "mark.otto@example.com",
-      phone: "+123456789",
-      price: "€50",
-    },
-    {
-      id: 2,
-      firstName: "Jacob",
-      lastName: "Thornton",
-      username: "@fat",
-      pickUp: "Train Station",
-      dropOff: "Conference Center",
-      passengers: 3,
-      suitcases: 1,
-      backpack: 0,
-      pickUpTime: "10:30",
-      transportDetails: "SUV",
-      childSeats: 0,
-      requests: "Extra space",
-      email: "jacob.thornton@example.com",
-      phone: "+987654321",
-      price: "€70",
-    },
-  ];
-
   return (
-    <div>
+    <div className=" overflow-hidden">
       <h1 className="text-center merriweather m-3">Seleziona una data</h1>
       <div className="fullscreen-calendar">
         <Calendar
@@ -136,45 +109,82 @@ const MyAdministration = () => {
         />
       </div>
 
-      <h2 className="mt-4 mb-5 text-center merriweather ">Trasferimenti per il giorno {date.toLocaleDateString()}</h2>
+      <h3 className="mt-4 mb-5 text-center merriweather ">
+      {activeTab === "Transfer" ? "Trasferimenti" : "Tour"} per il giorno {date.toLocaleDateString()}
+      </h3>
       <Tabs
-        defaultActiveKey="profile"
+        activeKey={activeTab}
         id="uncontrolled-tab-example"
         className="mb-3"
+        onSelect={(key) => handleTabChange(key as "Transfer" | "Tour")}
       >
-        <Tab eventKey="Transfer" title="Transfer">
-            <div className="table-responsive" ><Table striped bordered hover size="sm ">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>PickUp</th>
-                <th>DropOff</th>
-                <th>Passengers</th>
-                <th>Time</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((booking) => (
-                <tr
-                  key={booking.id}
-                  onClick={() => handleRowClick(booking, "lg-down")}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>{booking.id}</td>
-                  <td>{booking.firstName}</td>
-                  <td>{booking.lastName}</td>
-                  <td>{booking.pickUp}</td>
-                  <td>{booking.dropOff}</td>
-                  <td>{booking.price}</td>
+        <Tab eventKey="Transfer" title="Transfer" >
+          <div className="table-responsive">
+            <Table striped bordered hover size="sm ">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>PickUp</th>
+                  <th>DropOff</th>
+                  <th>Passengers</th>
+                  <th>Day and time</th>
+                  <th>Price</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table></div>
-          
+              </thead>
+              <tbody>
+                {transfers.map((booking) => (
+                  <tr
+                    key={booking.id}
+                    onClick={() => handleRowClick(booking, "lg-down")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{booking.id}</td>
+                    <td>{booking.pickUp}</td>
+                    <td>{booking.dropOff}</td>
+                    <td>{booking.passengers}</td>
+                    <td>
+                      {booking.pickUpDate}/{booking.pickUpTime}
+                    </td>
+                    <td>{booking.price}€</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Tab>
-        <Tab eventKey="Tour" title="Tour">
-          Tab content for Tour
+        <Tab eventKey="Tour" title="Tour" className="mb-5">
+        <div className="table-responsive">
+            <Table striped bordered hover size="sm ">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>PickUp</th>
+                  <th>DropOff</th>
+                  <th>Passengers</th>
+                  <th>Day and time</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tours.map((tour) => (
+                  <tr
+                    key={tour.id}
+                    onClick={() => handleRowClick(tour, "lg-down")}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{tour.id}</td>
+                    <td>{tour.pickUp}</td>
+                    <td>{tour.dropOff}</td>
+                    <td>{tour.passengers}</td>
+                    <td>
+                      {tour.date}/{tour.time}
+                    </td>
+                    <td>{tour.price}€</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
         </Tab>
       </Tabs>
 
@@ -188,118 +198,168 @@ const MyAdministration = () => {
           {selectedBooking && (
             <Table borderless>
               <tbody>
-                <tr className="table-light">
-                  <td>
-                    <strong>Nome:</strong>
-                  </td>
-                  <td>
-                    {selectedBooking.firstName} {selectedBooking.lastName}
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Username:</strong>
-                  </td>
-                  <td>{selectedBooking.username}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Pickup:</strong>
-                  </td>
-                  <td>{selectedBooking.pickUp}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Dropoff:</strong>
-                  </td>
-                  <td>{selectedBooking.dropOff}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Passeggeri:</strong>
-                  </td>
-                  <td>{selectedBooking.passengers}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Valigie:</strong>
-                  </td>
-                  <td>{selectedBooking.suitcases}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Zaini:</strong>
-                  </td>
-                  <td>{selectedBooking.backpack}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Orario pickup:</strong>
-                  </td>
-                  <td>{selectedBooking.pickUpTime}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Trasporto:</strong>
-                  </td>
-                  <td>{selectedBooking.transportDetails}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Seggiolini bambini:</strong>
-                  </td>
-                  <td>{selectedBooking.childSeats}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Richieste:</strong>
-                  </td>
-                  <td>{selectedBooking.requests}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Email:</strong>
-                  </td>
-                  <td>{selectedBooking.email}</td>
-                </tr>
-                <tr className="table-light">
-                  <td>
-                    <strong>Telefono:</strong>
-                  </td>
-                  <td>{selectedBooking.phone}</td>
-                </tr>
-                <tr>
-                  <td>
-                    <strong>Prezzo:</strong>
-                  </td>
-                  <td>
-                    <h4>{selectedBooking.price}</h4>
-                  </td>
-                </tr>
+              {activeTab === "Transfer" ? (
+                  // Dettagli per i trasferimenti
+                  <>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Nome:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).nameAndSurname}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Pickup:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).pickUp}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Dropoff:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).dropOff}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Passeggeri:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).passengers}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Valigie:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).suitcases}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Zaini:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).backpack}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Orario pickup:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).pickUpTime}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Trasporto:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).transportDetails}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Seggiolini bambini:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).childSeats}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Richieste:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).requests|| "Nessuna richiesta"}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Email:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).email}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Telefono:</strong>
+                      </td>
+                      <td>+{(selectedBooking as TransferResponse).phone}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Nome cartello:</strong>
+                      </td>
+                      <td>{(selectedBooking as TransferResponse).nameOnBoard}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Prezzo:</strong>
+                      </td>
+                      <td>
+                        <h4>{(selectedBooking as TransferResponse).price}€</h4>
+                      </td>
+                    </tr>
+                  </>
+                ) : (
+                  // Dettagli per i tour
+                  <>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Nome:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).passengerName}</td>
+                    </tr>
+                    <tr >
+                      <td>
+                        <strong>Start:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).startLocation}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Pickup:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).pickUp}</td>
+                    </tr>
+                    <tr >
+                      <td>
+                        <strong>End:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).endLocation}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Dropoff:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).dropOff}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Passeggeri:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).passengers}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Data:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).date}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Orario:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).time}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Fermate:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).optionalStops}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Prezzo:</strong>
+                      </td>
+                      <td>
+                        <h4>{selectedBooking.price}€</h4>
+                      </td>
+                    </tr>
+                  </>
+                )}
               </tbody>
             </Table>
           )}
         </Modal.Body>
       </Modal>
-
-      <ul>
-        {transfers.map((transfer) => (
-          <li key={transfer.id}>
-            <p>
-              <strong>Da:</strong> {transfer.pickUp}
-            </p>
-            <p>
-              <strong>A:</strong> {transfer.dropOff}
-            </p>
-            <p>
-              <strong>Ora:</strong> {transfer.pickUpTime}
-            </p>
-            <p>
-              <strong>Passeggeri:</strong> {transfer.passengers}
-            </p>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

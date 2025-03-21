@@ -171,10 +171,10 @@ const MyTour2 = (props: myReservationPropsTour) => {
         setPrice(result.price);
         setDuration(result.duration);
         props.setTour({
-            ...props.tour, 
-            price: result.price, 
-            duration: result.duration, 
-          });
+          ...props.tour,
+          price: result.price,
+          duration: result.duration,
+        });
       })
       .catch((error) => {
         console.error("Errore:", error);
@@ -203,19 +203,18 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
   return (
     <div className="bgTour">
-      <h1 className="montserrat pt-5 ms-4">Classic Tour</h1>
-      <p className=" small ms-4">
-        Select the monuments you do not want to miss.
-      </p>
       <Container>
+        <h1 className="montserrat pt-5 ms-4">Classic Tour</h1>
+        <p className=" small ms-4">
+          Select the monuments you do not want to miss.
+        </p>
         <Row className=" justify-content-center">
-          <Col className="col-11 bg-white">
+          <Col className="col-11 bg-white col-lg-8 mb-lg-5">
             <p className="quicksand ms-3 mb-3 mt-4">Tour starting from</p>
-            <Row className=" justify-content-center">
+            <Row className=" justify-content-center ">
               {buttonLabels.map((label, index) => (
-                <Col key={index} className="col-5 p-0 m-1">
+                <Col key={index} className="col-5 p-0 m-1 ">
                   <Button
-                    variant="outline-primary"
                     className={`btn-gold-outline w-100  h-100 rounded-0 ${
                       activeButtonStart === index ? "active" : ""
                     }`}
@@ -237,8 +236,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
               </Col>
             </Row>
 
-            <Row className=" justify-content-center">
-              <Col className="col-11">
+            <Row className=" justify-content-center justify-content-lg-around ">
+              <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">Select date</Form.Label>
                 <input
                   type="datetime-local"
@@ -268,7 +267,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 )}
               </Col>
 
-              <Col className="col-11">
+              <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
                   Select number of passengers
                 </Form.Label>
@@ -295,8 +294,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
               </Col>
             </Row>
 
-            <Row className=" justify-content-center">
-              <Col className="col-11">
+            <Row className=" justify-content-center justify-content-lg-around">
+              <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
                   Included in 4 hours:
                 </Form.Label>
@@ -313,7 +312,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                   />
                 ))}
               </Col>
-              <Col className="col-11">
+              <Col className="col-11  col-lg-5">
                 <Form.Label className="mt-3 quicksand">
                   Optional monuments:
                 </Form.Label>
@@ -370,7 +369,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
           </Col>
 
-          <Col className="col-11 bg-white mt-4 mb-5">
+          <Col className="col-11 bg-white mt-4 mt-lg-0 mb-5 ms-1 col-lg-3">
             <Row className=" justify-content-center">
               <Col className="col-10 mt-5 p-0">
                 <h2 className="montserrat">Summary</h2>
@@ -378,18 +377,20 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-10 mt-5 p-0">
-                <h6 className="code">Tour {duration} hours</h6>
+                <h6 className="merriweather">Tour {duration} hours</h6>
               </Col>
               <Col className="col-10 p-0">
                 <Row className=" justify-content-between">
                   <Col className="col-7">
-                    <h6 className="code">
+                    <h6 className="merriweather">
                       {" "}
                       Total for {props.tour.passengers} passengers{" "}
                     </h6>
                   </Col>
 
-                  <Col className="col-3 "> {price}€</Col>
+                  <Col>
+                    <h4 className="col-3 merriweather fw-bold  "> {price}€</h4>
+                  </Col>
                 </Row>
                 {!error && <p className="text-danger small">{error}</p>}
               </Col>

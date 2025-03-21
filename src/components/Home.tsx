@@ -1,7 +1,7 @@
 import { Button, Col, Container, Row } from "react-bootstrap";
 import AccordionFAQ from "./AccordionFAQ";
 import MyFooter from "./MyFooter";
-
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -25,32 +25,36 @@ const Home = () => {
           <Col className="col-12">
             <Row className=" justify-content-center">
               <Col className="col-8 col-md-3 col-lg-2 mb-3">
-                <Button
-                  variant="gold"
-                  className="custom-gold-btn fw-bold sans p-md-2"
-                >
-                  BOOK NOW
-                </Button>
+                <Link to="/reservation">
+                  <Button
+                    variant="gold"
+                    className="custom-gold-btn fw-bold sans p-md-2"
+                  >
+                    BOOK NOW
+                  </Button>
+                </Link>
               </Col>
               <Col className="col-8 col-md-3  col-lg-2 mb-5">
+              <Link to="/tour">
                 <Button
                   variant="dark"
                   className="custom-black-btn fw-bold sans p-md-2"
                 >
                   VIEW TOUR
                 </Button>
+                </Link>
               </Col>
             </Row>
           </Col>
         </Row>
       </div>
-      <Row className="no-margin-padding justify-content-center">
+      <Row className="no-margin-padding justify-content-center overflow-hidden">
         <Col className="text-center col-8 col-md-9 p-0 no-margin-padding mt-2 mb-md-3 ">
           <h1 className="h1-presentation mb-4 mb-md-5 ">Why choose us?</h1>
           <hr className=" " />
         </Col>
 
-        <Col className="col-8 col-md-4 text-center mt-3">
+        <Col className="col-8 col-md-4 text-center mt-3 animate-slide-in-right delay-1 ">
           <i className="bi bi-clock "></i>
           <h2 className="mt-2 mb-3  sans fw-bold">Punctuality</h2>
           <p className="quicksand">
@@ -61,7 +65,7 @@ const Home = () => {
             No waiting, just smooth and reliable transfers.
           </p>
         </Col>
-        <Col className="col-8 col-md-4 text-center mt-4 ">
+        <Col className="col-8 col-md-4 text-center mt-4 animate-slide-in-right delay-2">
           <i className="bi bi-gem"></i>
           <h2 className="mt-2 mb-3  sans fw-bold">Comfort</h2>
           <p className="quicksand">
@@ -73,7 +77,7 @@ const Home = () => {
           </p>
         </Col>
 
-        <Col className="col-8 col-md-4 text-center mt-4  mb-3">
+        <Col className="col-8 col-md-4 text-center mt-4  mb-3 animate-slide-in-right delay-3">
           <i className="bi bi-award-fill"></i>
           <h2 className="mt-2 mb-3  sans fw-bold">Personalization</h2>
           <p className="quicksand">
@@ -146,9 +150,7 @@ const Home = () => {
           <AccordionFAQ />
         </Col>
       </Row>
-      <MyFooter/>
     </Container>
-    
   );
 };
 export default Home;

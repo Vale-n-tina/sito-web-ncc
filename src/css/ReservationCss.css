@@ -79,3 +79,12 @@
   box-shadow: 0 0 0 0.2rem rgba(201, 189, 112, 0.25) !important; 
 }
 
+
+.max{
+  max-height: 680px;
+}
+.max2{
+  max-height: 386px;
+  min-height: 386px;
+}
+
