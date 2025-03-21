@@ -1,66 +1,81 @@
 /* CSS RESERVATION */
-
+.bg-please {
+  background-color: #c9bd70;
+  
+}
 /* css per scritte form */
 .label {
-    position: absolute;
-    top: -12px;
-    left: 10px;
-    font-weight: 500;
-  }
-  /* css per icone select form */
-  .labelPerson {
-    position: absolute;
-    top: -19px;
-    left: 10px;
-  
-    font-weight: bold !important;
-    z-index: 2;
-  }
-  
-  /* css per icona valigie */
-  .labelSuitcase,
-  .labelChild {
-    position: absolute;
-    top: -15px;
-    left: 25px;
-  }
-  
-  .labelCalendar,
-  .labelClock {
-    position: absolute;
-    top: -10px;
-    left: 25px;
-  }
-  .labelAirplane {
-    position: absolute;
-    top: -16px;
-    left: 13px;
-    transform: rotate(50deg);
-  }
-  .labelShip {
-    position: absolute;
-    top: -14px;
-    left: 13px;
-  }
-  .labelPaper {
-    position: absolute;
-    top: -15px;
-    left: 13px;
-  }
-  
-  .labelRequest {
-    position: absolute;
-    top: -13px;
-    left: 13px;
-    font-weight: 500;
-  }
-  /* css per icona calendario e orologio */
-  
-  #data,
-  #ora {
-    width: 100%;
-    height: 50px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-  }
-  
+  position: absolute;
+  top: -12px;
+  left: 10px;
+  font-weight: 500;
+}
+/* css per icone select form */
+.labelPerson {
+  position: absolute;
+  top: -19px;
+  left: 10px;
+
+  font-weight: bold !important;
+  z-index: 2;
+}
+
+/* css per icona valigie */
+.labelSuitcase,
+.labelChild {
+  position: absolute;
+  top: -15px;
+  left: 25px;
+}
+
+.labelCalendar,
+.labelClock {
+  position: absolute;
+  top: -10px;
+  left: 25px;
+}
+.labelAirplane {
+  position: absolute;
+  top: -16px;
+  left: 13px;
+  transform: rotate(50deg);
+}
+.labelShip {
+  position: absolute;
+  top: -14px;
+  left: 13px;
+}
+.labelPaper {
+  position: absolute;
+  top: -15px;
+  left: 13px;
+}
+
+.labelRequest {
+  position: absolute;
+  top: -13px;
+  left: 13px;
+  font-weight: 500;
+}
+/* css per icona calendario e orologio */
+
+#data,
+#ora {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.custom-inputReservation {
+   
+  outline: none !important;
+  box-shadow: none !important; 
+  border-color: #c9bd70 !important; 
+}
+
+.custom-inputReservation:focus {
+  border-color: #c9bd70 !important;
+  box-shadow: 0 0 0 0.2rem rgba(201, 189, 112, 0.25) !important; 
+}
+
