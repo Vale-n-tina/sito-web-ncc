@@ -8,8 +8,21 @@
   }
   
   .react-calendar__tile--now {
-    background:  #c9bd70!important; 
+    background:  #e0d7a5!important; 
     color: white !important;
     font-weight: bold;
     border-radius: 8px;
   }
+ 
+.react-calendar__tile--active {
+  background-color: #a89c4d !important; /* Colore per il giorno selezionato */
+  color: white;
+}
+
+.nav-link {
+  color: #a89c4d; /* Colore del testo quando la tab NON è selezionata */
+}
+
+.nav-link.active {
+  color: black; /* Colore del testo quando la tab È selezionata */
+}

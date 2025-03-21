@@ -184,7 +184,7 @@ const MyReservation = (props: myReservationProps) => {
                 </Col>
               </Row>
 
-              <Form className="pt-2">
+              <Form className="pt-2 max ">
                 <Form.Group
                   className="mb-4 position-relative mt-3 z-1  rounded "
                   controlId="exampleForm.ControlInput1"
@@ -675,15 +675,15 @@ const MyReservation = (props: myReservationProps) => {
                     </GoogleMap>
                   </LoadScript>
                 </Col>
-                <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5">
+                <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5 max2">
                   <Row className="mt-3">
                     <Col className="text-center">
-                      <h4 className="code fw-bold">Summary</h4>
+                      <h2 className="montserrat ">Summary</h2>
                     </Col>
                   </Row>
                   <Row className="mt-3 mb-3">
                     <Col>
-                      <h6 className="code">Estimated Distance: </h6>
+                      <h6 className="merriweather">Estimated Distance: </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold"> {distanceKm}</p>
@@ -691,7 +691,7 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="code">Estimated Trip Time: </h6>
+                      <h6 className="merriweather">Estimated Trip Time: </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">{duration}</p>
@@ -699,7 +699,7 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="code">List price: </h6>
+                      <h6 className="merriweather">List price: </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">
@@ -716,10 +716,10 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="code">Discount price: </h6>
+                      <h6 className="merriweather">Discount price: </h6>
                     </Col>
                     <Col>
-                      <p className=" fw-bold">{price}€</p>
+                      <p className=" merriweather fw-bold">{price}€</p>
                     </Col>
                   </Row>
                   <Row>
@@ -744,7 +744,7 @@ const MyReservation = (props: myReservationProps) => {
           </Row>
         </Container>
       </div>
-      <MyFooter />
+      
     </>
   );
 };

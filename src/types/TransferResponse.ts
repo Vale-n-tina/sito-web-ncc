@@ -15,6 +15,6 @@ interface TransferResponse {
     nameAndSurname: string;
     email: string;
     phone: string;
-    price: number;
+    price: string;
   }
   export default TransferResponse;
