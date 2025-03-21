@@ -38,11 +38,13 @@
   
 .custom-input {
     border-color: #c9bd70 !important; 
+    
   }
   
   .custom-input:focus {
     border-color: #c9bd70 !important;
     box-shadow: 0 0 0 0.25rem rgba(201, 189, 112, 0.25) !important;
+    
   }
   
   .custom-datetime-input {
