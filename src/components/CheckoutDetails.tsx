@@ -126,6 +126,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Form.Control
                         type="text"
                         placeholder="Name and Surname"
+                        className="custom-inputReservation"
                         required
                         value={
                           isTour ? tour.passengerName : form.nameAndSurname
@@ -161,6 +162,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Form.Control
                         type="email"
                         required
+                       
                         value={isTour ? tour.email : form.email}
                         onChange={(e) => {
                           if (isTour) {
@@ -173,9 +175,9 @@ const CheckoutDetails = (props: myReservationProps) => {
                             email: false,
                           }));
                         }}
-                        className={
+                        className={`custom-inputReservation ${
                           validationErrors.email ? "border border-danger" : ""
-                        }
+                        }`}
                       />
                       {validationErrors.email && (
                         <p className="text-danger small">
@@ -196,6 +198,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                         type="email"
                         value={confirmEmail}
                         onChange={handleConfirmEmailChange}
+                         className="custom-inputReservation"
                       />
                       {emailError && (
                         <Alert variant="danger" className="mt-2">
@@ -213,6 +216,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Form.Label>
                       <PhoneInput
                         country={"us"}
+                        
                         placeholder="Number"
                         value={isTour ? tour.phoneNumber : form.phone}
                         onChange={(value) => {
@@ -226,11 +230,11 @@ const CheckoutDetails = (props: myReservationProps) => {
                             phone: false,
                           }));
                         }}
+                        inputClass={`custom-inputReservation ${
+                          validationErrors.phone ? "border border-danger" : ""
+                        }`}
                         inputStyle={{
                           width: "100%",
-                          border: validationErrors.phone
-                            ? "1px solid #dc3545"
-                            : "",
                         }}
                       />
                       {validationErrors.phone && (
