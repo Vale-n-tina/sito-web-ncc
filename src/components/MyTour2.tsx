@@ -245,6 +245,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                   required
                   className="custom-datetime-input"
                   value={`${props.tour.date}T${props.tour.time}`}
+                  min={new Date().toISOString().slice(0, 16)} 
                   onChange={(e) => {
                     const datetimeValue = e.target.value;
                     const [date, time] = datetimeValue.split("T");

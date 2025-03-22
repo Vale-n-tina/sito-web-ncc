@@ -12,7 +12,7 @@ import "react-phone-input-2/lib/style.css";
 
 import { useState } from "react";
 import ReserveData from "../types/ReserveData";
-import MyFooter from "./MyFooter";
+
 import TourData from "../types/TourData";
 import { useParams } from "react-router-dom";
 
@@ -100,18 +100,18 @@ const CheckoutDetails = (props: myReservationProps) => {
 
   return (
     <>
-      <div className="bg-image">
-        <Container className=" sans text-black merriweather">
+      <div className="bgTour">
+        <Container className=" sans text-black ">
           <Row>
             <Col className="col col-11 m-auto mt-3 ">
-              <h1 className="code text-black merriweather shadow p-3 mb-5 rounded bg-light bg-opacity-75 text-center">
+              <h1 className=" merriweather text-black  shadow p-3 mb-5 rounded bg-white text-center">
                 Booking details
               </h1>
             </Col>
           </Row>
 
           <Row>
-            <Col className="col col-11 m-auto pt-3 bg-light bg-opacity-75 rounded shadow p-3 mb-3 rounded ">
+            <Col className="col col-11 m-auto pt-3  bg-white rounded shadow p-3 mb-3 rounded ">
               <h4 className="text-black merriweather">Passenger Information</h4>
               <Row>
                 <Col className="col col-12 col-md-6 col-lg-5 m-auto merriweather ">
@@ -243,8 +243,8 @@ const CheckoutDetails = (props: myReservationProps) => {
                 </Col>
               </Row>
             </Col>
-            <Col className="col col-11 m-auto pt-3  bg-light bg-opacity-75 rounded mt-3 px-5 mb-4 shadow p-3 mb-5 rounded">
-              <h4 className="text-black code mt-4 mb-5 merriweather">
+            <Col className="col col-11 m-auto pt-3  bg-white rounded mt-3 px-5 mb-4 shadow p-3 mb-5 rounded">
+              <h4 className="text-black mt-4 mb-5 merriweather">
                 {isTour ? "Tour Details" : "Transfer Details"}
               </h4>
               <Row>
@@ -253,7 +253,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                     <>
                       <Row className="mb-2">
                         <Col className="col col-11">
-                          <h6 className="m-0 text-thetriary code merriweather">
+                          <h6 className="m-0 text-thetriary  merriweather">
                             From
                           </h6>
                         </Col>
@@ -263,7 +263,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                       <Row className="mb-2">
                         <Col className="col col-11">
-                          <h6 className="m-0 text-thetriary code merriweather">
+                          <h6 className="m-0 text-thetriary merriweather">
                             To
                           </h6>
                         </Col>
@@ -273,7 +273,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                       <Row className="mb-2">
                         <Col className="col col-11">
-                          <h6 className="m-0 text-thetriary code merriweather">
+                          <h6 className="m-0 text-thetriary merriweather">
                             Date
                           </h6>
                         </Col>
@@ -286,7 +286,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                       <Row className="mb-2">
                         <Col className="col col-11">
-                          <h6 className="m-0 text-thetriary code merriweather">
+                          <h6 className="m-0 text-thetriary merriweather">
                             Pick-Up Time
                           </h6>
                         </Col>
@@ -298,7 +298,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                       <Row className="mb-2">
                         <Col className="col col-11">
-                          <h6 className="m-0 text-thetriary code merriweather">
+                          <h6 className="m-0 text-thetriary merriweather">
                             Passengers
                           </h6>
                         </Col>
@@ -310,12 +310,12 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                       <Row className="mb-2 align-items-center">
                         <Col className="col col-12 col-md-4 col-lg-4">
-                          <h6 className="m-0 text-thetriary code fw-bold fs-4 merriweather">
+                          <h6 className="m-0 text-thetriary fw-bold fs-4 merriweather">
                             Price
                           </h6>
                         </Col>
                         <Col className="col col-12 col-md-4 col-lg-4">
-                          <p className=" fw-bold mb-1 fs-4 ">
+                          <p className=" fw-bold mb-1 fs-4   merriweather">
                             {props.tour.price}€
                           </p>
                         </Col>
