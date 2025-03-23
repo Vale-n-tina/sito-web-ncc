@@ -432,6 +432,18 @@ const MyAdministration = () => {
                       </td>
                       <td>{(selectedBooking as TourResponse).passengerName}</td>
                     </tr>
+                    <tr >
+                      <td>
+                        <strong>Telefono:</strong>
+                      </td>
+                      <td>+{(selectedBooking as TourResponse).phoneNumber}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Email:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).email}</td>
+                    </tr>
                     <tr>
                       <td>
                         <strong>Start:</strong>
@@ -485,7 +497,7 @@ const MyAdministration = () => {
                           margin: 0,
                         }}
                       >
-                        {(selectedBooking as TourResponse).optionalStops.map(
+                        {(selectedBooking as TourResponse)?.optionalStops?.map(
                           (stop, index) => (
                             <li key={index}>{stop}</li>
                           )
@@ -494,10 +506,16 @@ const MyAdministration = () => {
                     </tr>
                     <tr>
                       <td>
+                        <strong>Durata tour:</strong>
+                      </td>
+                      <td>{(selectedBooking as TourResponse).duration} ore</td>
+                    </tr>
+                    <tr>
+                      <td>
                         <strong>Prezzo:</strong>
                       </td>
                       <td>
-                        <h4>{selectedBooking.price}€</h4>
+                        <h4>{(selectedBooking as TourResponse).price}€</h4>
                       </td>
                     </tr>
                   </>

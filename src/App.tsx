@@ -16,6 +16,7 @@ import MyTour2 from "./components/MyTour2";
 import TourData from "./types/TourData";
 import MyFooter from "./components/MyFooter";
 
+
 function App() {
   const [form, setForm] = useState<ReserveData>({
     pickUp: "",
@@ -69,6 +70,7 @@ function App() {
     <BrowserRouter>
       <MyNavbar />
       <Routes>
+       
         <Route
           path="/reservation"
           element={<MyReservation form={form} setForm={updateForm} />}
