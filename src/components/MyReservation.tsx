@@ -11,7 +11,7 @@ import {
 } from "@react-google-maps/api";
 import PriceData from "../types/PriceData";
 import ReserveData from "../types/ReserveData";
-import MyFooter from "./MyFooter";
+
 
 interface myReservationProps {
   form: ReserveData;

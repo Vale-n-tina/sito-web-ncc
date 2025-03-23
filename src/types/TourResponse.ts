@@ -12,5 +12,6 @@ dropOff:string,
  price:number,
  startLocation:string,
  endLocation:string,
+ duration:string,
 }
 export default TourResponse

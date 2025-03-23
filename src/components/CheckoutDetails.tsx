@@ -312,6 +312,18 @@ const CheckoutDetails = (props: myReservationProps) => {
                           </p>
                         </Col>
                       </Row>
+                      <Row className="mb-2">
+                        <Col className="col col-11">
+                          <h6 className="m-0 text-thetriary merriweather">
+                            Duration
+                          </h6>
+                        </Col>
+                        <Col className="col col-11">
+                          <p className=" fw-bold mb-1">
+                            {props.tour.duration}  hours
+                          </p>
+                        </Col>
+                      </Row>
                       <Row className="mb-2 align-items-center">
                         <Col className="col col-12 col-md-4 col-lg-4">
                           <h6 className="m-0 text-thetriary fw-bold fs-4 merriweather">
