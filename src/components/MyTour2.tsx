@@ -151,15 +151,26 @@ const MyTour2 = (props: myReservationPropsTour) => {
         return null;
     }
   };
+  const convertToEnglish = (location: string): string => {
+    if (location.includes("Fiumicino") || location.includes("Fiumicino")) return "Fiumicino Airport";
+    if (location.includes("Ciampino") || location.includes("Ciampino")) return "Ciampino Airport";
+    if (location.includes("Civitavecchia") || location.includes("Civitavecchia")) return "Civitavecchia Dock";
+    return "Rome";
+  };
 
   const sendPriceDataToBackend = function (priceDataTour: PriceDataTour) {
     setError(null);
+    const dataToSend = {
+      ...priceDataTour,
+      startLocation: convertToEnglish(priceDataTour.startLocation),
+      endLocation: convertToEnglish(priceDataTour.endLocation)
+    };
     fetch("http://localhost:8080/tour/price-calculation", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(priceDataTour),
+      body: JSON.stringify(dataToSend),
     })
       .then((response) => {
         if (response.ok) {
