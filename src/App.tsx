@@ -15,6 +15,7 @@ import MyAdministration from "./components/MyAdministration";
 import MyTour2 from "./components/MyTour2";
 import TourData from "./types/TourData";
 import MyFooter from "./components/MyFooter";
+import "./language/i18n"
 
 
 function App() {
@@ -65,6 +66,8 @@ function App() {
   const updateTour = (newTour: TourData) => {
     setTour(newTour);
   };
+
+  
 
   return (
     <BrowserRouter>

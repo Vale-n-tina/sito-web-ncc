@@ -43,6 +43,28 @@
   align-items: center;
 }
 
+.fi {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+.custom-dropdown {
+  padding: 0 !important;  /* Rimuove il padding */
+  background-color: black !important;  /* Imposta lo sfondo nero */
+  border: none; /* Rimuove eventuali bordi */
+}
+
+.custom-dropdown .dropdown-menu {
+  background-color: black !important; /* Imposta lo sfondo nero anche nel menu */
+}
+
+.custom-dropdown .dropdown-item {
+  color: white !important;  /* Imposta il testo bianco */
+}
+
+.custom-dropdown .dropdown-item:hover {
+  background-color: #333 !important; /* Imposta un hover scuro */
+}
+
 
 
 /*font-family:'Courier New', Courier, monospace !important*/
