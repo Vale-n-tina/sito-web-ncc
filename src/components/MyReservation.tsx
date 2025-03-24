@@ -163,7 +163,7 @@ const MyReservation = (props: myReservationProps) => {
   const onScriptLoad = () => {
     setIsScriptLoaded(true);
   };
-   const { t, i18n } = useTranslation(); 
+   const { t, } = useTranslation(); 
 
   return (
     <>

@@ -3,12 +3,15 @@ import Calendar from "react-calendar";
 import { Value } from "react-calendar/src/shared/types.js";
 
 import TransferResponse from "../types/TransferResponse";
-import { Form, Modal, Tab, Table, Tabs } from "react-bootstrap";
+import { Alert, Form, Modal, Tab, Table, Tabs } from "react-bootstrap";
 import TourResponse from "../types/TourResponse";
 const MyAdministration = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
   const [tours, setTours] = useState<TourResponse[]>([]);
+  const [errors, setErrors] = useState<string | null>(null);
+  const [deleteErrors, setDeleteErrors] = useState<string | null>(null);
+  const[changeErrors, setChangeErrors] = useState<string | null>(null);
   const values = [true, "sm-down", "md-down", "lg-down", "xl-down", "xxl-down"];
   const [activeTab, setActiveTab] = useState<"Transfer" | "Tour">("Transfer");
   const [fullscreen, setFullscreen] = useState<
@@ -97,9 +100,11 @@ const MyAdministration = () => {
         })
         .then((data: TransferResponse[]) => {
           setTransfers(data); // Imposta i trasferimenti nello stato
+          setErrors(null); // Rimuove gli errori precedenti
         })
         .catch((error) => {
           console.error("Errore durante il fetch dei trasferimenti:", error);
+          setErrors("Errore nel caricamento dei dati.");
         });
 
       fetch(`http://localhost:8080/tour/by-date?date=${formattedDate}`, {
@@ -115,9 +120,11 @@ const MyAdministration = () => {
         })
         .then((data: TourResponse[]) => {
           setTours(data); // Imposta i tour nello stato
+          setErrors(null); // Rimuove gli errori precedenti
         })
         .catch((error) => {
           console.error("Errore durante il fetch dei tour:", error);
+          setErrors("Errore nel caricamento dei dati.")
         });
     }
   };
@@ -138,6 +145,7 @@ const MyAdministration = () => {
       )
         .then(() => {
           setShow(false);
+          setDeleteErrors(null)
           if (resourceType === "prenotazioni") {
             setTransfers((prevTransfers) =>
               prevTransfers.filter(
@@ -152,6 +160,7 @@ const MyAdministration = () => {
         })
         .catch((error) => {
           console.error("Errore:", error);
+          setDeleteErrors("Errore nell'eliminazione")
         });
     }
   };
@@ -176,6 +185,7 @@ const MyAdministration = () => {
           return response.json();
         })
         .then((data) => {
+          setChangeErrors(null)
           // Aggiorna lo stato locale
           if (resourceType === "prenotazioni") {
             setTransfers((prevTransfers) =>
@@ -200,6 +210,7 @@ const MyAdministration = () => {
         })
         .catch((error) => {
           console.error("Errore durante l'aggiornamento:", error);
+          setChangeErrors("Errore nella modifica")
         });
     }
   };
@@ -238,6 +249,13 @@ const MyAdministration = () => {
                 </tr>
               </thead>
               <tbody>
+                {errors &&(
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      {errors}
+                    </td>
+                  </tr>
+                )}
                 {transfers.map((booking) => (
                   <tr
                     key={booking.id}
@@ -530,6 +548,16 @@ const MyAdministration = () => {
           <Modal.Title>Modifica Prenotazione</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {changeErrors &&(
+            <Alert>
+              <p>{changeErrors}</p>
+            </Alert>
+          )}
+           {deleteErrors &&(
+            <Alert variant="danger">
+              <p>{deleteErrors}</p>
+            </Alert>
+           )}
           {selectedBooking && (
             <form>
               {activeTab === "Transfer" ? (
