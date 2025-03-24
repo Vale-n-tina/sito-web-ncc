@@ -16,6 +16,7 @@ import MyTour2 from "./components/MyTour2";
 import TourData from "./types/TourData";
 import MyFooter from "./components/MyFooter";
 import "./language/i18n"
+import NotFound from "./components/NotFound";
 
 
 function App() {
@@ -95,11 +96,12 @@ function App() {
             />
           }
         />
-        <Route index element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<MyLogin />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/MyAdministration" element={<MyAdministration />} />
         </Route>
+        <Route path="*" element={<NotFound/>} />
       </Routes>
       <MyFooter />
     </BrowserRouter>

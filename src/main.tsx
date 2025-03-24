@@ -9,5 +9,6 @@ import"./css/ReservationCss.css"
 import"./css/LoginCss.css"
 import"./css/Tour.css"
 import "./css/Calendar.css"
+import "./css/NotFoundcss.css"
 
 createRoot(document.getElementById("root")!).render(<App />);
