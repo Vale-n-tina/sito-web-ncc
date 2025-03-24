@@ -3,6 +3,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import TourData from "../types/TourData";
 import { Link } from "react-router-dom";
 import PriceDataTour from "../types/PriceDataTour";
+import { useTranslation } from "react-i18next";
 
 interface myReservationPropsTour {
   tour: TourData;
@@ -23,6 +24,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     dateTime: false,
     optionalStops: false,
   });
+   const { t, i18n } = useTranslation(); 
   const validateForm = () => {
     const errors = {
       pickUp: !props.tour.pickUp,
@@ -67,27 +69,27 @@ const MyTour2 = (props: myReservationPropsTour) => {
   };
 
   const buttonLabels: string[] = [
-    "Rome",
-    "Fiumicino Airport",
-    "Ciampino Airport",
-    "Civitavecchia Dock",
+    t("TourRome"),
+    t("TourFiumicino"),
+    t("TourFiumicino"),
+    t("TourCivitavecchia"),
   ];
 
   const places: string[] = [
-    "Saint Peter in Chains (+ 30 min)",
-    "Castel Sant'Angelo (+ 30 min)",
-    "Basilica of Saint Mary Major (+ 30 min)",
-    "Basilica of Saint Mary of the Angels (+ 30 min)",
-    "Basilica of Santa Maria del Popolo (+ 30 min)",
-    "Saint Mary of Victory (+ 30 min)",
-    "Terrace of Gianicolo and Acqua Paola Fountain (+ 30 min)",
-    "Piazza Navona (+ 30 min)",
-    "Piazza del Popolo (+ 30 min)",
-    "Piazza della Minerva (+ 30 min)",
-    "Victor Emmanuel II Monument (+ 30 min)",
-    "Spanish Steps (+ 30 min)",
-    "Circus Maximus (+ 30 min)",
-    "Roman Forum (+ 30 min)",
+    t("saintPeterInChains"),
+    t("castelSantAngelo"),
+    t("saintMaryMajor"),
+    t("saintMaryOfTheAngels"),
+    t("santaMariaDelPopolo"),
+    t("saintMaryOfVictory"),
+    t("gianicoloTerrace"),
+    t("piazzaNavona"),
+    t("piazzaDelPopolo"),
+    t("piazzaMinerva"),
+    t("vittoriano"),
+    t("spanishSteps"),
+    t("circusMaximus"),
+    t("romanForum")
   ];
 
   const renderFormGroup = (field: keyof TourData, button: number) => {
@@ -95,7 +97,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
       case 0: // Rome
         return (
           <Form.Group controlId="exampleForm.ControlInput1">
-            <Form.Label className="mt-2 quicksand">Insert address</Form.Label>
+            <Form.Label className="mt-2 quicksand">{t("TourInsertAddress")}</Form.Label>
             <Form.Control
               type="text"
               required
@@ -113,7 +115,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
         return (
           <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label className="mt-2 quicksand">
-              Insert number fly
+              {t("TourInsertNumberFly")}
             </Form.Label>
             <Form.Control
               type="text"
@@ -131,7 +133,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
         return (
           <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label className="mt-2 quicksand">
-              Insert cruise ship name
+              {t("TourInsertcruiseName")}
             </Form.Label>
             <Form.Control
               type="text"
@@ -204,13 +206,13 @@ const MyTour2 = (props: myReservationPropsTour) => {
   return (
     <div className="bgTour">
       <Container>
-        <h1 className="montserrat pt-5 ms-4">Classic Tour</h1>
+        <h1 className="montserrat pt-5 ms-4">{t("TourClassicTour")}</h1>
         <p className=" small ms-4">
-          Select the monuments you do not want to miss.
+         {t("TourClassicTourText")}
         </p>
         <Row className=" justify-content-center">
           <Col className="col-11 bg-white col-lg-8 mb-lg-5">
-            <p className="quicksand ms-3 mb-3 mt-4">Tour starting from</p>
+            <p className="quicksand ms-3 mb-3 mt-4">{t("TourStarting")}</p>
             <Row className=" justify-content-center ">
               {buttonLabels.map((label, index) => (
                 <Col key={index} className="col-5 p-0 m-1 ">
@@ -230,7 +232,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 {renderFormGroup("pickUp", selectedButtonStart)} {}
                 {validationErrors.pickUp && (
                   <p className="text-danger small">
-                    The PickUp Address is required.
+                    {t("TourStartingError")}
+                    
                   </p>
                 )}
               </Col>
@@ -238,7 +241,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
             <Row className=" justify-content-center justify-content-lg-around ">
               <Col className="col-11 col-lg-5">
-                <Form.Label className="mt-3 quicksand">Select date</Form.Label>
+                <Form.Label className="mt-3 quicksand">{t("TourDate")}</Form.Label>
                 <input
                   type="datetime-local"
                   name="datetime"
@@ -263,14 +266,15 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 />
                 {validationErrors.dateTime && (
                   <p className="text-danger small">
-                    The date and time are required.
+                    {t("TourDateError")}
+                  
                   </p>
                 )}
               </Col>
 
               <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                  Select number of passengers
+                 {t("TourPassengers")}
                 </Form.Label>
                 <Form.Select
                   aria-label="Default select example"
@@ -298,7 +302,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
             <Row className=" justify-content-center justify-content-lg-around">
               <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                  Included in 4 hours:
+                {t("TourInclude")}
+                  
                 </Form.Label>
                 {props.checkBox.map((label, index) => (
                   <Form.Check
@@ -315,7 +320,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
               </Col>
               <Col className="col-11  col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                  Optional monuments:
+                {t("TourOptionalMonuments")}
+                 
                 </Form.Label>
                 <div
                   style={{
@@ -363,7 +369,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 {renderFormGroup("dropOff", selectedButtonEnd)} {}
                 {validationErrors.dropOff && (
                   <p className="text-danger small">
-                    The DropOff Address is required.
+                    {t("TourEndError")}
                   </p>
                 )}
               </Col>
@@ -373,19 +379,19 @@ const MyTour2 = (props: myReservationPropsTour) => {
           <Col className="col-11 bg-white mt-4 mt-lg-0 mb-5 ms-1 col-lg-3">
             <Row className=" justify-content-center">
               <Col className="col-10 mt-5 p-0">
-                <h2 className="montserrat">Summary</h2>
+                <h2 className="montserrat">{t("ReservationSummary")} </h2>
               </Col>
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-10 mt-5 p-0">
-                <h6 className="merriweather">Tour {duration} hours</h6>
+                <h6 className="merriweather">{t('tourDuration', { duration })}</h6>
               </Col>
               <Col className="col-10 p-0">
                 <Row className=" justify-content-between">
                   <Col className="col-7">
                     <h6 className="merriweather">
-                      {" "}
-                      Total for {props.tour.passengers} passengers{" "}
+                    {t('tourTotalPassengers', { count: props.tour.passengers })}
+                     
                     </h6>
                   </Col>
 
@@ -407,7 +413,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                       }
                     }}
                   >
-                    Continue
+                   {t("ReservationContinue")}
                   </Button>
                 </Link>
               </Col>
