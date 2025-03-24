@@ -24,7 +24,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     dateTime: false,
     optionalStops: false,
   });
-   const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation();
   const validateForm = () => {
     const errors = {
       pickUp: !props.tour.pickUp,
@@ -89,7 +89,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     t("vittoriano"),
     t("spanishSteps"),
     t("circusMaximus"),
-    t("romanForum")
+    t("romanForum"),
   ];
 
   const renderFormGroup = (field: keyof TourData, button: number) => {
@@ -97,7 +97,9 @@ const MyTour2 = (props: myReservationPropsTour) => {
       case 0: // Rome
         return (
           <Form.Group controlId="exampleForm.ControlInput1">
-            <Form.Label className="mt-2 quicksand">{t("TourInsertAddress")}</Form.Label>
+            <Form.Label className="mt-2 quicksand">
+              {t("TourInsertAddress")}
+            </Form.Label>
             <Form.Control
               type="text"
               required
@@ -152,9 +154,15 @@ const MyTour2 = (props: myReservationPropsTour) => {
     }
   };
   const convertToEnglish = (location: string): string => {
-    if (location.includes("Fiumicino") || location.includes("Fiumicino")) return "Fiumicino Airport";
-    if (location.includes("Ciampino") || location.includes("Ciampino")) return "Ciampino Airport";
-    if (location.includes("Civitavecchia") || location.includes("Civitavecchia")) return "Civitavecchia Dock";
+    if (location.includes("Fiumicino") || location.includes("Fiumicino"))
+      return "Fiumicino Airport";
+    if (location.includes("Ciampino") || location.includes("Ciampino"))
+      return "Ciampino Airport";
+    if (
+      location.includes("Civitavecchia") ||
+      location.includes("Civitavecchia")
+    )
+      return "Civitavecchia Dock";
     return "Rome";
   };
 
@@ -163,7 +171,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     const dataToSend = {
       ...priceDataTour,
       startLocation: convertToEnglish(priceDataTour.startLocation),
-      endLocation: convertToEnglish(priceDataTour.endLocation)
+      endLocation: convertToEnglish(priceDataTour.endLocation),
     };
     fetch("http://localhost:8080/tour/price-calculation", {
       method: "POST",
@@ -218,9 +226,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     <div className="bgTour">
       <Container>
         <h1 className="montserrat pt-5 ms-4">{t("TourClassicTour")}</h1>
-        <p className=" small ms-4">
-         {t("TourClassicTourText")}
-        </p>
+        <p className=" small ms-4">{t("TourClassicTourText")}</p>
         <Row className=" justify-content-center">
           <Col className="col-11 bg-white col-lg-8 mb-lg-5">
             <p className="quicksand ms-3 mb-3 mt-4">{t("TourStarting")}</p>
@@ -242,24 +248,23 @@ const MyTour2 = (props: myReservationPropsTour) => {
               <Col className="col-11">
                 {renderFormGroup("pickUp", selectedButtonStart)} {}
                 {validationErrors.pickUp && (
-                  <p className="text-danger small">
-                    {t("TourStartingError")}
-                    
-                  </p>
+                  <p className="text-danger small">{t("TourStartingError")}</p>
                 )}
               </Col>
             </Row>
 
             <Row className=" justify-content-center justify-content-lg-around ">
               <Col className="col-11 col-lg-5">
-                <Form.Label className="mt-3 quicksand">{t("TourDate")}</Form.Label>
+                <Form.Label className="mt-3 quicksand">
+                  {t("TourDate")}
+                </Form.Label>
                 <input
                   type="datetime-local"
                   name="datetime"
                   required
                   className="custom-datetime-input"
                   value={`${props.tour.date}T${props.tour.time}`}
-                  min={new Date().toISOString().slice(0, 16)} 
+                  min={new Date().toISOString().slice(0, 16)}
                   onChange={(e) => {
                     const datetimeValue = e.target.value;
                     const [date, time] = datetimeValue.split("T");
@@ -276,16 +281,13 @@ const MyTour2 = (props: myReservationPropsTour) => {
                   }}
                 />
                 {validationErrors.dateTime && (
-                  <p className="text-danger small">
-                    {t("TourDateError")}
-                  
-                  </p>
+                  <p className="text-danger small">{t("TourDateError")}</p>
                 )}
               </Col>
 
               <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                 {t("TourPassengers")}
+                  {t("TourPassengers")}
                 </Form.Label>
                 <Form.Select
                   aria-label="Default select example"
@@ -313,8 +315,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
             <Row className=" justify-content-center justify-content-lg-around">
               <Col className="col-11 col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                {t("TourInclude")}
-                  
+                  {t("TourInclude")}
                 </Form.Label>
                 {props.checkBox.map((label, index) => (
                   <Form.Check
@@ -331,8 +332,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
               </Col>
               <Col className="col-11  col-lg-5">
                 <Form.Label className="mt-3 quicksand">
-                {t("TourOptionalMonuments")}
-                 
+                  {t("TourOptionalMonuments")}
                 </Form.Label>
                 <div
                   style={{
@@ -379,9 +379,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
               <Col className="col-11">
                 {renderFormGroup("dropOff", selectedButtonEnd)} {}
                 {validationErrors.dropOff && (
-                  <p className="text-danger small">
-                    {t("TourEndError")}
-                  </p>
+                  <p className="text-danger small">{t("TourEndError")}</p>
                 )}
               </Col>
             </Row>
@@ -395,14 +393,17 @@ const MyTour2 = (props: myReservationPropsTour) => {
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-10 mt-5 p-0">
-                <h6 className="merriweather">{t('tourDuration', { duration })}</h6>
+                <h6 className="merriweather">
+                  {t("tourDuration", { duration })}
+                </h6>
               </Col>
               <Col className="col-10 p-0">
                 <Row className=" justify-content-between">
                   <Col className="col-7">
                     <h6 className="merriweather">
-                    {t('tourTotalPassengers', { count: props.tour.passengers })}
-                     
+                      {t("tourTotalPassengers", {
+                        count: props.tour.passengers,
+                      })}
                     </h6>
                   </Col>
 
@@ -424,7 +425,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                       }
                     }}
                   >
-                   {t("ReservationContinue")}
+                    {t("ReservationContinue")}
                   </Button>
                 </Link>
               </Col>
