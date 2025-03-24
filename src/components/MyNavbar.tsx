@@ -49,17 +49,17 @@ const MyNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav" className=" justify-content-end">
           <Nav>
             <Link to="/" className={getLink("/")}>
-              <div className=" ms-3">Home</div>
+              <div className=" ms-3">{t("BarHome")}</div>
             </Link>
             <Link to="/reservation" className={getLink("/reservation")}>
-              <div className=" ms-3">Reservation</div>
+              <div className=" ms-3"> {t("BarReservation")}</div>
             </Link>
 
             <Link to="tour" className={getLink("/tour")}>
-              <div className=" ms-3">Tour</div>
+              <div className=" ms-3">{t("BarTour")}</div>
             </Link>
             <Link to="login" className={getLink("/login")}>
-              <div className=" ms-3 me-3">Login</div>
+              <div className=" ms-3 me-3">{t("BarLogin")}</div>
             </Link>
             <DropdownButton
               key="start"
@@ -76,7 +76,7 @@ const MyNavbar = () => {
               <Dropdown.Item onClick={() => changeLanguage('fr')}>  <span className="fi fi-fr me-1" /> Français</Dropdown.Item>
             </DropdownButton>
             <Button size="sm" className=" ms-2 bg-color text-black">
-              Contacts
+              {t("BarContacts")}
             </Button>
           </Nav>
         </Navbar.Collapse>

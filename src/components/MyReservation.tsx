@@ -11,6 +11,7 @@ import {
 } from "@react-google-maps/api";
 import PriceData from "../types/PriceData";
 import ReserveData from "../types/ReserveData";
+import { useTranslation } from "react-i18next";
 
 
 interface myReservationProps {
@@ -162,6 +163,7 @@ const MyReservation = (props: myReservationProps) => {
   const onScriptLoad = () => {
     setIsScriptLoaded(true);
   };
+   const { t, i18n } = useTranslation(); 
 
   return (
     <>
@@ -171,15 +173,14 @@ const MyReservation = (props: myReservationProps) => {
             <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-white rounded shadow p-3  ">
               <Row>
                 <Col className="col-11 m-auto p-0">
-                  <h1 className="montserrat mt-3">Book your trip</h1>
+                  <h1 className="montserrat mt-3">{t("ReservationBookTrip")}</h1>
                 </Col>
               </Row>
               <Row>
                 <Col className=" bg-please col-11 m-auto mb-3 pt-3 color">
                   <p className="text-black quicksand">
-                    Please enter your arrival time and airline name. Your driver
-                    will be waiting for you at the arrival terminal, holding a
-                    sign with your name.
+                  {t("ReservationBookTripText")}
+                    
                   </p>
                 </Col>
               </Row>
@@ -190,7 +191,7 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label className="m-0 label text-black z-2">
-                    Pick-Up
+                  {t("ReservationPickUp")}
                   </Form.Label>
                   {isScriptLoaded && (
                     <Autocomplete
@@ -245,7 +246,7 @@ const MyReservation = (props: myReservationProps) => {
                     >
                       <Form.Control
                         type="text"
-                        placeholder="Airport, Hotel, Address"
+                        placeholder= {t("ReservationPlaceholder")}
                         required
                         value={origin} // Sincronizza il valore del campo con lo stato `origin`
                         onChange={(e) => {
@@ -265,7 +266,7 @@ const MyReservation = (props: myReservationProps) => {
                   )}
                   {validationErrors.pickUp && (
                     <p className="text-danger small  fw-bold">
-                      The departure point is required.
+                      {t("ReservationErrorPickUp")}
                     </p>
                   )}
                 </Form.Group>
@@ -274,7 +275,7 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label className="m-0 label text-black z-2">
-                    Drop-Off
+                  {t("ReservationDropOff")}
                   </Form.Label>
                   {isScriptLoaded && (
                     <Autocomplete
@@ -300,7 +301,7 @@ const MyReservation = (props: myReservationProps) => {
                     >
                       <Form.Control
                         type="text"
-                        placeholder="Airport, Hotel, Address"
+                        placeholder={t("ReservationPlaceholder")}
                         required
                         value={destination}
                         onChange={(e) => {
@@ -320,7 +321,7 @@ const MyReservation = (props: myReservationProps) => {
                   )}
                   {validationErrors.dropOff && (
                     <p className="text-danger small fw-bold">
-                      The destination is required.
+                    {t("ReservationErrorDropOff")}
                     </p>
                   )}
                 </Form.Group>
@@ -347,7 +348,7 @@ const MyReservation = (props: myReservationProps) => {
                     <option value="7">7</option>
                     <option value="8">8</option>
                   </Form.Select>
-                  <p className="small">Passengers </p>
+                  <p className="small">  {t("ReservationPassengers")}</p>
                 </div>
 
                 <Row>
@@ -375,7 +376,7 @@ const MyReservation = (props: myReservationProps) => {
                       <option value="7">7</option>
                       <option value="8">8</option>
                     </Form.Select>
-                    <p className="small">Suitcases </p>
+                    <p className="small">{t("ReservationSuitcases")} </p>
                   </Col>
                   <Col className=" position-relative col-6">
                     <i className="bi bi-backpack-fill fs-5 labelSuitcase text-black"></i>
@@ -401,7 +402,7 @@ const MyReservation = (props: myReservationProps) => {
                       <option value="7">7</option>
                       <option value="8">8</option>
                     </Form.Select>
-                    <p className="small">Backpack</p>
+                    <p className="small">{t("ReservationBackpack")}</p>
                   </Col>
                 </Row>
                 <Row className="align-items-baseline">
@@ -439,12 +440,12 @@ const MyReservation = (props: myReservationProps) => {
                     />
                     {validationErrors.pickUpDate && (
                       <p className="text-danger small  fw-bold">
-                        The "Date" field is required.
+                         {t("ReservationErrorDate")}
                       </p>
                     )}
                     <br />
                     <label htmlFor="data" className="small">
-                      Pick Up date:
+                     {t("ReservationDate")}
                     </label>
                   </Col>
                   <Col className=" position-relative  col-6 ps-0 col-lg-3">
@@ -473,12 +474,12 @@ const MyReservation = (props: myReservationProps) => {
                     />
                     {validationErrors.pickUpTime && (
                       <p className="text-danger small  fw-bold">
-                        The "Time" field is required.
+                        {t("ReservationErrorTime")}
                       </p>
                     )}{" "}
                     <br />
                     <label htmlFor="data" className="small">
-                      Pick Up Time
+                        {t("ReservationTime")}
                     </label>
                   </Col>
                   <Col className="col-12 col-lg-6">
@@ -516,7 +517,7 @@ const MyReservation = (props: myReservationProps) => {
                         <Form.Control
                           type="text"
                            className="custom-inputReservation"
-                          placeholder="name of the cruise ship"
+                          placeholder={t("ReservationLabelCruise")}
                           required
                           value={props.form.transportDetails || ""}
                           onChange={(e) => {
@@ -539,7 +540,7 @@ const MyReservation = (props: myReservationProps) => {
                         <Form.Control
                           type="text"
                            className="custom-inputReservation"
-                          placeholder="Train number"
+                          placeholder={t("ReservationLabelTrain")}
                           required
                           value={props.form.transportDetails || ""}
                           onChange={(e) => {
@@ -553,11 +554,11 @@ const MyReservation = (props: myReservationProps) => {
                     )}
                     <p className="small m-0">
                       {pickUpType === "airport"
-                        ? "Flight number"
+                        ? t("ReservationLabelPlane")
                         : pickUpType === "port"
-                        ? "Name of the cruise ship"
+                        ? t("ReservationLabelCruise")
                         : pickUpType === "train_station"
-                        ? "Train Number"
+                        ? t("ReservationLabelTrain")
                         : ""}
                     </p>
                   </Col>
@@ -573,7 +574,7 @@ const MyReservation = (props: myReservationProps) => {
                       </Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Insert your name"
+                        placeholder={t("ReservationPlaceholderHolds")}
                          className="custom-inputReservation"
                         value={props.form.nameOnBoard}
                         onChange={(e) => {
@@ -584,7 +585,7 @@ const MyReservation = (props: myReservationProps) => {
                         }}
                       />
                     </Form.Group>
-                    <p className="small">Name on a board the driver holds</p>
+                    <p className="small">{t("ReservationHolds")}</p>
                   </Col>
                 </Row>
                 <Row>
@@ -603,13 +604,13 @@ const MyReservation = (props: myReservationProps) => {
                         });
                       }}
                     >
-                      <option value="noChildSeats">No child seats</option>
+                      <option value="noChildSeats">{t("ReservationChilsSeatsOption")}</option>
                       <option value="1ChildSeat">1</option>
                       <option value="2ChildSeat">2</option>
                       <option value="3ChildSeat">3</option>
                       <option value="4ChildSeat">4</option>
                     </Form.Select>
-                    <p className="small">Number of child seats</p>
+                    <p className="small">{t("ReservationChilsSeats")}</p>
                   </Col>
                 </Row>
                 <Form.Group
@@ -617,10 +618,11 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlTextarea1"
                 >
                   <Form.Label className="labelRequest text-black">
-                    Requests
+                  {t("ReservationRequest")}
+                   
                   </Form.Label>
                   <Form.Control
-                    placeholder="Special needs or any other request"
+                    placeholder=  {t("ReservationRequestPlaceholder")}
                     as="textarea"
                      className="custom-inputReservation"
                     rows={3}
@@ -678,12 +680,12 @@ const MyReservation = (props: myReservationProps) => {
                 <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5 max2">
                   <Row className="mt-3">
                     <Col className="text-center">
-                      <h2 className="montserrat ">Summary</h2>
+                      <h2 className="montserrat ">{t("ReservationSummary")}</h2>
                     </Col>
                   </Row>
                   <Row className="mt-3 mb-3">
                     <Col>
-                      <h6 className="merriweather">Estimated Distance: </h6>
+                      <h6 className="merriweather">{t("ReservationEstimatedDistace")} </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold"> {distanceKm}</p>
@@ -691,7 +693,7 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">Estimated Trip Time: </h6>
+                      <h6 className="merriweather">{t("ReservationEstimatedTime")}</h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">{duration}</p>
@@ -699,7 +701,7 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">List price: </h6>
+                      <h6 className="merriweather">{t("ReservationListPrice")} </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">
@@ -716,7 +718,7 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">Discount price: </h6>
+                      <h6 className="merriweather">{t("ReservationDiscountPrice")} </h6>
                     </Col>
                     <Col>
                       <p className=" merriweather fw-bold">{price}€</p>
@@ -733,7 +735,7 @@ const MyReservation = (props: myReservationProps) => {
                             }
                           }}
                         >
-                          Continue
+                          {t("ReservationContinue")}
                         </Button>
                       </Link>
                     </Col>

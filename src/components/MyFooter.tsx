@@ -1,13 +1,15 @@
 import { Col, Container, Row } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const MyFooter = () => {
+   const { t, i18n } = useTranslation(); 
   return (
     <footer className="bg-black text-center text-lg-start">
       <Container className="container p-4">
         <Row className=" justify-content-between">
           <Col className="col-12 col-md-4">
-            <h5 className="color merriweather">Contatti</h5>
+            <h5 className="color merriweather"> {t("BarContacts")}</h5>
 
             <ul className="list-unstyled mb-0">
               <li>
@@ -50,7 +52,7 @@ const MyFooter = () => {
           </Col>
 
           <Col className="col-12 col-md-4">
-            <h5 className="color mb-0 merriweather mb-3">Follow us</h5>
+            <h5 className="color mb-0 merriweather mb-3"> {t("FooterFollow")}</h5>
 
             <ul className="list-unstyled">
               <li>
