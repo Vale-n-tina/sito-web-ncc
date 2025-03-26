@@ -48,20 +48,24 @@ const MyAdministration = () => {
     setShow(true);
   };
   const optionalStops = [
-    "Saint Peter in Chains (+ 30 min)",
-    "Castel Sant'Angelo (+ 30 min)",
-    "Basilica of Saint Mary Major (+ 30 min)",
-    "Basilica of Saint Mary of the Angels (+ 30 min)",
-    "Basilica of Santa Maria del Popolo (+ 30 min)",
-    "Saint Mary of Victory (+ 30 min)",
-    "Terrace of Gianicolo and Acqua Paola Fountain (+ 30 min)",
-    "Piazza Navona (+ 30 min)",
-    "Piazza del Popolo (+ 30 min)",
-    "Piazza della Minerva (+ 30 min)",
-    "Victor Emmanuel II Monument (+ 30 min)",
-    "Spanish Steps (+ 30 min)",
-    "Circus Maximus (+ 30 min)",
-    "Roman Forum (+ 30 min)",
+    "Colosseum",
+    "Trevi fountain",
+    "Pantheon",
+    "Saint Peter",
+    "Saint Peter in Chains",
+    "Castel Sant'Angelo",
+    "Basilica of Saint Mary Major",
+    "Basilica of Saint Mary of the Angels",
+    "Basilica of Santa Maria del Popolo",
+    "Saint Mary of Victory",
+    "Terrace of Gianicolo and Acqua Paola Fountain",
+    "Piazza Navona",
+    "Piazza del Popolo",
+    "Piazza della Minerva",
+    "Victor Emmanuel II Monument",
+    "Spanish Steps",
+    "Circus Maximus",
+    "Roman Forum",
   ];
 
   const handleTabChange = (tab: "Transfer" | "Tour") => {
@@ -71,8 +75,13 @@ const MyAdministration = () => {
   //collegata al bottone modifica per modificare prenotazione/tour
   const handleEdit = () => {
     if (selectedBooking) {
-      setEditFormData(selectedBooking);
-      setShowEditModal(true); // Apri il modale di modifica
+      // Inizializza con valori di default se sono undefined
+      const initialData = {
+        ...selectedBooking,
+        optionalStops: (selectedBooking as TourResponse)?.optionalStops || []
+      };
+      setEditFormData(initialData);
+      setShowEditModal(true);
     }
   };
 
@@ -837,6 +846,12 @@ const MyAdministration = () => {
                       defaultValue={
                         (selectedBooking as TourResponse).passengerName
                       }
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          passengerName: e.target.value,
+                        } as TourResponse)
+                      }
                     />
                   </div>
                   <div className="mb-3">
@@ -978,6 +993,7 @@ const MyAdministration = () => {
                     >
                       {optionalStops.map((place, index) => {
                         const placex = place.replace(/ \(\+ \d+ min\)/, "");
+                        const currentStops = (editFormData as TourResponse)?.optionalStops || []; // Fallback ad array vuoto
 
                         return (
                           <Form.Check
@@ -986,25 +1002,12 @@ const MyAdministration = () => {
                             label={place}
                             className="custom-checkbox"
                             // Verifica se la fermata esiste già nell'array `optionalStops` di `editFormData`
-                            checked={(
-                              editFormData as TourResponse
-                            )?.optionalStops.includes(placex)}
+                            checked={currentStops.includes(placex)}
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const updatedStops = isChecked
-                                ? [
-                                    ...new Set(
-                                      (
-                                        editFormData as TourResponse
-                                      ).optionalStops
-                                    ),
-                                    placex,
-                                  ]
-                                : (
-                                    editFormData as TourResponse
-                                  ).optionalStops.filter(
-                                    (stop) => stop !== placex
-                                  );
+                              ? [...new Set([...currentStops, placex])]
+                              : currentStops.filter(stop => stop !== placex);
 
                               setEditFormData({
                                 ...editFormData,
