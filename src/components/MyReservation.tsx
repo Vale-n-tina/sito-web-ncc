@@ -463,7 +463,7 @@ const MyReservation = (props: myReservationProps) => {
                         });
                         setValidationErrors((prev) => ({
                           ...prev,
-                          pickUp: false,
+                          pickUpTime: false,
                         }));
                       }}
                       className={`custom-inputReservation${
@@ -633,6 +633,7 @@ const MyReservation = (props: myReservationProps) => {
                         requests: e.target.value,
                       });
                     }}
+                    
                   />
                 </Form.Group>
               </Form>
