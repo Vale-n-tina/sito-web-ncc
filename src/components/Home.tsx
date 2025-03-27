@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 
 const Home = () => {
-  const { t, i18n } = useTranslation();
+  const { t} = useTranslation();
   return (
     <Container fluid className="p-0">
       <div className="bg-imageSfondo pb-5">

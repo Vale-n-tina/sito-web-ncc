@@ -11,6 +11,7 @@ interface myReservationPropsTour {
   checkBox: string[];
 }
 const MyTour2 = (props: myReservationPropsTour) => {
+  //bottoni starting e 
   const [activeButtonStart, setActiveButtonStart] = useState<number>(0);
   const [activeButtonEnd, setActiveButtonEnd] = useState<number>(0);
   const [selectedButtonStart, setSelectedButtonstart] = useState<number>(0);
@@ -24,7 +25,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     dateTime: false,
     optionalStops: false,
   });
-  const { t, i18n } = useTranslation();
+  const { t} = useTranslation();
   const validateForm = () => {
     const errors = {
       pickUp: !props.tour.pickUp,
@@ -358,8 +359,8 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 </div>
               </Col>
             </Row>
-
-            <Row className=" justify-content-center mt-5">
+             <p className="mt-5 ms-3 quicksand">Tour ending to</p>
+            <Row className=" justify-content-center ">
               {buttonLabels.map((label, index) => (
                 <Col key={index} className="col-5 p-0 m-1 ">
                   <Button

@@ -2,7 +2,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { useTranslation } from "react-i18next";
 
 const AccordionFAQ =()=> {
-   const { t, i18n } = useTranslation();
+   const { t,} = useTranslation();
   return (
     <Accordion defaultActiveKey="0" className="custom-accordion mb-5 mt-3 mt-md-0">
       <Accordion.Item eventKey="0" className="mb-3">

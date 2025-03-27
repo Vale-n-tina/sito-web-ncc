@@ -1,5 +1,4 @@
 import { Col, Form, Row } from "react-bootstrap";
-import MyFooter from "./MyFooter";
 import { useState } from "react";
 import LoginData from "../types/LoginData";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,9 @@ const MyLogin = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+
+
+  //Richiesta per il login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const loginData: LoginData = {

@@ -60,7 +60,7 @@ export const StripePayment= ({ amount, onSuccess, onError, disabled, customerEma
           
         }
       })
-      .catch((err) => {
+      .catch(() => {
         onError( "Errore durante il pagamento");
         
       })

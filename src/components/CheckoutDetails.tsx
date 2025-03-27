@@ -33,16 +33,21 @@ const CheckoutDetails = (props: myReservationProps) => {
   const { form, tour, setForm, setTour } = props;
   const isTour = type === "tour";
 
+  //Match email
   const [confirmEmail, setConfirmEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  //Validazione errori campi obbligatori
   const [validationErrors, setValidationErrors] = useState({
     nameAndSurname: false,
     email: false,
     phone: false,
   });
+
+  //Pagamento
   const [paymentError, setPaymentError] = useState("");
   const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
 
@@ -82,6 +87,8 @@ const CheckoutDetails = (props: myReservationProps) => {
   };
   const isEmailMatch = (isTour ? tour.email : form.email) === confirmEmail;
 
+
+  //Richiesta di prenotazione
   const bookNow = function () {
     const endpoint = isTour ? "/tour/bookNow" : "/prenotazioni/bookNow";
     const payload = isTour ? tour : form;
@@ -95,7 +102,7 @@ const CheckoutDetails = (props: myReservationProps) => {
     })
       .then((response) => {
         if (response.ok) {
-          setSuccessMessage("Prenotazione effettuata con successo!");
+         
           setIsSubmitted(true);
           setShowModal(true);
           return;
@@ -108,6 +115,8 @@ const CheckoutDetails = (props: myReservationProps) => {
       });
   };
 
+
+  //Chiusura modale
   const handleCloseModal = () => {
     setShowModal(false);
   };
