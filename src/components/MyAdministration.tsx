@@ -3,48 +3,65 @@ import Calendar from "react-calendar";
 import { Value } from "react-calendar/src/shared/types.js";
 
 import TransferResponse from "../types/TransferResponse";
-import { Alert, Form, Modal, Tab, Table, Tabs } from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Col,
+  Container,
+  Form,
+  Modal,
+  Row,
+  Tab,
+  Table,
+  Tabs,
+} from "react-bootstrap";
 import TourResponse from "../types/TourResponse";
 const MyAdministration = () => {
+  //cercare per id, stati ed errori
+  const [tourId, setTourId] = useState("");
+  const [transfertId, setTransfertId] = useState("");
+  const [searchForIdTransfert, setSearchForIdTransfert] =
+    useState<TransferResponse | null>(null);
+  const [searchForIdTour, setSearchForIdTour] = useState<TourResponse | null>(
+    null
+  );
+  const [errorForIdTransfert, setErrorForIdTransfert] = useState("");
+  const [errorForIdTour, setErrorForIdTour] = useState("");
+
+  
+//Per cercare tour/trasferimenti per data
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
   const [tours, setTours] = useState<TourResponse[]>([]);
+  //Errore nel carimento dei dati quando percati per data
   const [errors, setErrors] = useState<string | null>(null);
+  //Errore nell'eliminazione Tour/Trasdferimenti
   const [deleteErrors, setDeleteErrors] = useState<string | null>(null);
-  const[changeErrors, setChangeErrors] = useState<string | null>(null);
-  const values = [true, "sm-down", "md-down", "lg-down", "xl-down", "xxl-down"];
+  //Errore nella modifica di Tour/trasferiemnti
+  const [changeErrors, setChangeErrors] = useState<string | null>(null);
+ 
+  //Verifica se si parla di trasferimenti o di tour
   const [activeTab, setActiveTab] = useState<"Transfer" | "Tour">("Transfer");
-  const [fullscreen, setFullscreen] = useState<
-    | true
-    | "sm-down"
-    | "md-down"
-    | "lg-down"
-    | "xl-down"
-    | "xxl-down"
-    | undefined
-  >(true);
+ 
   const [show, setShow] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  //Trasferiemnto o tour attualmente selelzionato
   const [selectedBooking, setSelectedBooking] = useState<
     TransferResponse | TourResponse | null
   >(null);
+
+  //Memorizza quello da modificare
   const [editFormData, setEditFormData] = useState<
     TransferResponse | TourResponse | null
   >(null);
+
+  //Token per autorizzazione
   const authToken = localStorage.getItem("authToken");
 
-  const handleRowClick = (
-    booking: TransferResponse | TourResponse,
-    breakpoint:
-      | true
-      | "sm-down"
-      | "md-down"
-      | "lg-down"
-      | "xl-down"
-      | "xxl-down"
-  ) => {
+  const handleRowClick = (booking: TransferResponse | TourResponse) => {
     setSelectedBooking(booking);
-    setFullscreen(breakpoint);
+    
     setShow(true);
   };
   const optionalStops = [
@@ -78,7 +95,7 @@ const MyAdministration = () => {
       // Inizializza con valori di default se sono undefined
       const initialData = {
         ...selectedBooking,
-        optionalStops: (selectedBooking as TourResponse)?.optionalStops || []
+        optionalStops: (selectedBooking as TourResponse)?.optionalStops || [],
       };
       setEditFormData(initialData);
       setShowEditModal(true);
@@ -133,7 +150,7 @@ const MyAdministration = () => {
         })
         .catch((error) => {
           console.error("Errore durante il fetch dei tour:", error);
-          setErrors("Errore nel caricamento dei dati.")
+          setErrors("Errore nel caricamento dei dati.");
         });
     }
   };
@@ -154,7 +171,7 @@ const MyAdministration = () => {
       )
         .then(() => {
           setShow(false);
-          setDeleteErrors(null)
+          setDeleteErrors(null);
           if (resourceType === "prenotazioni") {
             setTransfers((prevTransfers) =>
               prevTransfers.filter(
@@ -169,12 +186,12 @@ const MyAdministration = () => {
         })
         .catch((error) => {
           console.error("Errore:", error);
-          setDeleteErrors("Errore nell'eliminazione")
+          setDeleteErrors("Errore nell'eliminazione");
         });
     }
   };
 
-  // Effettua una richiesta API per modificare i trasferimenti/tour
+  //  Effettua una richiesta API per modificare i trasferimenti/tour
   const handleSaveEdit = () => {
     if (editFormData) {
       const resourceType = activeTab === "Transfer" ? "prenotazioni" : "tour";
@@ -193,8 +210,8 @@ const MyAdministration = () => {
           }
           return response.json();
         })
-        .then((data) => {
-          setChangeErrors(null)
+        .then(() => {
+          setChangeErrors(null);
           // Aggiorna lo stato locale
           if (resourceType === "prenotazioni") {
             setTransfers((prevTransfers) =>
@@ -219,7 +236,7 @@ const MyAdministration = () => {
         })
         .catch((error) => {
           console.error("Errore durante l'aggiornamento:", error);
-          setChangeErrors("Errore nella modifica")
+          setChangeErrors("Errore nella modifica");
         });
     }
   };
@@ -258,7 +275,7 @@ const MyAdministration = () => {
                 </tr>
               </thead>
               <tbody>
-                {errors &&(
+                {errors && (
                   <tr>
                     <td colSpan={6} className="text-center">
                       {errors}
@@ -268,21 +285,208 @@ const MyAdministration = () => {
                 {transfers.map((booking) => (
                   <tr
                     key={booking.id}
-                    onClick={() => handleRowClick(booking, "lg-down")}
+                    onClick={() => handleRowClick(booking)}
                     style={{ cursor: "pointer" }}
                   >
                     <td>{booking.id}</td>
                     <td>{booking.pickUp}</td>
                     <td>{booking.dropOff}</td>
                     <td>{booking.passengers}</td>
-                    <td>
-                     {booking.pickUpTime}
-                    </td>
+                    <td>{booking.pickUpTime}</td>
                     <td>{booking.price}€</td>
                   </tr>
                 ))}
               </tbody>
+              <br />
             </Table>
+            <hr className="mt-5" />
+            <Container fluid className="mt-4">
+              <Row>
+                <p className=" fw-bold sans">Cerca per id:</p>
+                <Col className="col-8">
+                  <Form.Control
+                    type="text"
+                    placeholder="Inserire id Transfer"
+                    className="me-2 mb-5 custom-inputReservation"
+                    value={transfertId}
+                    onChange={(e) => setTransfertId(e.target.value)}
+                  />
+                </Col>
+                <Col className="col-4">
+                  <Button
+                    style={{
+                      backgroundColor: "#c9bd70", 
+                      borderColor: "#c9bd70",
+                      color: "#000000",
+                    }}
+                    onClick={() => {
+                      if (transfertId) {
+                        fetch(
+                          `http://localhost:8080/prenotazioni/by-id/${transfertId}`,
+                          {
+                            headers: {
+                              Authorization: `Bearer ${authToken}`,
+                            },
+                          }
+                        )
+                          .then((response) => {
+                            if (!response.ok) {
+                              throw new Error("Tour non trovato");
+                            }
+                            return response.json();
+                          })
+                          .then((data) => {
+                            setErrorForIdTransfert("");
+                            setSearchForIdTransfert(data);
+                            console.log(data);
+                          })
+                          .catch((error) => {
+                            console.error("Errore:", error);
+                            setErrorForIdTransfert(
+                              "Nessun Transfert trovato con questo ID"
+                            );
+                            setSearchForIdTransfert(null);
+                          });
+                      }
+                    }}
+                  >
+                    Cerca
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+            {errorForIdTransfert && (
+              <Alert variant="danger">{errorForIdTransfert}</Alert>
+            )}
+            {searchForIdTransfert && (
+              <Table borderless>
+                <tbody>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Nome:</strong>
+                    </td>
+                    <td>
+                      {
+                        (searchForIdTransfert as TransferResponse)
+                          .nameAndSurname
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Pickup:</strong>
+                    </td>
+                    <td>{(searchForIdTransfert as TransferResponse).pickUp}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Dropoff:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).dropOff}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Passeggeri:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).passengers}
+                    </td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Valigie:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).suitcases}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Zaini:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).backpack}
+                    </td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Orario pickup:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).pickUpTime}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Giorno pickup:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).pickUpDate}
+                    </td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Trasporto:</strong>
+                    </td>
+                    <td>
+                      {
+                        (searchForIdTransfert as TransferResponse)
+                          .transportDetails
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Seggiolini bambini:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).childSeats}
+                    </td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Richieste:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).requests ||
+                        "Nessuna richiesta"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Email:</strong>
+                    </td>
+                    <td>{(searchForIdTransfert as TransferResponse).email}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Telefono:</strong>
+                    </td>
+                    <td>+{(searchForIdTransfert as TransferResponse).phone}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Nome cartello:</strong>
+                    </td>
+                    <td>
+                      {(searchForIdTransfert as TransferResponse).nameOnBoard}
+                    </td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Prezzo:</strong>
+                    </td>
+                    <td>
+                      <h4>
+                        {(searchForIdTransfert as TransferResponse).price}€
+                      </h4>
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
           </div>
         </Tab>
         <Tab eventKey="Tour" title="Tour" className="mb-5">
@@ -302,28 +506,182 @@ const MyAdministration = () => {
                 {tours.map((tour) => (
                   <tr
                     key={tour.id}
-                    onClick={() => handleRowClick(tour, "lg-down")}
+                    onClick={() => handleRowClick(tour)}
                     style={{ cursor: "pointer" }}
                   >
                     <td>{tour.id}</td>
-                    <td>{tour.pickUp}-{tour.startLocation}</td>
-                    <td>{tour.dropOff}-{tour.endLocation}</td>
-                    <td>{tour.passengers}</td>
                     <td>
-                      {tour.time}
+                      {tour.pickUp}-{tour.startLocation}
                     </td>
+                    <td>
+                      {tour.dropOff}-{tour.endLocation}
+                    </td>
+                    <td>{tour.passengers}</td>
+                    <td>{tour.time}</td>
                     <td>{tour.price}€</td>
                   </tr>
                 ))}
               </tbody>
             </Table>
+            <hr className="mt-5" />
+            <Container fluid className="mt-4">
+              <Row>
+                <p className=" fw-bold sans">Cerca per id:</p>
+                <Col className="col-8">
+                  <Form.Control
+                    type="text"
+                    placeholder="Inserire id Transfer"
+                    className="me-2 mb-5 custom-inputReservation"
+                    value={tourId}
+                    onChange={(e) => setTourId(e.target.value)}
+                  />
+                </Col>
+                <Col className="col-4">
+                  <Button
+                    style={{
+                      backgroundColor: "#c9bd70",
+                      borderColor: "#c9bd70",
+                      color: "#000000",
+                    }}
+                    onClick={() => {
+                      if (tourId) {
+                        fetch(`http://localhost:8080/tour/by-id/${tourId}`, {
+                          headers: {
+                            Authorization: `Bearer ${authToken}`,
+                          },
+                        })
+                          .then((response) => {
+                            if (!response.ok) {
+                              throw new Error("Tour non trovato");
+                            }
+                            return response.json();
+                          })
+                          .then((data) => {
+                            setErrorForIdTour("");
+                            setSearchForIdTour(data);
+                            console.log(data);
+                          })
+                          .catch((error) => {
+                            console.error("Errore:", error);
+                            setErrorForIdTour(
+                              "Nessun tour trovato con questo ID"
+                            );
+                            setSearchForIdTour(null);
+                          });
+                      }
+                    }}
+                  >
+                    Cerca
+                  </Button>
+                </Col>
+              </Row>
+            </Container>
+            {errorForIdTour && <Alert variant="danger">{errorForIdTour}</Alert>}
+            {searchForIdTour && (
+              <Table>
+                <tbody>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Nome:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).passengerName}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Telefono:</strong>
+                    </td>
+                    <td>+{(searchForIdTour as TourResponse).phoneNumber}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Email:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).email}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Start:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).startLocation}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Pickup:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).pickUp}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>End:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).endLocation}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Dropoff:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).dropOff}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Passeggeri:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).passengers}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Data:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).date}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Orario:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).time}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Fermate:</strong>
+                    </td>
+                    <ul
+                      style={{
+                        listStyleType: "disc",
+                        paddingLeft: "20px",
+                        margin: 0,
+                      }}
+                    >
+                      {(searchForIdTour as TourResponse)?.optionalStops?.map(
+                        (stop, index) => (
+                          <li key={index}>{stop}</li>
+                        )
+                      )}
+                    </ul>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Durata tour:</strong>
+                    </td>
+                    <td>{(searchForIdTour as TourResponse).duration} ore</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Prezzo:</strong>
+                    </td>
+                    <td>
+                      <h4>{(searchForIdTour as TourResponse).price}€</h4>
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
           </div>
         </Tab>
       </Tabs>
 
       {/* Modale per mostrare i dettagli della prenotazione */}
 
-      <Modal show={show} fullscreen={fullscreen} onHide={() => setShow(false)}>
+      <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title>
             Dettagli Prenotazione
@@ -459,7 +817,7 @@ const MyAdministration = () => {
                       </td>
                       <td>{(selectedBooking as TourResponse).passengerName}</td>
                     </tr>
-                    <tr >
+                    <tr>
                       <td>
                         <strong>Telefono:</strong>
                       </td>
@@ -557,16 +915,16 @@ const MyAdministration = () => {
           <Modal.Title>Modifica Prenotazione</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {changeErrors &&(
+          {changeErrors && (
             <Alert>
               <p>{changeErrors}</p>
             </Alert>
           )}
-           {deleteErrors &&(
+          {deleteErrors && (
             <Alert variant="danger">
               <p>{deleteErrors}</p>
             </Alert>
-           )}
+          )}
           {selectedBooking && (
             <form>
               {activeTab === "Transfer" ? (
@@ -993,7 +1351,8 @@ const MyAdministration = () => {
                     >
                       {optionalStops.map((place, index) => {
                         const placex = place.replace(/ \(\+ \d+ min\)/, "");
-                        const currentStops = (editFormData as TourResponse)?.optionalStops || []; // Fallback ad array vuoto
+                        const currentStops =
+                          (editFormData as TourResponse)?.optionalStops || []; 
 
                         return (
                           <Form.Check
@@ -1006,8 +1365,10 @@ const MyAdministration = () => {
                             onChange={(e) => {
                               const isChecked = e.target.checked;
                               const updatedStops = isChecked
-                              ? [...new Set([...currentStops, placex])]
-                              : currentStops.filter(stop => stop !== placex);
+                                ? [...new Set([...currentStops, placex])]
+                                : currentStops.filter(
+                                    (stop) => stop !== placex
+                                  );
 
                               setEditFormData({
                                 ...editFormData,

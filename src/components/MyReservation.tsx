@@ -1,4 +1,4 @@
-import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { Col, Container, Row, Form, Button, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +13,7 @@ import PriceData from "../types/PriceData";
 import ReserveData from "../types/ReserveData";
 import { useTranslation } from "react-i18next";
 
-
+//props
 interface myReservationProps {
   form: ReserveData;
   setForm: (newForm: ReserveData) => void;
@@ -21,16 +21,24 @@ interface myReservationProps {
 const MyReservation = (props: myReservationProps) => {
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
+    //Salva il ounto di partenza
   const [origin, setOrigin] = useState("");
+  //Salva il punto di destinazione
   const [destination, setDestination] = useState("");
   const [requested, setRequested] = useState(false);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+  //Memorizza la durata del percorso
   const [duration, setDuration] = useState<string | null>(null);
+  //Memorizza la distanza del percorso in km
   const [distanceKm, setDistanceKm] = useState<string | null>(null);
+  //Memorizza la distanza del percorso in metri
   const [distanceM, setDistanceM] = useState<number | null>(null);
+  //Memorizza il tipo di pick-up, aereo, treno , other
   const [pickUpType, setPickUpType] = useState<
     "airport" | "port" | "train_station" | "other"
   >("other");
+
+  //Memorizza il prezzo della corsa
   const [price, setPrice] = useState<number | null>(null);
   const originRef = useRef<google.maps.places.Autocomplete | null>(null);
   const destinationRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -86,12 +94,7 @@ const MyReservation = (props: myReservationProps) => {
       console.log("Errore nelle direzioni:", status);
     }
   };
-  /* const handleSearchClick = () => {
-    setOrigin(temporaryOrigin); // Imposta il valore di origin
-    setDestination(temporaryDestination); // Imposta il valore di destination
-    setRequested(true); // Imposta requested a true per eseguire la richiesta
-  };*/
-
+ 
   //da inviare al back and per calcolare il prezzo
 
   const sendPriceDataToBackend = function (priceData: PriceData) {
@@ -120,7 +123,7 @@ const MyReservation = (props: myReservationProps) => {
         setError("An error occurred while calculating the price.");
       });
   };
-
+   //Fa la chiamata del cacolo del prezzo ogni volta che uno di questi parametri cambia
   useEffect(() => {
     if (distanceM !== null) {
       const priceData: PriceData = {
@@ -677,6 +680,9 @@ const MyReservation = (props: myReservationProps) => {
                       )}
                     </GoogleMap>
                   </LoadScript>
+                  {error&&(
+                    <Alert variant="danger">{error}</Alert>
+                  )}
                 </Col>
                 <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5 max2">
                   <Row className="mt-3">

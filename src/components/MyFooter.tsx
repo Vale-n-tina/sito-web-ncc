@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const MyFooter = () => {
-   const { t, i18n } = useTranslation(); 
+   const { t} = useTranslation(); 
   return (
     <footer className="bg-black text-center text-lg-start">
       <Container className="container p-4">
