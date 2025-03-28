@@ -48,3 +48,5 @@ export default tseslint.config({
   },
 })
 ```
+Il progetto backend si trova su GitHub al seguente link: [Backend Repository](https://github.com/Vale-n-tina/BackAndNcc)
+
