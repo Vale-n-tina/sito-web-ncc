@@ -1,4 +1,12 @@
-import { Col, Container, Row, Form, Button, Alert } from "react-bootstrap";
+import {
+  Col,
+  Container,
+  Row,
+  Form,
+  Button,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { useEffect, useRef, useState } from "react";
@@ -21,7 +29,7 @@ interface myReservationProps {
 const MyReservation = (props: myReservationProps) => {
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
-    //Salva il ounto di partenza
+  //Salva il ounto di partenza
   const [origin, setOrigin] = useState("");
   //Salva il punto di destinazione
   const [destination, setDestination] = useState("");
@@ -37,6 +45,9 @@ const MyReservation = (props: myReservationProps) => {
   const [pickUpType, setPickUpType] = useState<
     "airport" | "port" | "train_station" | "other"
   >("other");
+
+  //Spinner calcolo prezzo
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
 
   //Memorizza il prezzo della corsa
   const [price, setPrice] = useState<number | null>(null);
@@ -94,7 +105,7 @@ const MyReservation = (props: myReservationProps) => {
       console.log("Errore nelle direzioni:", status);
     }
   };
- 
+
   //da inviare al back and per calcolare il prezzo
 
   const sendPriceDataToBackend = function (priceData: PriceData) {
@@ -117,15 +128,18 @@ const MyReservation = (props: myReservationProps) => {
         console.log("Risultato:", result);
         setPrice(result);
         props.setForm({ ...props.form, price: result });
+        setIsCalculatingPrice(false);
       })
       .catch((error) => {
         console.error("Errore:", error);
         setError("An error occurred while calculating the price.");
+        setIsCalculatingPrice(false);
       });
   };
-   //Fa la chiamata del cacolo del prezzo ogni volta che uno di questi parametri cambia
+  //Fa la chiamata del cacolo del prezzo ogni volta che uno di questi parametri cambia
   useEffect(() => {
     if (distanceM !== null) {
+      setIsCalculatingPrice(true);
       const priceData: PriceData = {
         distanceM: distanceM,
         passengers: props.form.passengers,
@@ -166,7 +180,7 @@ const MyReservation = (props: myReservationProps) => {
   const onScriptLoad = () => {
     setIsScriptLoaded(true);
   };
-   const { t, } = useTranslation(); 
+  const { t } = useTranslation();
 
   return (
     <>
@@ -176,14 +190,15 @@ const MyReservation = (props: myReservationProps) => {
             <Col className="col col-11 col-lg-6  m-auto ms-lg-0  mt-5 bg-white rounded shadow p-3  ">
               <Row>
                 <Col className="col-11 m-auto p-0">
-                  <h1 className="montserrat mt-3">{t("ReservationBookTrip")}</h1>
+                  <h1 className="montserrat mt-3">
+                    {t("ReservationBookTrip")}
+                  </h1>
                 </Col>
               </Row>
               <Row>
                 <Col className=" bg-please col-11 m-auto mb-3 pt-3 color">
                   <p className="text-black quicksand">
-                  {t("ReservationBookTripText")}
-                    
+                    {t("ReservationBookTripText")}
                   </p>
                 </Col>
               </Row>
@@ -194,7 +209,7 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label className="m-0 label text-black z-2">
-                  {t("ReservationPickUp")}
+                    {t("ReservationPickUp")}
                   </Form.Label>
                   {isScriptLoaded && (
                     <Autocomplete
@@ -249,7 +264,7 @@ const MyReservation = (props: myReservationProps) => {
                     >
                       <Form.Control
                         type="text"
-                        placeholder= {t("ReservationPlaceholder")}
+                        placeholder={t("ReservationPlaceholder")}
                         required
                         value={origin} // Sincronizza il valore del campo con lo stato `origin`
                         onChange={(e) => {
@@ -278,7 +293,7 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlInput1"
                 >
                   <Form.Label className="m-0 label text-black z-2">
-                  {t("ReservationDropOff")}
+                    {t("ReservationDropOff")}
                   </Form.Label>
                   {isScriptLoaded && (
                     <Autocomplete
@@ -324,7 +339,7 @@ const MyReservation = (props: myReservationProps) => {
                   )}
                   {validationErrors.dropOff && (
                     <p className="text-danger small fw-bold">
-                    {t("ReservationErrorDropOff")}
+                      {t("ReservationErrorDropOff")}
                     </p>
                   )}
                 </Form.Group>
@@ -351,7 +366,7 @@ const MyReservation = (props: myReservationProps) => {
                     <option value="7">7</option>
                     <option value="8">8</option>
                   </Form.Select>
-                  <p className="small">  {t("ReservationPassengers")}</p>
+                  <p className="small"> {t("ReservationPassengers")}</p>
                 </div>
 
                 <Row>
@@ -443,12 +458,12 @@ const MyReservation = (props: myReservationProps) => {
                     />
                     {validationErrors.pickUpDate && (
                       <p className="text-danger small  fw-bold">
-                         {t("ReservationErrorDate")}
+                        {t("ReservationErrorDate")}
                       </p>
                     )}
                     <br />
                     <label htmlFor="data" className="small">
-                     {t("ReservationDate")}
+                      {t("ReservationDate")}
                     </label>
                   </Col>
                   <Col className=" position-relative  col-6 ps-0 col-lg-3">
@@ -482,7 +497,7 @@ const MyReservation = (props: myReservationProps) => {
                     )}{" "}
                     <br />
                     <label htmlFor="data" className="small">
-                        {t("ReservationTime")}
+                      {t("ReservationTime")}
                     </label>
                   </Col>
                   <Col className="col-12 col-lg-6">
@@ -519,7 +534,7 @@ const MyReservation = (props: myReservationProps) => {
                         </Form.Label>
                         <Form.Control
                           type="text"
-                           className="custom-inputReservation"
+                          className="custom-inputReservation"
                           placeholder={t("ReservationLabelCruise")}
                           required
                           value={props.form.transportDetails || ""}
@@ -542,7 +557,7 @@ const MyReservation = (props: myReservationProps) => {
                         </Form.Label>
                         <Form.Control
                           type="text"
-                           className="custom-inputReservation"
+                          className="custom-inputReservation"
                           placeholder={t("ReservationLabelTrain")}
                           required
                           value={props.form.transportDetails || ""}
@@ -578,7 +593,7 @@ const MyReservation = (props: myReservationProps) => {
                       <Form.Control
                         type="text"
                         placeholder={t("ReservationPlaceholderHolds")}
-                         className="custom-inputReservation"
+                        className="custom-inputReservation"
                         value={props.form.nameOnBoard}
                         onChange={(e) => {
                           props.setForm({
@@ -598,7 +613,7 @@ const MyReservation = (props: myReservationProps) => {
                     <Form.Select
                       aria-label="Default select example"
                       required
-                       className="custom-inputReservation"
+                      className="custom-inputReservation"
                       value={props.form.childSeats}
                       onChange={(e) => {
                         props.setForm({
@@ -607,7 +622,9 @@ const MyReservation = (props: myReservationProps) => {
                         });
                       }}
                     >
-                      <option value="noChildSeats">{t("ReservationChilsSeatsOption")}</option>
+                      <option value="noChildSeats">
+                        {t("ReservationChilsSeatsOption")}
+                      </option>
                       <option value="1ChildSeat">1</option>
                       <option value="2ChildSeat">2</option>
                       <option value="3ChildSeat">3</option>
@@ -621,13 +638,12 @@ const MyReservation = (props: myReservationProps) => {
                   controlId="exampleForm.ControlTextarea1"
                 >
                   <Form.Label className="labelRequest text-black">
-                  {t("ReservationRequest")}
-                   
+                    {t("ReservationRequest")}
                   </Form.Label>
                   <Form.Control
-                    placeholder=  {t("ReservationRequestPlaceholder")}
+                    placeholder={t("ReservationRequestPlaceholder")}
                     as="textarea"
-                     className="custom-inputReservation"
+                    className="custom-inputReservation"
                     rows={3}
                     value={props.form.requests}
                     onChange={(e) => {
@@ -636,7 +652,6 @@ const MyReservation = (props: myReservationProps) => {
                         requests: e.target.value,
                       });
                     }}
-                    
                   />
                 </Form.Group>
               </Form>
@@ -680,9 +695,7 @@ const MyReservation = (props: myReservationProps) => {
                       )}
                     </GoogleMap>
                   </LoadScript>
-                  {error&&(
-                    <Alert variant="danger">{error}</Alert>
-                  )}
+                  {error && <Alert variant="danger">{error}</Alert>}
                 </Col>
                 <Col className="col col-11 m-auto mt-3 bg-white rounded px-5 shadow p-3 mb-5 max2">
                   <Row className="mt-3">
@@ -692,7 +705,9 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mt-3 mb-3">
                     <Col>
-                      <h6 className="merriweather">{t("ReservationEstimatedDistace")} </h6>
+                      <h6 className="merriweather">
+                        {t("ReservationEstimatedDistace")}{" "}
+                      </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold"> {distanceKm}</p>
@@ -700,7 +715,9 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">{t("ReservationEstimatedTime")}</h6>
+                      <h6 className="merriweather">
+                        {t("ReservationEstimatedTime")}
+                      </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">{duration}</p>
@@ -708,7 +725,9 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">{t("ReservationListPrice")} </h6>
+                      <h6 className="merriweather">
+                        {t("ReservationListPrice")}{" "}
+                      </h6>
                     </Col>
                     <Col>
                       <p className=" fw-bold">
@@ -725,15 +744,34 @@ const MyReservation = (props: myReservationProps) => {
                   </Row>
                   <Row className="mb-3">
                     <Col>
-                      <h6 className="merriweather">{t("ReservationDiscountPrice")} </h6>
+                      <h6 className="merriweather">
+                        {t("ReservationDiscountPrice")}{" "}
+                      </h6>
                     </Col>
                     <Col>
-                      <p className=" merriweather fw-bold">{price}€</p>
+                      {isCalculatingPrice ? (
+                        <div className="d-flex align-items-center">
+                          <Spinner animation="border" variant="secondary" />
+                        </div>
+                      ) : (
+                        <p className="merriweather fw-bold">
+                          {price !== null ? `${price}€` : "-"}
+                        </p>
+                      )}
                     </Col>
                   </Row>
                   <Row>
                     <Col className="text-center mb-4 mt-2">
-                      <Link to="/CheckoutDetails/transfer">
+                      <Link
+                        to="/CheckoutDetails/transfer"
+                        style={{
+                          pointerEvents:
+                            isCalculatingPrice || error !== null
+                              ? "none"
+                              : "auto",
+                          display: "inline-block",
+                        }}
+                      >
                         <Button
                           variant="primary"
                           onClick={(e) => {
@@ -741,6 +779,7 @@ const MyReservation = (props: myReservationProps) => {
                               e.preventDefault();
                             }
                           }}
+                          disabled={isCalculatingPrice || error !== null}
                         >
                           {t("ReservationContinue")}
                         </Button>
@@ -753,7 +792,6 @@ const MyReservation = (props: myReservationProps) => {
           </Row>
         </Container>
       </div>
-      
     </>
   );
 };

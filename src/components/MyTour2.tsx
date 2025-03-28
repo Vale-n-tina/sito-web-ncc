@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import TourData from "../types/TourData";
 import { Link } from "react-router-dom";
 import PriceDataTour from "../types/PriceDataTour";
@@ -11,12 +11,14 @@ interface myReservationPropsTour {
   checkBox: string[];
 }
 const MyTour2 = (props: myReservationPropsTour) => {
-  //bottoni starting e 
+  //bottoni starting e end
   const [activeButtonStart, setActiveButtonStart] = useState<number>(0);
   const [activeButtonEnd, setActiveButtonEnd] = useState<number>(0);
   const [selectedButtonStart, setSelectedButtonstart] = useState<number>(0);
   const [selectedButtonEnd, setSelectedButtonEnd] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  // Spinner calcolo prezzo
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
   const [duration, setDuration] = useState<string>("");
   const [price, setPrice] = useState<number | null>(null);
   const [validationErrors, setValidationErrors] = useState({
@@ -25,7 +27,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
     dateTime: false,
     optionalStops: false,
   });
-  const { t} = useTranslation();
+  const { t } = useTranslation();
   const validateForm = () => {
     const errors = {
       pickUp: !props.tour.pickUp,
@@ -169,6 +171,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
 
   const sendPriceDataToBackend = function (priceDataTour: PriceDataTour) {
     setError(null);
+    setIsCalculatingPrice(true);
     const dataToSend = {
       ...priceDataTour,
       startLocation: convertToEnglish(priceDataTour.startLocation),
@@ -197,12 +200,14 @@ const MyTour2 = (props: myReservationPropsTour) => {
           price: result.price,
           duration: result.duration,
         });
+        setIsCalculatingPrice(false);
       })
       .catch((error) => {
         console.error("Errore:", error);
         setError("An error occurred while calculating the price.");
         setPrice(null);
         setDuration("");
+        setIsCalculatingPrice(false);
       });
   };
 
@@ -359,7 +364,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 </div>
               </Col>
             </Row>
-             <p className="mt-5 ms-3 quicksand">Tour ending to</p>
+            <p className="mt-5 ms-3 quicksand">Tour ending to</p>
             <Row className=" justify-content-center ">
               {buttonLabels.map((label, index) => (
                 <Col key={index} className="col-5 p-0 m-1 ">
@@ -409,15 +414,34 @@ const MyTour2 = (props: myReservationPropsTour) => {
                   </Col>
 
                   <Col>
-                    <h4 className="col-3 merriweather fw-bold  "> {price}€</h4>
+                    {isCalculatingPrice ? (
+                      <div className="d-flex align-items-center justify-content-end">
+                        <Spinner
+                          animation="border"
+                          size="sm"
+                          className="me-2"
+                        />
+                      </div>
+                    ) : (
+                      <h4 className=" merriweather fw-bold">
+                        {price !== null ? `${price}€` : "-"}
+                      </h4>
+                    )}
                   </Col>
                 </Row>
-                {!error && <p className="text-danger small">{error}</p>}
+                {error && <p className="text-danger small">{error}</p>}
               </Col>
             </Row>
             <Row className=" justify-content-center">
               <Col className="col-5 mt-4 mb-4">
-                <Link to="/CheckoutDetails/tour">
+                <Link
+                  to="/CheckoutDetails/tour"
+                  style={{
+                    pointerEvents:
+                      isCalculatingPrice || error !== null ? "none" : "auto",
+                    display: "inline-block",
+                  }}
+                >
                   <Button
                     className="custom-button"
                     onClick={(e) => {
@@ -425,6 +449,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                         e.preventDefault();
                       }
                     }}
+                    disabled={isCalculatingPrice || error !== null}
                   >
                     {t("ReservationContinue")}
                   </Button>

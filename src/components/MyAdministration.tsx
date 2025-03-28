@@ -11,6 +11,7 @@ import {
   Form,
   Modal,
   Row,
+  Spinner,
   Tab,
   Table,
   Tabs,
@@ -28,21 +29,20 @@ const MyAdministration = () => {
   const [errorForIdTransfert, setErrorForIdTransfert] = useState("");
   const [errorForIdTour, setErrorForIdTour] = useState("");
 
-  
-//Per cercare tour/trasferimenti per data
+  //Per cercare tour/trasferimenti per data
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
   const [tours, setTours] = useState<TourResponse[]>([]);
-  //Errore nel carimento dei dati quando percati per data
+  //Errore nel carimento dei dati quando cercati per data
   const [errors, setErrors] = useState<string | null>(null);
   //Errore nell'eliminazione Tour/Trasdferimenti
   const [deleteErrors, setDeleteErrors] = useState<string | null>(null);
   //Errore nella modifica di Tour/trasferiemnti
   const [changeErrors, setChangeErrors] = useState<string | null>(null);
- 
+
   //Verifica se si parla di trasferimenti o di tour
   const [activeTab, setActiveTab] = useState<"Transfer" | "Tour">("Transfer");
- 
+
   const [show, setShow] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
@@ -56,12 +56,18 @@ const MyAdministration = () => {
     TransferResponse | TourResponse | null
   >(null);
 
+  const [isLoadingTransfers, setIsLoadingTransfers] = useState(false);
+  const [isLoadingTours, setIsLoadingTours] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSearchingById, setIsSearchingById] = useState(false);
+
   //Token per autorizzazione
   const authToken = localStorage.getItem("authToken");
 
   const handleRowClick = (booking: TransferResponse | TourResponse) => {
     setSelectedBooking(booking);
-    
+
     setShow(true);
   };
   const optionalStops = [
@@ -109,7 +115,7 @@ const MyAdministration = () => {
 
       // Formatta la data come "YYYY-MM-DD"
       const formattedDate = value.toLocaleDateString("en-CA");
-
+      setIsLoadingTransfers(true);
       fetch(
         `http://localhost:8080/prenotazioni/by-date?date=${formattedDate}`,
         {
@@ -127,12 +133,14 @@ const MyAdministration = () => {
         .then((data: TransferResponse[]) => {
           setTransfers(data); // Imposta i trasferimenti nello stato
           setErrors(null); // Rimuove gli errori precedenti
+          setIsLoadingTransfers(false);
         })
         .catch((error) => {
           console.error("Errore durante il fetch dei trasferimenti:", error);
           setErrors("Errore nel caricamento dei dati.");
+          setIsLoadingTransfers(false);
         });
-
+      setIsLoadingTours(true);
       fetch(`http://localhost:8080/tour/by-date?date=${formattedDate}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -147,16 +155,19 @@ const MyAdministration = () => {
         .then((data: TourResponse[]) => {
           setTours(data); // Imposta i tour nello stato
           setErrors(null); // Rimuove gli errori precedenti
+          setIsLoadingTours(false);
         })
         .catch((error) => {
           console.error("Errore durante il fetch dei tour:", error);
           setErrors("Errore nel caricamento dei dati.");
+          setIsLoadingTours(false);
         });
     }
   };
   // Effettua una richiesta API per eliminare i trasferimenti/tour
   const handleDelete = () => {
     if (selectedBooking) {
+      setIsDeleting(true);
       const resourceType = activeTab === "Transfer" ? "prenotazioni" : "tour";
 
       fetch(
@@ -183,10 +194,12 @@ const MyAdministration = () => {
               prevTours.filter((tour) => tour.id !== selectedBooking.id)
             );
           }
+          setIsDeleting(false);
         })
         .catch((error) => {
           console.error("Errore:", error);
           setDeleteErrors("Errore nell'eliminazione");
+          setIsDeleting(false);
         });
     }
   };
@@ -194,6 +207,7 @@ const MyAdministration = () => {
   //  Effettua una richiesta API per modificare i trasferimenti/tour
   const handleSaveEdit = () => {
     if (editFormData) {
+      setIsSaving(true);
       const resourceType = activeTab === "Transfer" ? "prenotazioni" : "tour";
 
       fetch(`http://localhost:8080/${resourceType}/update/${editFormData.id}`, {
@@ -233,10 +247,12 @@ const MyAdministration = () => {
           setSelectedBooking(editFormData);
 
           setShowEditModal(false);
+          setIsSaving(false);
         })
         .catch((error) => {
           console.error("Errore durante l'aggiornamento:", error);
           setChangeErrors("Errore nella modifica");
+          setIsSaving(false);
         });
     }
   };
@@ -275,27 +291,41 @@ const MyAdministration = () => {
                 </tr>
               </thead>
               <tbody>
-                {errors && (
+                {isLoadingTransfers ? (
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      <Spinner animation="border" />
+                      <span className="ms-2">Caricamento trasferimenti...</span>
+                    </td>
+                  </tr>
+                ) : errors ? (
                   <tr>
                     <td colSpan={6} className="text-center">
                       {errors}
                     </td>
                   </tr>
-                )}
-                {transfers.map((booking) => (
-                  <tr
-                    key={booking.id}
-                    onClick={() => handleRowClick(booking)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>{booking.id}</td>
-                    <td>{booking.pickUp}</td>
-                    <td>{booking.dropOff}</td>
-                    <td>{booking.passengers}</td>
-                    <td>{booking.pickUpTime}</td>
-                    <td>{booking.price}€</td>
+                ) : transfers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      Nessun trasferimento trovato per questa data
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  transfers.map((booking) => (
+                    <tr
+                      key={booking.id}
+                      onClick={() => handleRowClick(booking)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{booking.id}</td>
+                      <td>{booking.pickUp}</td>
+                      <td>{booking.dropOff}</td>
+                      <td>{booking.passengers}</td>
+                      <td>{booking.pickUpTime}</td>
+                      <td>{booking.price}€</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
               <br />
             </Table>
@@ -315,12 +345,13 @@ const MyAdministration = () => {
                 <Col className="col-4">
                   <Button
                     style={{
-                      backgroundColor: "#c9bd70", 
+                      backgroundColor: "#c9bd70",
                       borderColor: "#c9bd70",
                       color: "#000000",
                     }}
                     onClick={() => {
                       if (transfertId) {
+                        setIsSearchingById(true);
                         fetch(
                           `http://localhost:8080/prenotazioni/by-id/${transfertId}`,
                           {
@@ -338,7 +369,7 @@ const MyAdministration = () => {
                           .then((data) => {
                             setErrorForIdTransfert("");
                             setSearchForIdTransfert(data);
-                            console.log(data);
+                            setIsSearchingById(false);
                           })
                           .catch((error) => {
                             console.error("Errore:", error);
@@ -346,11 +377,16 @@ const MyAdministration = () => {
                               "Nessun Transfert trovato con questo ID"
                             );
                             setSearchForIdTransfert(null);
+                            setIsSearchingById(false);
                           });
                       }
                     }}
                   >
-                    Cerca
+                    {isSearchingById && activeTab === "Transfer" ? (
+                      <Spinner size="sm" animation="border" />
+                    ) : (
+                      "Cerca"
+                    )}
                   </Button>
                 </Col>
               </Row>
@@ -503,24 +539,45 @@ const MyAdministration = () => {
                 </tr>
               </thead>
               <tbody>
-                {tours.map((tour) => (
-                  <tr
-                    key={tour.id}
-                    onClick={() => handleRowClick(tour)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>{tour.id}</td>
-                    <td>
-                      {tour.pickUp}-{tour.startLocation}
+                {isLoadingTours ? (
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      <Spinner animation="border" />
+                      <span className="ms-2">Caricamento tour...</span>
                     </td>
-                    <td>
-                      {tour.dropOff}-{tour.endLocation}
-                    </td>
-                    <td>{tour.passengers}</td>
-                    <td>{tour.time}</td>
-                    <td>{tour.price}€</td>
                   </tr>
-                ))}
+                ) : errors ? (
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      {errors}
+                    </td>
+                  </tr>
+                ) : tours.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center">
+                      Nessun tour trovato per questa data
+                    </td>
+                  </tr>
+                ) : (
+                  tours.map((tour) => (
+                    <tr
+                      key={tour.id}
+                      onClick={() => handleRowClick(tour)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{tour.id}</td>
+                      <td>
+                        {tour.pickUp}-{tour.startLocation}
+                      </td>
+                      <td>
+                        {tour.dropOff}-{tour.endLocation}
+                      </td>
+                      <td>{tour.passengers}</td>
+                      <td>{tour.time}</td>
+                      <td>{tour.price}€</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </Table>
             <hr className="mt-5" />
@@ -545,6 +602,7 @@ const MyAdministration = () => {
                     }}
                     onClick={() => {
                       if (tourId) {
+                        setIsSearchingById(true);
                         fetch(`http://localhost:8080/tour/by-id/${tourId}`, {
                           headers: {
                             Authorization: `Bearer ${authToken}`,
@@ -559,7 +617,7 @@ const MyAdministration = () => {
                           .then((data) => {
                             setErrorForIdTour("");
                             setSearchForIdTour(data);
-                            console.log(data);
+                            setIsSearchingById(false);
                           })
                           .catch((error) => {
                             console.error("Errore:", error);
@@ -567,11 +625,16 @@ const MyAdministration = () => {
                               "Nessun tour trovato con questo ID"
                             );
                             setSearchForIdTour(null);
+                            setIsSearchingById(false);
                           });
                       }
                     }}
                   >
-                    Cerca
+                    {isSearchingById && activeTab === "Tour" ? (
+                      <Spinner size="sm" animation="border" />
+                    ) : (
+                      "Cerca"
+                    )}
                   </Button>
                 </Col>
               </Row>
@@ -686,7 +749,14 @@ const MyAdministration = () => {
           <Modal.Title>
             Dettagli Prenotazione
             <div>
-              <i className="bi bi-trash3-fill me-3" onClick={handleDelete}></i>
+              <i
+                className="bi bi-trash3-fill me-3"
+                onClick={!isDeleting ? handleDelete : undefined}
+              >
+                {isDeleting && (
+                  <Spinner size="sm" animation="border" className="ms-1" />
+                )}
+              </i>
               <i className="bi bi-pen-fill" onClick={handleEdit}></i>
             </div>
           </Modal.Title>
@@ -1352,7 +1422,7 @@ const MyAdministration = () => {
                       {optionalStops.map((place, index) => {
                         const placex = place.replace(/ \(\+ \d+ min\)/, "");
                         const currentStops =
-                          (editFormData as TourResponse)?.optionalStops || []; 
+                          (editFormData as TourResponse)?.optionalStops || [];
 
                         return (
                           <Form.Check
@@ -1406,8 +1476,19 @@ const MyAdministration = () => {
           >
             Annulla
           </button>
-          <button className="btn btn-primary" onClick={handleSaveEdit}>
-            Salva Modifiche
+          <button
+            className="btn btn-primary"
+            onClick={handleSaveEdit}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Spinner size="sm" animation="border" className="me-2" />
+                Salvataggio...
+              </>
+            ) : (
+              "Salva Modifiche"
+            )}
           </button>
         </Modal.Footer>
       </Modal>
