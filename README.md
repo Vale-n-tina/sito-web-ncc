@@ -50,3 +50,11 @@ export default tseslint.config({
 ```
 Il progetto backend si trova su GitHub al seguente link: [Backend Repository](https://github.com/Vale-n-tina/BackAndNcc)
 
+Il mio progetto prevede la creazione di un sito web per la gestione delle prenotazioni di corse NCC (Noleggio Con Conducente) destinate sia ai turisti che ai clienti locali. Utilizzando le API di Google Maps, il sito consentirà agli utenti di visualizzare il percorso delle corse in tempo reale, rendendo l'esperienza più interattiva e trasparente.
+Il sistema calcolerà automaticamente il costo della corsa attraverso fetch al backend, garantendo un servizio dinamico e preciso. Il sito presenterà anche una sezione dedicata ai vari servizi offerti dall'azienda, come tour e altri pacchetti personalizzati, permettendo agli utenti di esplorare tutte le opzioni disponibili.
+
+Il sito sarà sviluppato in React con  TypeScript per il frontend, mentre il backend sarà realizzato in Java per gestire la logica applicativa, le richieste e la gestione dei dati.
+
+Inoltre, una pagina di login consentirà all'amministratore del sito di accedere e visualizzare tutte le prenotazioni effettuate, permettendo di gestire facilmente le richieste dei clienti. Ogni volta che un cliente effettuerà una registrazione, una email di conferma verrà inviata automaticamente, sia al cliente che all'amministratore, per confermare la prenotazione e garantire una comunicazione efficiente e tempestiva.
+
+Questo progetto mira a semplificare il processo di prenotazione per gli utenti e ottimizzare la gestione delle corse e dei servizi da parte dell'azienda, attraverso un'esperienza utente moderna, intuitiva e funzionale.
