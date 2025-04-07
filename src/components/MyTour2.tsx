@@ -364,7 +364,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
                 </div>
               </Col>
             </Row>
-            <p className="mt-5 ms-3 quicksand">Tour ending to</p>
+            <p className="mt-5 ms-3 quicksand">{t("TourEdingTo")}</p>
             <Row className=" justify-content-center ">
               {buttonLabels.map((label, index) => (
                 <Col key={index} className="col-5 p-0 m-1 ">

@@ -163,6 +163,7 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Please fill all required fields",
         invia: "Send",
         invioInCorso: "Sending...",
+        TourEdingTo:"Tour ending to"
       },
     },
 
@@ -328,6 +329,7 @@ i18n.use(initReactI18next).init({
         invia: "Invia",
         invioInCorso: "Invio in corso...",
         emailAddress: "Indirizzo email",
+        TourEdingTo:"Fine del tour a "
       },
     },
 
@@ -495,6 +497,8 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Por favor complete todos los campos obligatorios",
         invia: "Enviar",
         invioInCorso: "Enviando...",
+        TourEdingTo:"Fin del tour hacia",
+
       },
     },
 
@@ -662,6 +666,7 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Veuillez remplir tous les champs obligatoires",
         invia: "Envoyer",
         invioInCorso: "Envoi en cours...",
+        TourEdingTo:"Fin du tour vers"
       },
     },
   },
