@@ -60,6 +60,31 @@ const MyReservation = (props: myReservationProps) => {
     pickUpDate: false,
     pickUpTime: false,
   });
+  //Stati per la gestione della API Key
+  const [googleMapsApiKey, setGoogleMapsApiKey] =useState<string>("");
+  const [keyLoading, setKeyLoading] = useState(true);
+  const [keyError, setKeyError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/prenotazioni/maps-key")
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      })
+      .then((key) => {
+       
+        setGoogleMapsApiKey(key.apikey);
+        setKeyLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching Google Maps API key:", error);
+        setKeyError("Could not load Google Maps. Please try again later.");
+        setKeyLoading(false);
+      });
+  }, []);
 
   const validateForm = () => {
     const errors = {
@@ -125,7 +150,7 @@ const MyReservation = (props: myReservationProps) => {
         }
       })
       .then((result) => {
-        console.log("Risultato:", result);
+        
         setPrice(result);
         props.setForm({ ...props.form, price: result });
         setIsCalculatingPrice(false);
@@ -181,6 +206,33 @@ const MyReservation = (props: myReservationProps) => {
     setIsScriptLoaded(true);
   };
   const { t } = useTranslation();
+
+  
+  // Mostra lo stato di caricamento o errore prima di renderizzare la mappa
+  if (keyLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+        <Spinner animation="border" variant="primary" />
+        <span className="ms-2">Loading map...</span>
+      </div>
+    );
+  }
+
+  if (keyError) {
+    return (
+      <div className="alert alert-danger text-center m-5">
+        {keyError}
+      </div>
+    );
+  }
+
+  if (!googleMapsApiKey) {
+    return (
+      <div className="alert alert-warning text-center m-5">
+        Google Maps API key not available
+      </div>
+    );
+  }
 
   return (
     <>
@@ -659,8 +711,9 @@ const MyReservation = (props: myReservationProps) => {
             <Col className="col col-11 col-lg-6 m-sm-auto p-0 m-lg-0 ">
               <Row>
                 <Col className="col col-11 m-auto mt-5 bg-light bg-opacity-75 rounded p-0 shadow">
+                
                   <LoadScript
-                    googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                    googleMapsApiKey={googleMapsApiKey}
                     libraries={["places"]}
                     onLoad={onScriptLoad}
                   >
