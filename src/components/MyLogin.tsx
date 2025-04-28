@@ -35,7 +35,7 @@ const MyLogin = () => {
       })
       .then((token) => {
         localStorage.setItem("authToken",JSON.stringify (token.token));
-        console.log(token);
+        
         navigate("/MyAdministration")
       })
       .catch((error) => {

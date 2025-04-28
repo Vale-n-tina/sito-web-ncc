@@ -192,7 +192,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
         }
       })
       .then((result) => {
-        console.log("Risultato:", result);
+        
         setPrice(result.price);
         setDuration(result.duration);
         props.setTour({
