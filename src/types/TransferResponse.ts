@@ -16,6 +16,9 @@ interface TransferResponse {
     email: string;
     phone: string;
     price: string;
-    
+    driverName?: string;
+  driverPhone?: string;
+  driverDetails?: string;
+  driverPaid?: boolean;
   }
   export default TransferResponse;

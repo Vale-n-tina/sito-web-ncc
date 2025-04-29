@@ -62,6 +62,27 @@ const MyAdministration = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isSearchingById, setIsSearchingById] = useState(false);
 
+  //Modale modificare per dettgali autista
+  const [showDriverModal, setShowDriverModal] = useState(false);
+  const [driverFormData, setDriverFormData] = useState({
+    driverName: "",
+    driverPhone: "",
+    driverDetails: "",
+    driverPaid: false,
+  });
+
+  //Fuinzione per aprire il modale con i dati esistenti dell'autista assegnato
+  const handleEditDriver = (booking: TransferResponse | TourResponse) => {
+    setDriverFormData({
+      driverName: booking.driverName || "",
+      driverPhone: booking.driverPhone || "",
+      driverDetails: booking.driverDetails || "",
+      driverPaid: booking.driverPaid || false,
+    });
+    setSelectedBooking(booking);
+    setShowDriverModal(true);
+  };
+
   //Token per autorizzazione
   const authToken = localStorage.getItem("authToken");
 
@@ -131,6 +152,7 @@ const MyAdministration = () => {
           return response.json();
         })
         .then((data: TransferResponse[]) => {
+         
           setTransfers(data); // Imposta i trasferimenti nello stato
           setErrors(null); // Rimuove gli errori precedenti
           setIsLoadingTransfers(false);
@@ -256,6 +278,61 @@ const MyAdministration = () => {
         });
     }
   };
+  //Determina il colore della riga
+  const getRowColor = (booking: TransferResponse | TourResponse) => {
+    if (booking.driverPaid) return "table-success"; // Verde se pagato
+    if (booking.driverName) return "table-warning"; // Giallo se assegnato ma non pagato
+    return ""; // Colore originale se non assegnato
+  };
+
+  //Richiesta API per modificare i dettgali dell'autista assegnato
+
+  const handleSaveDriverDetails = () => {
+    if (!selectedBooking) return;
+    setIsSaving(true);
+    const resourceType = activeTab === "Transfer" ? "prenotazioni" : tourId;
+    fetch(`http://localhost:8080/${resourceType}/${selectedBooking.id}/update-driver`,
+      {
+        method:"PUT",
+        headers:{
+          "Content-Type":"application/json",
+          Authorization:`Bearer ${authToken}`,
+        },
+        body:JSON.stringify(driverFormData),
+      }
+    )
+    .then((response)=>{
+      if(!response.ok){
+        throw new Error("Errore durante l'aggiornamento")
+      }
+      return response.json();
+    })
+    .then((updatedBooking)=>{
+      if (resourceType === "prenotazioni") {
+        setTransfers(prev => 
+          prev.map(t => t.id === updatedBooking.id ? updatedBooking : t)
+        );
+        setSearchForIdTransfert(updatedBooking);
+      } else {
+        setTours(prev => 
+          prev.map(t => t.id === updatedBooking.id ? updatedBooking : t)
+        );
+        setSearchForIdTour(updatedBooking);
+      }
+      
+      setSelectedBooking(prev => ({ ...prev, ...updatedBooking }));
+      setShowDriverModal(false);
+      setChangeErrors(null);
+    })
+    .catch((error) => {
+      console.error("Errore:", error);
+      setChangeErrors("Errore durante il salvataggio");
+    })
+    .finally(() => {
+      setIsSaving(false);
+    });
+    
+  };
 
   return (
     <div className=" overflow-hidden">
@@ -316,6 +393,7 @@ const MyAdministration = () => {
                       key={booking.id}
                       onClick={() => handleRowClick(booking)}
                       style={{ cursor: "pointer" }}
+                      className={getRowColor(booking)}
                     >
                       <td>{booking.id}</td>
                       <td>{booking.pickUp}</td>
@@ -564,6 +642,7 @@ const MyAdministration = () => {
                       key={tour.id}
                       onClick={() => handleRowClick(tour)}
                       style={{ cursor: "pointer" }}
+                      className={getRowColor(tour)}
                     >
                       <td>{tour.id}</td>
                       <td>
@@ -763,223 +842,373 @@ const MyAdministration = () => {
         </Modal.Header>
         <Modal.Body>
           {selectedBooking && (
-            <Table borderless>
-              <tbody>
-                {activeTab === "Transfer" ? (
-                  // Dettagli per i trasferimenti
-                  <>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Nome:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).nameAndSurname}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Pickup:</strong>
-                      </td>
-                      <td>{(selectedBooking as TransferResponse).pickUp}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Dropoff:</strong>
-                      </td>
-                      <td>{(selectedBooking as TransferResponse).dropOff}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Passeggeri:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).passengers}
-                      </td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Valigie:</strong>
-                      </td>
-                      <td>{(selectedBooking as TransferResponse).suitcases}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Zaini:</strong>
-                      </td>
-                      <td>{(selectedBooking as TransferResponse).backpack}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Orario pickup:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).pickUpTime}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Giorno pickup:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).pickUpDate}
-                      </td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Trasporto:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).transportDetails}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Seggiolini bambini:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).childSeats}
-                      </td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Richieste:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).requests ||
-                          "Nessuna richiesta"}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Email:</strong>
-                      </td>
-                      <td>{(selectedBooking as TransferResponse).email}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Telefono:</strong>
-                      </td>
-                      <td>+{(selectedBooking as TransferResponse).phone}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Nome cartello:</strong>
-                      </td>
-                      <td>
-                        {(selectedBooking as TransferResponse).nameOnBoard}
-                      </td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Prezzo:</strong>
-                      </td>
-                      <td>
-                        <h4>{(selectedBooking as TransferResponse).price}€</h4>
-                      </td>
-                    </tr>
-                  </>
-                ) : (
-                  // Dettagli per i tour
-                  <>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Nome:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).passengerName}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Telefono:</strong>
-                      </td>
-                      <td>+{(selectedBooking as TourResponse).phoneNumber}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Email:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).email}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Start:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).startLocation}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Pickup:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).pickUp}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>End:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).endLocation}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Dropoff:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).dropOff}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Passeggeri:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).passengers}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Data:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).date}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Orario:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).time}</td>
-                    </tr>
-                    <tr className="table-light">
-                      <td>
-                        <strong>Fermate:</strong>
-                      </td>
-                      <ul
-                        style={{
-                          listStyleType: "disc",
-                          paddingLeft: "20px",
-                          margin: 0,
-                        }}
-                      >
-                        {(selectedBooking as TourResponse)?.optionalStops?.map(
-                          (stop, index) => (
+            <>
+              <Table borderless>
+                <tbody>
+                  {activeTab === "Transfer" ? (
+                    // Dettagli per i trasferimenti
+                    <>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Nome:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).nameAndSurname}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Pickup:</strong>
+                        </td>
+                        <td>{(selectedBooking as TransferResponse).pickUp}</td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Dropoff:</strong>
+                        </td>
+                        <td>{(selectedBooking as TransferResponse).dropOff}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Passeggeri:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).passengers}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Valigie:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).suitcases}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Zaini:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).backpack}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Orario pickup:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).pickUpTime}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Giorno pickup:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).pickUpDate}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Trasporto:</strong>
+                        </td>
+                        <td>
+                          {
+                            (selectedBooking as TransferResponse)
+                              .transportDetails
+                          }
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Seggiolini bambini:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).childSeats}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Richieste:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).requests ||
+                            "Nessuna richiesta"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Email:</strong>
+                        </td>
+                        <td>{(selectedBooking as TransferResponse).email}</td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Telefono:</strong>
+                        </td>
+                        <td>+{(selectedBooking as TransferResponse).phone}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Nome cartello:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TransferResponse).nameOnBoard}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Prezzo:</strong>
+                        </td>
+                        <td>
+                          <h4>
+                            {(selectedBooking as TransferResponse).price}€
+                          </h4>
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    // Dettagli per i tour
+                    <>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Nome:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TourResponse).passengerName}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Telefono:</strong>
+                        </td>
+                        <td>
+                          +{(selectedBooking as TourResponse).phoneNumber}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Email:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).email}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Start:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TourResponse).startLocation}
+                        </td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Pickup:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).pickUp}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>End:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).endLocation}</td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Dropoff:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).dropOff}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Passeggeri:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).passengers}</td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Data:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).date}</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Orario:</strong>
+                        </td>
+                        <td>{(selectedBooking as TourResponse).time}</td>
+                      </tr>
+                      <tr className="table-light">
+                        <td>
+                          <strong>Fermate:</strong>
+                        </td>
+                        <ul
+                          style={{
+                            listStyleType: "disc",
+                            paddingLeft: "20px",
+                            margin: 0,
+                          }}
+                        >
+                          {(
+                            selectedBooking as TourResponse
+                          )?.optionalStops?.map((stop, index) => (
                             <li key={index}>{stop}</li>
-                          )
-                        )}
-                      </ul>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Durata tour:</strong>
-                      </td>
-                      <td>{(selectedBooking as TourResponse).duration} ore</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <strong>Prezzo:</strong>
-                      </td>
-                      <td>
-                        <h4>{(selectedBooking as TourResponse).price}€</h4>
-                      </td>
-                    </tr>
-                  </>
-                )}
-              </tbody>
-            </Table>
+                          ))}
+                        </ul>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Durata tour:</strong>
+                        </td>
+                        <td>
+                          {(selectedBooking as TourResponse).duration} ore
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Prezzo:</strong>
+                        </td>
+                        <td>
+                          <h4>{(selectedBooking as TourResponse).price}€</h4>
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              </Table>
+              <hr className="my-4" />
+              <h4 className="mb-3"> Dettagli Autista</h4>
+              <Table borderless>
+                <tbody>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Nome Autista:</strong>
+                    </td>
+                    <td>{selectedBooking.driverName || "Non assegnato"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Telefono Autista:</strong>
+                    </td>
+                    <td>{selectedBooking.driverPhone || "-"}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Dettagli:</strong>
+                    </td>
+                    <td>{selectedBooking.driverDetails || "-"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Pagato:</strong>
+                    </td>
+                    <td>
+                      {selectedBooking.driverPaid ? (
+                        <span className="text-success">Sì</span>
+                      ) : (
+                        <span className="text-danger">No</span>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+
+              <Button
+                variant="primary"
+                onClick={() => handleEditDriver(selectedBooking)}
+                className="mt-3"
+              >
+                Modifica Dettagli Autista
+              </Button>
+            </>
           )}
         </Modal.Body>
       </Modal>
+      {/*Modale per la modifica dei dettgali dell'autista assegnato */}
+
+      <Modal show={showDriverModal} onHide={() => setShowDriverModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modifica Dettagli Autista</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nome Autista</Form.Label>
+              <Form.Control
+                type="text"
+                value={driverFormData.driverName}
+                onChange={(e) =>
+                  setDriverFormData({
+                    ...driverFormData,
+                    driverName: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Telefono Autista</Form.Label>
+              <Form.Control
+                type="text"
+                value={driverFormData.driverPhone}
+                onChange={(e) =>
+                  setDriverFormData({
+                    ...driverFormData,
+                    driverPhone: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Dettagli Autista</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={driverFormData.driverDetails}
+                onChange={(e) =>
+                  setDriverFormData({
+                    ...driverFormData,
+                    driverDetails: e.target.value,
+                  })
+                }
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Check
+                type="checkbox"
+                label="Autista ha pagato"
+                checked={driverFormData.driverPaid}
+                onChange={(e) =>
+                  setDriverFormData({
+                    ...driverFormData,
+                    driverPaid: e.target.checked,
+                  })
+                }
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDriverModal(false)}>
+            Annulla
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSaveDriverDetails}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Spinner size="sm" animation="border" className="me-2" />
+                Salvataggio...
+              </>
+            ) : (
+              "Salva Modifiche"
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Prenotazione</Modal.Title>

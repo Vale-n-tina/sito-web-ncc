@@ -13,5 +13,9 @@ dropOff:string,
  startLocation:string,
  endLocation:string,
  duration:string,
+ driverName?: string;
+ driverPhone?: string;
+ driverDetails?: string;
+ driverPaid?: boolean;
 }
 export default TourResponse
