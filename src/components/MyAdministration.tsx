@@ -473,6 +473,7 @@ const MyAdministration = () => {
               <Alert variant="danger">{errorForIdTransfert}</Alert>
             )}
             {searchForIdTransfert && (
+              <>
               <Table borderless>
                 <tbody>
                   <tr className="table-light">
@@ -600,6 +601,43 @@ const MyAdministration = () => {
                   </tr>
                 </tbody>
               </Table>
+              <hr className="my-4" />
+              <h4 className="mb-3"> Dettagli Autista</h4>
+              <Table borderless>
+                <tbody>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Nome Autista:</strong>
+                    </td>
+                    <td>{searchForIdTransfert.driverName || "Non assegnato"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Telefono Autista:</strong>
+                    </td>
+                    <td>{searchForIdTransfert.driverPhone || "-"}</td>
+                  </tr>
+                  <tr className="table-light">
+                    <td>
+                      <strong>Dettagli:</strong>
+                    </td>
+                    <td>{searchForIdTransfert.driverDetails || "-"}</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <strong>Pagato:</strong>
+                    </td>
+                    <td>
+                      {searchForIdTransfert.driverPaid ? (
+                        <span className="text-success">Sì</span>
+                      ) : (
+                        <span className="text-danger">No</span>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+              </>
             )}
           </div>
         </Tab>
