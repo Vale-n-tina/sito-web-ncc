@@ -1,5 +1,6 @@
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface StripePaymentFormProps {
   amount: number;
@@ -51,7 +52,7 @@ export const StripePayment= ({ amount, onSuccess, onError, disabled, customerEma
       })
       .then((result) => {
         if (result.error) {
-          onError("Pagamento fallito");
+          onError(t("PaymentDeclined"));
           
           
         } else {
@@ -68,6 +69,7 @@ export const StripePayment= ({ amount, onSuccess, onError, disabled, customerEma
         setIsProcessing(false);
       });
   };
+  const { t } = useTranslation(); 
 
   return (
     <form onSubmit={handleSubmit}>
