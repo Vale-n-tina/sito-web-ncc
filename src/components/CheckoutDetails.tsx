@@ -121,6 +121,9 @@ const CheckoutDetails = (props: myReservationProps) => {
     setShowModal(false);
   };
 
+
+  
+
   return (
     <>
       <div className="bgTour">

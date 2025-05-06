@@ -163,9 +163,12 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Please fill all required fields",
         invia: "Send",
         invioInCorso: "Sending...",
-        TourEdingTo:"Tour ending to",
-        PaymentDeclined: "Your card was declined. Please check your card details or try a different payment method.",
-
+        TourEdingTo: "Tour ending to",
+        PaymentDeclined:
+          "Your card was declined. Please check your card details or try a different payment method.",
+        big: "large",
+        small: "small",
+      PrenotazioneCompletata: "Booking Completed"
       },
     },
 
@@ -331,8 +334,11 @@ i18n.use(initReactI18next).init({
         invia: "Invia",
         invioInCorso: "Invio in corso...",
         emailAddress: "Indirizzo email",
-        TourEdingTo:"Fine del tour a ",
-        PaymentDeclined: "La tua carta è stata rifiutata. Controlla i dati della carta o prova un metodo di pagamento diverso.",
+        TourEdingTo: "Fine del tour a ",
+        PaymentDeclined:
+          "La tua carta è stata rifiutata. Controlla i dati della carta o prova un metodo di pagamento diverso.",
+        big: "grandi",
+        small: "piccoli",
       },
     },
 
@@ -500,9 +506,12 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Por favor complete todos los campos obligatorios",
         invia: "Enviar",
         invioInCorso: "Enviando...",
-        TourEdingTo:"Fin del tour hacia",
-        PaymentDeclined: "Tu tarjeta fue rechazada. Verifica los datos de la tarjeta o intenta con otro método de pago."
+        TourEdingTo: "Fin del tour hacia",
+        PaymentDeclined:
+          "Tu tarjeta fue rechazada. Verifica los datos de la tarjeta o intenta con otro método de pago.",
 
+        big: "grandes",
+        small: "pequeños",
       },
     },
 
@@ -670,8 +679,13 @@ i18n.use(initReactI18next).init({
         campiObbligatori: "Veuillez remplir tous les champs obligatoires",
         invia: "Envoyer",
         invioInCorso: "Envoi en cours...",
-        TourEdingTo:"Fin du tour vers",
-        PaymentDeclined: "Votre carte a été refusée. Veuillez vérifier les informations de votre carte ou essayer un autre moyen de paiement."
+        TourEdingTo: "Fin du tour vers",
+        PaymentDeclined:
+          "Votre carte a été refusée. Veuillez vérifier les informations de votre carte ou essayer un autre moyen de paiement.",
+        big: "grands",
+        small: "petits",
+         
+        
       },
     },
   },

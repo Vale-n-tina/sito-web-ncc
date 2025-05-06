@@ -290,7 +290,7 @@ const MyAdministration = () => {
   const handleSaveDriverDetails = () => {
     if (!selectedBooking) return;
     setIsSaving(true);
-    const resourceType = activeTab === "Transfer" ? "prenotazioni" : tourId;
+    const resourceType = activeTab === "Transfer" ? "prenotazioni" : "tour";
     fetch(`http://localhost:8080/${resourceType}/${selectedBooking.id}/update-driver`,
       {
         method:"PUT",
