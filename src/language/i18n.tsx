@@ -168,8 +168,13 @@ i18n.use(initReactI18next).init({
           "Your card was declined. Please check your card details or try a different payment method.",
         big: "large",
         small: "small",
-      PrenotazioneCompletata: "Booking Completed"
-      },
+        PrenotazioneCompletata: "Booking Completed",
+        infoText:
+          "The total for the service is €{{price}}. To confirm the booking, a 10% deposit (€{{deposit}}) is required and is non-refundable. If the customer does not show up without prior notice, the deposit will not be refunded. Cancellations can be made up to 24H in advance to reschedule or receive a credit for a future service.",
+          email_required: "The email is required.",
+          invalid_email: "Please enter a valid email address.",
+        },
+      
     },
 
     it: {
@@ -339,6 +344,10 @@ i18n.use(initReactI18next).init({
           "La tua carta è stata rifiutata. Controlla i dati della carta o prova un metodo di pagamento diverso.",
         big: "grandi",
         small: "piccoli",
+        infoText:
+          "Il totale per il servizio è di {{price}}€. Per confermare la prenotazione, è richiesto un anticipo del 10% ({{deposit}}€), che non è rimborsabile. Se il cliente non si presenta all'appuntamento senza preavviso, l'anticipo non verrà restituito. Cancellazioni possono essere fatte entro 24H per riprogrammare o ricevere un credito per un futuro servizio.",
+        email_required: "L'email è obbligatoria.",
+        invalid_email: "Inserisci un indirizzo email valido.",
       },
     },
 
@@ -512,7 +521,12 @@ i18n.use(initReactI18next).init({
 
         big: "grandes",
         small: "pequeños",
-      },
+        infoText:
+          "El total del servicio es de {{price}}€. Para confirmar la reserva, se requiere un anticipo del 10% ({{deposit}}€), que no es reembolsable. Si el cliente no se presenta sin previo aviso, el anticipo no será reembolsado. Las cancelaciones pueden realizarse hasta 24H antes para reprogramar o recibir un crédito para un servicio futuro.",
+          email_required: "El correo electrónico es obligatorio.",
+          invalid_email: "Por favor ingrese un correo electrónico válido.",
+        },
+     
     },
 
     fr: {
@@ -684,9 +698,12 @@ i18n.use(initReactI18next).init({
           "Votre carte a été refusée. Veuillez vérifier les informations de votre carte ou essayer un autre moyen de paiement.",
         big: "grands",
         small: "petits",
-         
-        
-      },
+        infoText:
+          "Le total du service est de {{price}}€. Pour confirmer la réservation, un acompte de 10% ({{deposit}}€) est requis et n'est pas remboursable. Si le client ne se présente pas sans préavis, l'acompte ne sera pas remboursé. Les annulations peuvent être effectuées jusqu'à 24H à l'avance pour reprogrammer ou recevoir un crédit pour un service futur.",
+          email_required: "L'email est obligatoire.",
+          invalid_email: "Veuillez entrer une adresse email valide.",
+        },
+     
     },
   },
 });

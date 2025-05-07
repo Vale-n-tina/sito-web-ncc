@@ -36,7 +36,7 @@ const CheckoutDetails = (props: myReservationProps) => {
   //Match email
   const [confirmEmail, setConfirmEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
-  
+
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -51,29 +51,28 @@ const CheckoutDetails = (props: myReservationProps) => {
   const [paymentError, setPaymentError] = useState("");
   const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
 
-    const { t, } = useTranslation(); 
+  const { t } = useTranslation();
 
   const handlePaymentSuccess = () => {
     setIsPaymentSuccessful(true);
     bookNow();
   };
 
-
-
   //validazioni degli errori
   const isFormValid = useMemo(() => {
     const errors = {
-      nameAndSurname: !(isTour ? tour.passengerName : form.nameAndSurname).trim(),
-      email: !(isTour ? tour.email : form.email).trim() || 
-             !/\S+@\S+\.\S+/.test(isTour ? tour.email : form.email),
+      nameAndSurname: !(
+        isTour ? tour.passengerName : form.nameAndSurname
+      ).trim(),
+      email:
+        !(isTour ? tour.email : form.email).trim() ||
+        !/\S+@\S+\.\S+/.test(isTour ? tour.email : form.email),
       phone: !(isTour ? tour.phoneNumber : form.phone).trim(),
     };
-    
+
     setValidationErrors(errors);
     return !Object.values(errors).some(Boolean);
   }, [isTour, tour, form]);
-  
-  
 
   //verifica se le email corrispondono
   const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +85,6 @@ const CheckoutDetails = (props: myReservationProps) => {
     }
   };
   const isEmailMatch = (isTour ? tour.email : form.email) === confirmEmail;
-
 
   //Richiesta di prenotazione
   const bookNow = function () {
@@ -102,7 +100,6 @@ const CheckoutDetails = (props: myReservationProps) => {
     })
       .then((response) => {
         if (response.ok) {
-         
           setIsSubmitted(true);
           setShowModal(true);
           return;
@@ -115,14 +112,10 @@ const CheckoutDetails = (props: myReservationProps) => {
       });
   };
 
-
   //Chiusura modale
   const handleCloseModal = () => {
     setShowModal(false);
   };
-
-
-  
 
   return (
     <>
@@ -131,14 +124,16 @@ const CheckoutDetails = (props: myReservationProps) => {
           <Row>
             <Col className="col col-11 m-auto mt-3 ">
               <h1 className=" merriweather text-black  shadow p-3 mb-5 rounded bg-white text-center">
-              {t("bookingDetails")}
+                {t("bookingDetails")}
               </h1>
             </Col>
           </Row>
 
           <Row>
             <Col className="col col-11 m-auto pt-3  bg-white rounded shadow p-3 mb-3 rounded ">
-              <h4 className="text-black merriweather">{t("passengerInformation")}</h4>
+              <h4 className="text-black merriweather">
+                {t("passengerInformation")}
+              </h4>
               <Row>
                 <Col className="col col-12 col-md-6 col-lg-5 m-auto merriweather ">
                   <Form>
@@ -147,7 +142,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       controlId="exampleForm.ControlInput1"
                     >
                       <Form.Label className="m-0 fw-bold code merriweather">
-                      {t("passengerName")}
+                        {t("passengerName")}
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -183,7 +178,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       controlId="exampleForm.ControlInput1"
                     >
                       <Form.Label className="m-0 fw-bold code merriweather">
-                      {t("email")}
+                        {t("email")}
                       </Form.Label>
                       <Form.Control
                         type="email"
@@ -206,10 +201,10 @@ const CheckoutDetails = (props: myReservationProps) => {
                       />
                       {validationErrors.email && (
                         <p className="text-danger small">
-                          {!(isTour ? tour.email : form.email).trim()
-                            ? "The email is required."
-                            : "Please enter a valid email address."}
-                        </p>
+                        {!(isTour ? tour.email : form.email).trim()
+                          ? t('email_required')
+                          : t('invalid_email')}
+                      </p>
                       )}
                     </Form.Group>
                     <Form.Group
@@ -217,7 +212,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       controlId="exampleForm.ControlInput1"
                     >
                       <Form.Label className="m-0 fw-bold code merriweather">
-                      {t("confirmEmail")}
+                        {t("confirmEmail")}
                       </Form.Label>
                       <Form.Control
                         type="email"
@@ -237,7 +232,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       controlId="exampleForm.ControlInput1"
                     >
                       <Form.Label className="m-0 fw-bold code merriweather">
-                      {t("mobilePhone")}
+                        {t("mobilePhone")}
                       </Form.Label>
                       <PhoneInput
                         country={"us"}
@@ -263,7 +258,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       />
                       {validationErrors.phone && (
                         <p className="text-danger small">
-                            {t("phoneRequired")}
+                          {t("phoneRequired")}
                         </p>
                       )}
                     </Form.Group>
@@ -273,7 +268,7 @@ const CheckoutDetails = (props: myReservationProps) => {
             </Col>
             <Col className="col col-11 m-auto pt-3  bg-white rounded mt-3 px-5 mb-4 shadow p-3 mb-5 rounded">
               <h4 className="text-black mt-4 mb-5 merriweather">
-                {isTour ? t("tourDetails")  : t("transferDetails")}
+                {isTour ? t("tourDetails") : t("transferDetails")}
               </h4>
               <Row>
                 <Col>
@@ -282,7 +277,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary  merriweather">
-                          {t("from")}
+                            {t("from")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -292,7 +287,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary merriweather">
-                          {t("to")}
+                            {t("to")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -302,7 +297,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary merriweather">
-                          {t("date")}
+                            {t("date")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -312,7 +307,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary merriweather">
-                          {t("pickUpTime")}
+                            {t("pickUpTime")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -322,7 +317,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary merriweather">
-                          {t("passengers")}
+                            {t("passengers")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -334,7 +329,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary merriweather">
-                          {t("duration")}
+                            {t("duration")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -346,7 +341,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2 align-items-center">
                         <Col className="col col-12 col-md-4 col-lg-4">
                           <h6 className="m-0 text-thetriary fw-bold fs-4 merriweather">
-                          {t("price")}
+                            {t("price")}
                           </h6>
                         </Col>
                         <Col className="col col-12 col-md-4 col-lg-4">
@@ -361,7 +356,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("from")}
+                            {t("from")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -371,7 +366,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("to")}
+                            {t("to")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -381,7 +376,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("date")}
+                            {t("date")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -394,7 +389,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("pickUpTime")}
+                            {t("pickUpTime")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -406,7 +401,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("passengers")}
+                            {t("passengers")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -418,20 +413,20 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("luggagesAndCarryOn")}
+                            {t("luggagesAndCarryOn")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
                           <p className=" fw-bold mb-1">
-                            {props.form.suitcases} {t("big")} {props.form.backpack}{" "}
-                            {t("small")}
+                            {props.form.suitcases} {t("big")}{" "}
+                            {props.form.backpack} {t("small")}
                           </p>
                         </Col>
                       </Row>
                       <Row className="mb-2">
                         <Col className="col col-11">
                           <h6 className="m-0 text-thetriary code merriweather">
-                          {t("childSeats")}
+                            {t("childSeats")}
                           </h6>
                         </Col>
                         <Col className="col col-11">
@@ -443,7 +438,7 @@ const CheckoutDetails = (props: myReservationProps) => {
                       <Row className="mb-2 align-items-center">
                         <Col className="col col-12 col-md-4 col-lg-4">
                           <h6 className="m-0 text-thetriary code fw-bold fs-4 meFrriweather">
-                          {t("discountPrice")}
+                            {t("discountPrice")}
                           </h6>
                         </Col>
                         <Col className="col col-12 col-md-4 col-lg-4">
@@ -454,22 +449,27 @@ const CheckoutDetails = (props: myReservationProps) => {
                       </Row>
                     </>
                   )}
-                  <div className="mt-5">
+                  <div className="mt-5 mb-5 ">
+                    <p className="mb-5 small bgTour p-3">
+                      {t("infoText", {
+                        price: isTour ? props.tour.price : props.form.price,
+                        deposit: isTour
+                          ? (props.tour.price * 0.1).toFixed(2)
+                          : (props.form.price * 0.1).toFixed(2),
+                      })}
+                    </p>
                     <Elements stripe={stripePromise}>
                       <StripePayment
-                        amount={isTour ? tour.price : form.price}
+                        amount={isTour ? tour.price * 0.1 : form.price * 0.1}
                         onSuccess={handlePaymentSuccess}
                         onError={setPaymentError}
-                        disabled={
-                          !isEmailMatch ||
-                          isSubmitted || !isFormValid
-                        }
+                        disabled={!isEmailMatch || isSubmitted || !isFormValid}
                         customerEmail={isTour ? tour.email : form.email}
                       />
                     </Elements>
                     {isPaymentSuccessful && (
                       <div className="alert alert-success">
-                           {t("paymentSuccessful")}
+                        {t("paymentSuccessful")}
                       </div>
                     )}
                     {paymentError && (
@@ -477,8 +477,6 @@ const CheckoutDetails = (props: myReservationProps) => {
                         {paymentError}
                       </Alert>
                     )}
-                    
-
                   </div>
                 </Col>
               </Row>
@@ -492,13 +490,15 @@ const CheckoutDetails = (props: myReservationProps) => {
           <Modal.Body>
             <p>
               <p>
-              {t("yourBookingCompleted", { email: isTour ? tour.email : form.email })}
+                {t("yourBookingCompleted", {
+                  email: isTour ? tour.email : form.email,
+                })}
               </p>
             </p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="success" onClick={handleCloseModal}>
-            {t("close")}
+              {t("close")}
             </Button>
           </Modal.Footer>
         </Modal>
