@@ -318,10 +318,10 @@ const MyReservation = (props: myReservationProps) => {
                         type="text"
                         placeholder={t("ReservationPlaceholder")}
                         required
-                        value={origin} // Sincronizza il valore del campo con lo stato `origin`
+                        value={origin} 
                         onChange={(e) => {
                           const value = e.target.value;
-                          setOrigin(value); // Aggiorna lo stato `origin` quando l'utente digita
+                          setOrigin(value); 
                           props.setForm({ ...props.form, pickUp: value });
                           setValidationErrors((prev) => ({
                             ...prev,
