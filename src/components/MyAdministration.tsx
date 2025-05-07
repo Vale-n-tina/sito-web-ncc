@@ -29,6 +29,14 @@ const MyAdministration = () => {
   const [errorForIdTransfert, setErrorForIdTransfert] = useState("");
   const [errorForIdTour, setErrorForIdTour] = useState("");
 
+  //Cercare per parola, stati ed errori
+  const [searchWord, setSearchWord] = useState("");
+  const [isSearchingByWord, setIsSearchingByWord] = useState(false);
+  const [errorForWordTransfert, setErrorForWordTransfert] = useState("");
+  const [resultForWordTransfert, setResultForWordTransfert] = useState<
+    TransferResponse[]
+  >([]);
+
   //Per cercare tour/trasferimenti per data
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
@@ -152,7 +160,6 @@ const MyAdministration = () => {
           return response.json();
         })
         .then((data: TransferResponse[]) => {
-         
           setTransfers(data); // Imposta i trasferimenti nello stato
           setErrors(null); // Rimuove gli errori precedenti
           setIsLoadingTransfers(false);
@@ -291,47 +298,47 @@ const MyAdministration = () => {
     if (!selectedBooking) return;
     setIsSaving(true);
     const resourceType = activeTab === "Transfer" ? "prenotazioni" : "tour";
-    fetch(`http://localhost:8080/${resourceType}/${selectedBooking.id}/update-driver`,
+    fetch(
+      `http://localhost:8080/${resourceType}/${selectedBooking.id}/update-driver`,
       {
-        method:"PUT",
-        headers:{
-          "Content-Type":"application/json",
-          Authorization:`Bearer ${authToken}`,
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
         },
-        body:JSON.stringify(driverFormData),
+        body: JSON.stringify(driverFormData),
       }
     )
-    .then((response)=>{
-      if(!response.ok){
-        throw new Error("Errore durante l'aggiornamento")
-      }
-      return response.json();
-    })
-    .then((updatedBooking)=>{
-      if (resourceType === "prenotazioni") {
-        setTransfers(prev => 
-          prev.map(t => t.id === updatedBooking.id ? updatedBooking : t)
-        );
-        setSearchForIdTransfert(updatedBooking);
-      } else {
-        setTours(prev => 
-          prev.map(t => t.id === updatedBooking.id ? updatedBooking : t)
-        );
-        setSearchForIdTour(updatedBooking);
-      }
-      
-      setSelectedBooking(prev => ({ ...prev, ...updatedBooking }));
-      setShowDriverModal(false);
-      setChangeErrors(null);
-    })
-    .catch((error) => {
-      console.error("Errore:", error);
-      setChangeErrors("Errore durante il salvataggio");
-    })
-    .finally(() => {
-      setIsSaving(false);
-    });
-    
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Errore durante l'aggiornamento");
+        }
+        return response.json();
+      })
+      .then((updatedBooking) => {
+        if (resourceType === "prenotazioni") {
+          setTransfers((prev) =>
+            prev.map((t) => (t.id === updatedBooking.id ? updatedBooking : t))
+          );
+          setSearchForIdTransfert(updatedBooking);
+        } else {
+          setTours((prev) =>
+            prev.map((t) => (t.id === updatedBooking.id ? updatedBooking : t))
+          );
+          setSearchForIdTour(updatedBooking);
+        }
+
+        setSelectedBooking((prev) => ({ ...prev, ...updatedBooking }));
+        setShowDriverModal(false);
+        setChangeErrors(null);
+      })
+      .catch((error) => {
+        console.error("Errore:", error);
+        setChangeErrors("Errore durante il salvataggio");
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
   };
 
   return (
@@ -354,6 +361,8 @@ const MyAdministration = () => {
         className="mb-3"
         onSelect={(key) => handleTabChange(key as "Transfer" | "Tour")}
       >
+        {/* TODO: TAB PER TRANSFER */}
+
         <Tab eventKey="Transfer" title="Transfer">
           <div className="table-responsive">
             <Table striped bordered hover size="sm ">
@@ -410,237 +419,365 @@ const MyAdministration = () => {
             <hr className="mt-5" />
             <Container fluid className="mt-4">
               <Row>
-                <p className=" fw-bold sans">Cerca per id:</p>
-                <Col className="col-8">
-                  <Form.Control
-                    type="text"
-                    placeholder="Inserire id Transfer"
-                    className="me-2 mb-5 custom-inputReservation"
-                    value={transfertId}
-                    onChange={(e) => setTransfertId(e.target.value)}
-                  />
-                </Col>
-                <Col className="col-4">
-                  <Button
-                    style={{
-                      backgroundColor: "#c9bd70",
-                      borderColor: "#c9bd70",
-                      color: "#000000",
-                    }}
-                    onClick={() => {
-                      if (transfertId) {
-                        setIsSearchingById(true);
-                        fetch(
-                          `http://localhost:8080/prenotazioni/by-id/${transfertId}`,
-                          {
-                            headers: {
-                              Authorization: `Bearer ${authToken}`,
-                            },
+                <Col className="col-12 col-lg-5">
+                  <Row>
+                    <p className=" fw-bold sans">Cerca per id:</p>
+                    <Col className="col-8">
+                      <Form.Control
+                        type="text"
+                        placeholder="Inserire id Transfer"
+                        className="me-2 mb-5 custom-inputReservation"
+                        value={transfertId}
+                        onChange={(e) => setTransfertId(e.target.value)}
+                      />
+                    </Col>
+                    <Col className="col-4">
+                      <Button
+                        style={{
+                          backgroundColor: "#c9bd70",
+                          borderColor: "#c9bd70",
+                          color: "#000000",
+                        }}
+                        onClick={() => {
+                          setSearchWord(""); 
+                          setResultForWordTransfert([]); 
+                          setErrorForWordTransfert(""); 
+                          if (transfertId) {
+                            setIsSearchingById(true);
+                            fetch(
+                              `http://localhost:8080/prenotazioni/by-id/${transfertId}`,
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                              }
+                            )
+                              .then((response) => {
+                                if (!response.ok) {
+                                  throw new Error("Prenotazione non trovato");
+                                }
+                                return response.json();
+                              })
+                              .then((data) => {
+                                setErrorForIdTransfert("");
+                                setSearchForIdTransfert(data);
+                                setIsSearchingById(false);
+                              })
+                              .catch((error) => {
+                                console.error("Errore:", error);
+                                setErrorForIdTransfert(
+                                  "Nessun Transfert trovato con questo ID"
+                                );
+                                setSearchForIdTransfert(null);
+                                setIsSearchingById(false);
+                              });
                           }
-                        )
-                          .then((response) => {
-                            if (!response.ok) {
-                              throw new Error("Tour non trovato");
-                            }
-                            return response.json();
-                          })
-                          .then((data) => {
-                            setErrorForIdTransfert("");
-                            setSearchForIdTransfert(data);
-                            setIsSearchingById(false);
-                          })
-                          .catch((error) => {
-                            console.error("Errore:", error);
-                            setErrorForIdTransfert(
-                              "Nessun Transfert trovato con questo ID"
-                            );
-                            setSearchForIdTransfert(null);
-                            setIsSearchingById(false);
-                          });
-                      }
-                    }}
-                  >
-                    {isSearchingById && activeTab === "Transfer" ? (
-                      <Spinner size="sm" animation="border" />
-                    ) : (
-                      "Cerca"
-                    )}
-                  </Button>
+                        }}
+                      >
+                        {isSearchingById && activeTab === "Transfer" ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          "Cerca"
+                        )}
+                      </Button>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col className="col-12 col-lg-5">
+                  <Row>
+                    <p className=" fw-bold sans">Cerca per nome:</p>
+                    <Col className="col-8">
+                      <Form.Control
+                        type="text"
+                        placeholder="Inserire nome da cercare"
+                        className="me-2 mb-5 custom-inputReservation"
+                        value={searchWord}
+                        onChange={(e) => setSearchWord(e.target.value)}
+                      />
+                    </Col>
+                    <Col className="col-4">
+                      <Button
+                        style={{
+                          backgroundColor: "#c9bd70",
+                          borderColor: "#c9bd70",
+                          color: "#000000",
+                        }}
+                        onClick={() => {
+                          if (searchWord) {
+                            setTransfertId(""); 
+                            setSearchForIdTransfert(null); 
+                            setErrorForIdTransfert(""); 
+                            setIsSearchingByWord(true);
+                            fetch(
+                              `http://localhost:8080/prenotazioni/search?keyword=${searchWord}`,
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                              }
+                            )
+                              .then((response) => {
+                                if (!response.ok) {
+                                  throw new Error("Nessun elemento trovato");
+                                }
+                                return response.json();
+                              })
+                              .then((data) => {
+                                if (data.length === 0) {
+                                  setErrorForWordTransfert(
+                                    `Nessun Transfert trovato con la parola "${searchWord}"`
+                                  );
+                                  setResultForWordTransfert([]);
+                                  setIsSearchingByWord(false);
+
+                                  return;
+                                }
+                                setErrorForWordTransfert("");
+                                setResultForWordTransfert(data);
+                                setIsSearchingByWord(false);
+                                console.log("risultati", data);
+                              })
+                              .catch((error) => {
+                                console.error("Errore:", error);
+                                setErrorForWordTransfert(
+                                  `Errore nel caricamento`
+                                );
+
+                                setIsSearchingByWord(false);
+                              });
+                          }
+                        }}
+                      >
+                        {isSearchingByWord && activeTab === "Transfer" ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          "Cerca"
+                        )}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Container>
             {errorForIdTransfert && (
               <Alert variant="danger">{errorForIdTransfert}</Alert>
             )}
+            {errorForWordTransfert && (
+              <Alert variant="danger">{errorForWordTransfert}</Alert>
+            )}
+
+            {resultForWordTransfert.length > 0 && (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>PickUp</th>
+                    <th>DropOff</th>
+                    <th>Passengers</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultForWordTransfert.map((booking) => (
+                    <tr
+                      key={booking.id}
+                      onClick={() => handleRowClick(booking)}
+                      style={{ cursor: "pointer" }}
+                      className={getRowColor(booking)}
+                    >
+                      <td>{booking.id}</td>
+                      <td>{booking.pickUp}</td>
+                      <td>{booking.dropOff}</td>
+                      <td>{booking.passengers}</td>
+                      <td>{booking.pickUpTime}</td>
+                      <td>{booking.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+
             {searchForIdTransfert && (
               <>
-              <Table borderless>
-                <tbody>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Nome:</strong>
-                    </td>
-                    <td>
-                      {
-                        (searchForIdTransfert as TransferResponse)
-                          .nameAndSurname
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Pickup:</strong>
-                    </td>
-                    <td>{(searchForIdTransfert as TransferResponse).pickUp}</td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Dropoff:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).dropOff}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Passeggeri:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).passengers}
-                    </td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Valigie:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).suitcases}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Zaini:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).backpack}
-                    </td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Orario pickup:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).pickUpTime}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Giorno pickup:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).pickUpDate}
-                    </td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Trasporto:</strong>
-                    </td>
-                    <td>
-                      {
-                        (searchForIdTransfert as TransferResponse)
-                          .transportDetails
-                      }
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Seggiolini bambini:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).childSeats}
-                    </td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Richieste:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).requests ||
-                        "Nessuna richiesta"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Email:</strong>
-                    </td>
-                    <td>{(searchForIdTransfert as TransferResponse).email}</td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Telefono:</strong>
-                    </td>
-                    <td>+{(searchForIdTransfert as TransferResponse).phone}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Nome cartello:</strong>
-                    </td>
-                    <td>
-                      {(searchForIdTransfert as TransferResponse).nameOnBoard}
-                    </td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Prezzo:</strong>
-                    </td>
-                    <td>
-                      <h4>
-                        {(searchForIdTransfert as TransferResponse).price}€
-                      </h4>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-              <hr className="my-4" />
-              <h4 className="mb-3"> Dettagli Autista</h4>
-              <Table borderless>
-                <tbody>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Nome Autista:</strong>
-                    </td>
-                    <td>{searchForIdTransfert.driverName || "Non assegnato"}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Telefono Autista:</strong>
-                    </td>
-                    <td>{searchForIdTransfert.driverPhone || "-"}</td>
-                  </tr>
-                  <tr className="table-light">
-                    <td>
-                      <strong>Dettagli:</strong>
-                    </td>
-                    <td>{searchForIdTransfert.driverDetails || "-"}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <strong>Pagato:</strong>
-                    </td>
-                    <td>
-                      {searchForIdTransfert.driverPaid ? (
-                        <span className="text-success">Sì</span>
-                      ) : (
-                        <span className="text-danger">No</span>
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+                <Table borderless>
+                  <tbody>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Nome:</strong>
+                      </td>
+                      <td>
+                        {
+                          (searchForIdTransfert as TransferResponse)
+                            .nameAndSurname
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Pickup:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).pickUp}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Dropoff:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).dropOff}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Passeggeri:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).passengers}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Valigie:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).suitcases}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Zaini:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).backpack}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Orario pickup:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).pickUpTime}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Giorno pickup:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).pickUpDate}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Trasporto:</strong>
+                      </td>
+                      <td>
+                        {
+                          (searchForIdTransfert as TransferResponse)
+                            .transportDetails
+                        }
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Seggiolini bambini:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).childSeats}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Richieste:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).requests ||
+                          "Nessuna richiesta"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Email:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).email}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Telefono:</strong>
+                      </td>
+                      <td>
+                        +{(searchForIdTransfert as TransferResponse).phone}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Nome cartello:</strong>
+                      </td>
+                      <td>
+                        {(searchForIdTransfert as TransferResponse).nameOnBoard}
+                      </td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Prezzo:</strong>
+                      </td>
+                      <td>
+                        <h4>
+                          {(searchForIdTransfert as TransferResponse).price}€
+                        </h4>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <hr className="my-4" />
+                <h4 className="mb-3"> Dettagli Autista</h4>
+                <Table borderless>
+                  <tbody>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Nome Autista:</strong>
+                      </td>
+                      <td>
+                        {searchForIdTransfert.driverName || "Non assegnato"}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Telefono Autista:</strong>
+                      </td>
+                      <td>{searchForIdTransfert.driverPhone || "-"}</td>
+                    </tr>
+                    <tr className="table-light">
+                      <td>
+                        <strong>Dettagli:</strong>
+                      </td>
+                      <td>{searchForIdTransfert.driverDetails || "-"}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>Pagato:</strong>
+                      </td>
+                      <td>
+                        {searchForIdTransfert.driverPaid ? (
+                          <span className="text-success">Sì</span>
+                        ) : (
+                          <span className="text-danger">No</span>
+                        )}
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
               </>
             )}
           </div>
         </Tab>
+        {/* TODO: TAB PER TRANSFER */}
+
+        {/* FIXME: TAB PER TOUR */}
         <Tab eventKey="Tour" title="Tour" className="mb-5">
           <div className="table-responsive">
             <Table striped bordered hover size="sm ">
@@ -857,9 +994,11 @@ const MyAdministration = () => {
             )}
           </div>
         </Tab>
+
+        {/* FIXME: TAB PER TOUR */}
       </Tabs>
 
-      {/* Modale per mostrare i dettagli della prenotazione */}
+      {/* TODO: Modale per mostrare i dettagli della prenotazione */}
 
       <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
@@ -1160,7 +1299,9 @@ const MyAdministration = () => {
           )}
         </Modal.Body>
       </Modal>
-      {/*Modale per la modifica dei dettgali dell'autista assegnato */}
+      {/* TODO: Modale per mostrare i dettagli della prenotazione */}
+
+      {/* FIXME: Modale per la modifica dei dettgali dell'autista assegnato */}
 
       <Modal show={showDriverModal} onHide={() => setShowDriverModal(false)}>
         <Modal.Header closeButton>
@@ -1246,7 +1387,9 @@ const MyAdministration = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* FIXME: Modale per la modifica dei dettgali dell'autista assegnato */}
 
+      {/* FIXME: Modale per la modifica dei dettgali */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Modifica Prenotazione</Modal.Title>
@@ -1759,6 +1902,7 @@ const MyAdministration = () => {
           </button>
         </Modal.Footer>
       </Modal>
+      {/* FIXME: Modale per la modifica dei dettgali*/}
     </div>
   );
 };
