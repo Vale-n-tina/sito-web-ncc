@@ -37,6 +37,12 @@ const MyAdministration = () => {
     TransferResponse[]
   >([]);
 
+  const [searchWordTour, setSearchWordTour] = useState("");
+  const [errorForWordTour, setErrorForWordTour] = useState("");
+  const [resultForWordTour, setResultForWordTour] = useState<
+    TourResponse[]
+  >([]);
+
   //Per cercare tour/trasferimenti per data
   const [date, setDate] = useState<Date>(new Date());
   const [transfers, setTransfers] = useState<TransferResponse[]>([]);
@@ -160,8 +166,8 @@ const MyAdministration = () => {
           return response.json();
         })
         .then((data: TransferResponse[]) => {
-          setTransfers(data); // Imposta i trasferimenti nello stato
-          setErrors(null); // Rimuove gli errori precedenti
+          setTransfers(data);
+          setErrors(null);
           setIsLoadingTransfers(false);
         })
         .catch((error) => {
@@ -439,9 +445,9 @@ const MyAdministration = () => {
                           color: "#000000",
                         }}
                         onClick={() => {
-                          setSearchWord(""); 
-                          setResultForWordTransfert([]); 
-                          setErrorForWordTransfert(""); 
+                          setSearchWord("");
+                          setResultForWordTransfert([]);
+                          setErrorForWordTransfert("");
                           if (transfertId) {
                             setIsSearchingById(true);
                             fetch(
@@ -504,9 +510,9 @@ const MyAdministration = () => {
                         }}
                         onClick={() => {
                           if (searchWord) {
-                            setTransfertId(""); 
-                            setSearchForIdTransfert(null); 
-                            setErrorForIdTransfert(""); 
+                            setTransfertId("");
+                            setSearchForIdTransfert(null);
+                            setErrorForIdTransfert("");
                             setIsSearchingByWord(true);
                             fetch(
                               `http://localhost:8080/prenotazioni/search?keyword=${searchWord}`,
@@ -535,7 +541,7 @@ const MyAdministration = () => {
                                 setErrorForWordTransfert("");
                                 setResultForWordTransfert(data);
                                 setIsSearchingByWord(false);
-                                console.log("risultati", data);
+                                
                               })
                               .catch((error) => {
                                 console.error("Errore:", error);
@@ -837,63 +843,184 @@ const MyAdministration = () => {
             <hr className="mt-5" />
             <Container fluid className="mt-4">
               <Row>
-                <p className=" fw-bold sans">Cerca per id:</p>
-                <Col className="col-8">
-                  <Form.Control
-                    type="text"
-                    placeholder="Inserire id Transfer"
-                    className="me-2 mb-5 custom-inputReservation"
-                    value={tourId}
-                    onChange={(e) => setTourId(e.target.value)}
-                  />
+                <Col className="col.12 col-lg-5">
+                  <Row>
+                    <p className=" fw-bold sans">Cerca per id:</p>
+                    <Col className="col-8">
+                      <Form.Control
+                        type="text"
+                        placeholder="Inserire id Transfer"
+                        className="me-2 mb-5 custom-inputReservation"
+                        value={tourId}
+                        onChange={(e) => setTourId(e.target.value)}
+                      />
+                    </Col>
+                    <Col className="col-4">
+                      <Button
+                        style={{
+                          backgroundColor: "#c9bd70",
+                          borderColor: "#c9bd70",
+                          color: "#000000",
+                        }}
+                        onClick={() => {
+                          setSearchWordTour("");
+                          setResultForWordTour([]);
+                          setErrorForWordTour("");
+                          if (tourId) {
+                            setIsSearchingById(true);
+                            fetch(
+                              `http://localhost:8080/tour/by-id/${tourId}`,
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                              }
+                            )
+                              .then((response) => {
+                                if (!response.ok) {
+                                  throw new Error("Tour non trovato");
+                                }
+                                return response.json();
+                              })
+                              .then((data) => {
+                                setErrorForIdTour("");
+                                setSearchForIdTour(data);
+                                setIsSearchingById(false);
+                              })
+                              .catch((error) => {
+                                console.error("Errore:", error);
+                                setErrorForIdTour(
+                                  "Nessun tour trovato con questo ID"
+                                );
+                                setSearchForIdTour(null);
+                                setIsSearchingById(false);
+                              });
+                          }
+                        }}
+                      >
+                        {isSearchingById && activeTab === "Tour" ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          "Cerca"
+                        )}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
-                <Col className="col-4">
-                  <Button
-                    style={{
-                      backgroundColor: "#c9bd70",
-                      borderColor: "#c9bd70",
-                      color: "#000000",
-                    }}
-                    onClick={() => {
-                      if (tourId) {
-                        setIsSearchingById(true);
-                        fetch(`http://localhost:8080/tour/by-id/${tourId}`, {
-                          headers: {
-                            Authorization: `Bearer ${authToken}`,
-                          },
-                        })
-                          .then((response) => {
-                            if (!response.ok) {
-                              throw new Error("Tour non trovato");
-                            }
-                            return response.json();
-                          })
-                          .then((data) => {
-                            setErrorForIdTour("");
-                            setSearchForIdTour(data);
-                            setIsSearchingById(false);
-                          })
-                          .catch((error) => {
-                            console.error("Errore:", error);
-                            setErrorForIdTour(
-                              "Nessun tour trovato con questo ID"
-                            );
+                <Col className="col-12 col-lg-5">
+                  <Row>
+                    <p className=" fw-bold sans">Cerca per nome:</p>
+                    <Col className="col-8">
+                      <Form.Control
+                        type="text"
+                        placeholder="Inserire nome da cercare"
+                        className="me-2 mb-5 custom-inputReservation"
+                        value={searchWordTour}
+                        onChange={(e) => setSearchWordTour(e.target.value)}
+                      />
+                    </Col>
+                    <Col className="col-4">
+                      <Button
+                        style={{
+                          backgroundColor: "#c9bd70",
+                          borderColor: "#c9bd70",
+                          color: "#000000",
+                        }}
+                        onClick={() => {
+                          if (searchWordTour) {
+                            setTourId("");
                             setSearchForIdTour(null);
-                            setIsSearchingById(false);
-                          });
-                      }
-                    }}
-                  >
-                    {isSearchingById && activeTab === "Tour" ? (
-                      <Spinner size="sm" animation="border" />
-                    ) : (
-                      "Cerca"
-                    )}
-                  </Button>
+                            setErrorForIdTour("");
+                            setIsSearchingByWord(true);
+                            fetch(
+                              `http://localhost:8080/tour/search?keyword=${searchWordTour}`,
+                              {
+                                headers: {
+                                  Authorization: `Bearer ${authToken}`,
+                                },
+                              }
+                            )
+                              .then((response) => {
+                                if (!response.ok) {
+                                  throw new Error("Nessun elemento trovato");
+                                }
+                                return response.json();
+                              })
+                              .then((data) => {
+                                if (data.length === 0) {
+                                  setErrorForWordTour(
+                                    `Nessun Tour trovato con la parola "${searchWordTour}"`
+                                  );
+                                  setResultForWordTour([]);
+                                  setIsSearchingByWord(false);
+
+                                  return;
+                                }
+                                setErrorForWordTour("");
+                                setResultForWordTour(data);
+                                setIsSearchingByWord(false);
+                                
+                              })
+                              .catch((error) => {
+                                console.error("Errore:", error);
+                                setErrorForWordTour(
+                                  `Errore nel caricamento`
+                                );
+
+                                setIsSearchingByWord(false);
+                              });
+                          }
+                        }}
+                      >
+                        {isSearchingByWord && activeTab === "Tour" ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          "Cerca"
+                        )}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </Container>
             {errorForIdTour && <Alert variant="danger">{errorForIdTour}</Alert>}
+
+            {errorForWordTour && (
+              <Alert variant="danger">{errorForWordTransfert}</Alert>
+            )}
+
+            {resultForWordTour.length > 0 && (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>PickUp</th>
+                    <th>DropOff</th>
+                    <th>Passengers</th>
+                    <th>Time</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {resultForWordTour.map((booking) => (
+                    <tr
+                      key={booking.id}
+                      onClick={() => handleRowClick(booking)}
+                      style={{ cursor: "pointer" }}
+                      className={getRowColor(booking)}
+                    >
+                      <td>{booking.id}</td>
+                      <td>{booking.pickUp}</td>
+                      <td>{booking.dropOff}</td>
+                      <td>{booking.passengers}</td>
+                      <td>{booking.time}</td>
+                      <td>{booking.price}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+
             {searchForIdTour && (
               <Table>
                 <tbody>
