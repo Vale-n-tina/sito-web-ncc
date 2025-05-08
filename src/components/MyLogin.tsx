@@ -7,6 +7,7 @@ const MyLogin = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
 
 
@@ -17,6 +18,7 @@ const MyLogin = () => {
       username: username,
       password: password,
     };
+    setError("");
 
     fetch("http://localhost:8080/api/auth/login", {
       method: "POST",
@@ -30,7 +32,8 @@ const MyLogin = () => {
           //faccio cose
           return response.json();
         } else {
-          console.error("Error in login");
+          setError("Le credenziali inserite non sono corrette");
+          throw new Error("Login failed");
         }
       })
       .then((token) => {
@@ -40,6 +43,9 @@ const MyLogin = () => {
       })
       .catch((error) => {
         console.error("Error in fetch", error);
+        if (!error.message.includes("Login failed")) {
+          setError("Si è verificato un errore durante il login");
+        }
       });
   };
 
@@ -53,6 +59,11 @@ const MyLogin = () => {
             <Row className="row d-flex justify-content-center">
               <Col className=" col-12 col-md-10 col-lg-8">
                 <h2 className="fw-bold mb-5">Log in</h2>
+                {error && (
+                  <div className="alert alert-danger mb-4" role="alert">
+                    {error}
+                  </div>
+                )}
                 <form>
                   <Form.Group
                     as={Row}
