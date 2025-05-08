@@ -74,7 +74,7 @@ const MyTour2 = (props: myReservationPropsTour) => {
   const buttonLabels: string[] = [
     t("TourRome"),
     t("TourFiumicino"),
-    t("TourFiumicino"),
+    t("TourCiampino"),
     t("TourCivitavecchia"),
   ];
 
